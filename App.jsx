@@ -17,28 +17,28 @@ import {
 } from 'react-native';
 
 import {
-  Colors,
   DebugInstructions,
   Header,
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-
+import { getRobotoFont } from './src/core-utils/utils';
+import TextComponent from './src/core-component/atom/TextComponent';
+import { Colors, Matrics } from './src/theme';
+import AppNav from "./src/navigation"
 
 
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <Text>hduhs</Text>
-
-    </SafeAreaView>
+    <>
+      <AppNav />
+      {/* <TextComponent fontFamily={getRobotoFont("Medium")} size={Matrics.ms23} color={Colors.DARKGRAY}  >Update your profile to help ourassociates serve you better.</TextComponent> */}
+    </>
   );
 }
 
