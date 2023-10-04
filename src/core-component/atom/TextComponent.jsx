@@ -2,9 +2,9 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Matrics } from '../../theme'
 
-const TextComponent = ({ color, size, fontFamily, children }) => {
+const TextComponent = ({ color, size, fontFamily, children, marginTop }) => {
     return (
-        <View style={styles.textView}>
+        <View style={[styles.textView, { marginTop }]}>
             <Text style={{ fontFamily: fontFamily, color, fontSize: size }}>{children}</Text>
         </View>
     )
@@ -13,5 +13,5 @@ const TextComponent = ({ color, size, fontFamily, children }) => {
 export default TextComponent
 
 const styles = StyleSheet.create({
-    textView: { paddingHorizontal: Matrics.hs15, marginTop: Matrics.ms27 }
+    textView: { paddingHorizontal: Matrics.hs20, marginTop: Matrics.ms27 }
 })

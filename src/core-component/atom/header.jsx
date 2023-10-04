@@ -1,10 +1,15 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Colors, Images, Matrics } from '../../theme'
-const Header = () => {
+import { getRobotoFont } from '../../core-utils/utils'
+const Header = ({ text, backgroundColor, backArrow, onBackArrow }) => {
     return (
-        <View style={styles.mainView}>
-            <Image source={Images.arrow} style={{ width: Matrics.ms13, height: Matrics.ms27 }} />
+        <View style={[styles.mainView, { backgroundColor: backgroundColor ? backgroundColor : Colors.GRAY }]}>
+            <Pressable onPress={() => onBackArrow ? onBackArrow() : {}}>
+                <Image source={Images.arrow} style={{ width: Matrics.ms13, height: Matrics.ms27, tintColor: backArrow ? backArrow : Colors.DARKGRAY }} />
+
+            </Pressable>
+            {text ? <Text style={styles.textStyle}>{text}</Text> : null}
         </View >
     )
 }
@@ -12,5 +17,6 @@ const Header = () => {
 export default Header
 
 const styles = StyleSheet.create({
-    mainView: { height: Matrics.vs50, backgroundColor: Colors.GRAY, justifyContent: "center", paddingHorizontal: Matrics.hs15 }
+    mainView: { height: Matrics.vs60, backgroundColor: Colors.GRAY, alignItems: "center", paddingHorizontal: Matrics.hs20, flexDirection: "row" },
+    textStyle: { fontFamily: getRobotoFont("Bold"), fontSize: Matrics.ms20, color: Colors.LIGHTBLACK, paddingHorizontal: Matrics.hs15 }
 })

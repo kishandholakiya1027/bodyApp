@@ -1,14 +1,14 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Colors, Matrics } from '../../theme'
 import { getRobotoFont } from '../../core-utils/utils'
 
-const ButtonComponent = ({ text }) => {
+const ButtonComponent = ({ text, onPress }) => {
     return (
         <View>
-            <View style={styles.buttonView}>
+            <Pressable style={styles.buttonView} onPress={onPress}>
                 <Text style={styles.textStyle}>{text}</Text>
-            </View>
+            </Pressable>
 
         </View>
     )

@@ -1,6 +1,9 @@
 /* eslint-disable no-undef */
 const Images = {
     arrow: require('../assets/images/common/leftArrow.png'),
+    close: require('../assets/images/common/Close.png'),
+    google: require('../assets/images/common/Frame.png'),
+
     // user: require('../assets/images/home/user.png'),
     // book: require('../assets/images/home/book.png'),
     // applogo: require('../assets/images/common/splashLogo.png'),

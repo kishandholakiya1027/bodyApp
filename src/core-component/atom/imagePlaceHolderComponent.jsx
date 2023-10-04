@@ -4,7 +4,7 @@ import { Colors, Matrics } from '../../theme'
 import { getRobotoFont } from '../../core-utils/utils'
 import ImageSelectorComponent from './ImageSelectorComponent'
 
-const ImagePlaceHolderComponent = () => {
+const ImagePlaceHolderComponent = ({ }) => {
     const [visible, setVisible] = useState(false)
     return (
         <View style={styles.mainViw}>

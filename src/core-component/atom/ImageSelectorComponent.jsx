@@ -5,7 +5,6 @@ import { Colors } from '../../theme'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
 
 const ImageSelectorComponent = ({ visible, onDecline, imgurl, imageName }) => {
-    console.log("🚀 ~ file: ImageSelectorComponent.jsx:6 ~ ImageSelectorComponent ~ visible:", visible)
     const onSetImage = (image, type) => {
         return (
             {
