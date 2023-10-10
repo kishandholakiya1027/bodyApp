@@ -1,7 +1,7 @@
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Colors, Images, Matrics } from '../../theme'
-import { getRobotoFont } from '../../core-utils/utils'
+import { getRobotoFont, getRubikFont } from '../../core-utils/utils'
 const Header = ({ text, backgroundColor, backArrow, onBackArrow }) => {
     return (
         <View style={[styles.mainView, { backgroundColor: backgroundColor ? backgroundColor : Colors.GRAY }]}>
@@ -18,5 +18,5 @@ export default Header
 
 const styles = StyleSheet.create({
     mainView: { height: Matrics.vs60, backgroundColor: Colors.GRAY, alignItems: "center", paddingHorizontal: Matrics.hs20, flexDirection: "row" },
-    textStyle: { fontFamily: getRobotoFont("Bold"), fontSize: Matrics.ms20, color: Colors.LIGHTBLACK, paddingHorizontal: Matrics.hs15 }
+    textStyle: { fontFamily: getRubikFont("Medium"), fontSize: Matrics.ms22, color: Colors.LIGHTBLACK, paddingHorizontal: Matrics.hs15 }
 })

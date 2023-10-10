@@ -1,6 +1,6 @@
-import { Alert, Button, Image, KeyboardAvoidingView, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
-import { IS_ANDROID, getRobotoFont } from '../../core-utils/utils'
+import { Alert, Button, Image, KeyboardAvoidingView, Platform, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { IS_ANDROID, getRobotoFont, getRubikFont } from '../../core-utils/utils'
 import { Colors, Images, Matrics } from '../../theme'
 import TextInputComponent from '../../core-component/atom/TextInputComponent'
 
@@ -9,9 +9,10 @@ import Header from '../../core-component/atom/header'
 import axios from 'axios'
 import { API_URL } from '../../../config'
 import SocialMediaComponent from '../../core-component/organism/Social-MediaComponent'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 // import auth from '@react-native-firebase/auth';
-
-
+import { createAgoraRtcEngine } from 'react-native-agora';
+const engine = createAgoraRtcEngine();
 
 const RegisterPage = () => {
     const [email, setEmail] = useState()
@@ -21,7 +22,28 @@ const RegisterPage = () => {
 
     const navigation = useNavigation()
 
+    useEffect(() => {
+        getToken()
+        engine.initialize({ appId: 'd4bab57c33a74881813563b96ec5470c' });
+        if (Platform.OS === 'android') {
+            // Request required permissions from Android
+            requestCameraAndAudioPermission().then(() => {
+                console.log('requested!')
+            })
+        }
+        engine.enableVideo();
+        engine.enableAudio();
+        engine.setVideoEncoderConfiguration(360, 640, 15, 300);
+        engine.setChannelProfile(engine.AgoraChannelProfileCommunication);
+        engine.startPreview();
+    }, [])
 
+    const getToken = async () => {
+        const token = await AsyncStorage.getItem("token")
+        if (token) {
+            navigation.navigate("OnBoarding")
+        }
+    }
     const onSubmit = async () => {
         let err
         if (!email) {
@@ -49,10 +71,11 @@ const RegisterPage = () => {
                 "cpassword": confPass
             }
             console.log("🚀 ~ file: LoginPage.jsx:55 ~ awaitaxios.post ~ ${API_URL}/register:", `${API_URL}/register`)
-            await axios.post(`${API_URL}/register`, body, {
+            await axios.post(`http://10.0.2.2:5203/api/register`, body, {
                 headers: {
+                    Accept: 'application/json',
                     'Content-Type': 'application/json'
-                },
+                }
             }).then(({ data }) => {
                 if (data?.status === 200) {
                     Alert.alert(data?.msg[0])
@@ -63,7 +86,9 @@ const RegisterPage = () => {
                 }
 
             }).catch(err => {
-                Alert.alert(err)
+                console.log("🚀 ~ file: RegisterPage.jsx:76 ~ onSubmit ~ err:", err)
+                Alert.alert(err?.message)
+                // Alert.alert(err)
 
 
             })
@@ -137,8 +162,8 @@ const RegisterPage = () => {
 export default RegisterPage
 
 const styles = StyleSheet.create({
-    textStyle: { color: Colors.BLUE, fontFamily: getRobotoFont("Bold"), fontSize: Matrics.ms20, },
+    textStyle: { color: Colors.BLUE, fontFamily: getRubikFont("Medium"), fontSize: Matrics.ms18, },
     buttonView: { marginTop: Matrics.vs10, borderWidth: 1, borderColor: Colors.BLUE, paddingHorizontal: Matrics.hs30, height: Matrics.vs50, alignItems: "center", justifyContent: "center", flexDirection: "row" },
-    alreadyText: { fontFamily: getRobotoFont(""), fontSize: Matrics.ms19, color: Colors.LIGHTBLACK },
-    signInText: { color: Colors.BLUE, fontFamily: getRobotoFont("Bold"), fontSize: Matrics.ms19, textDecorationLine: "underline" }
+    alreadyText: { fontFamily: getRubikFont("Regular"), fontSize: Matrics.ms18, color: Colors.LIGHTBLACK },
+    signInText: { color: Colors.BLUE, fontFamily: getRubikFont("Bold"), fontSize: Matrics.ms18, textDecorationLine: "underline" }
 })

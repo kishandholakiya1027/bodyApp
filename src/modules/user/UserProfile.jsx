@@ -1,6 +1,6 @@
 import { Dimensions, FlatList, Image, KeyboardAvoidingView, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
-import { IS_ANDROID, getRobotoFont } from '../../core-utils/utils'
+import { IS_ANDROID, getRobotoFont, getRubikFont } from '../../core-utils/utils'
 import HeaderTextComponent from '../../core-component/molecules/HeaderTextComponent'
 import ImagePlaceHolderComponent from '../../core-component/atom/imagePlaceHolderComponent'
 import TextInputComponent from '../../core-component/atom/TextInputComponent'
@@ -10,6 +10,8 @@ import BoxComponent from '../../core-component/atom/BoxComponent'
 import TextComponent from '../../core-component/atom/TextComponent'
 import Header from '../../core-component/atom/header'
 import DropdownComponent from '../../core-component/atom/DropdownComponent'
+import { IMAGE_URL } from '../../../config'
+
 const { width, height } = Dimensions.get('window');
 
 const UserProfile = () => {
@@ -125,16 +127,16 @@ const UserProfile = () => {
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={IS_ANDROID ? '' : 'padding'} enabled>
             <SafeAreaView style={{ flex: 1 }}>
                 <StatusBar barStyle="dark-content" backgroundColor="transparent" />
-                {index !== 5 ? <Header /> : null}
+                {index !== 5 ? <Header onBackArrow={() => setIndex(index === 1 ? 0 : index === 2 ? 1 : index === 3 ? 2 : index === 4 ? 3 : 0)} /> : null}
 
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
-                    <View>
-                        {index !== 5 ? <TextComponent fontFamily={getRobotoFont("Medium")} size={Matrics.ms23} color={Colors.DARKGRAY}  >Update your profile to help ourassociates serve you better.</TextComponent> : null}
+                    <View style={{ flex: 1 }}>
+                        {index !== 5 ? <TextComponent fontFamily={getRubikFont("Medium")} size={Matrics.ms23} color={Colors.DARKGRAY} marginTop={Matrics.vs15} >Update your profile to help ourassociates serve you better.</TextComponent> : null}
 
-                        <View style={{ paddingHorizontal: Matrics.hs20 }}>
+                        <View style={{ paddingHorizontal: Matrics.hs20, flex: 1 }}>
                             {index === 0 ? <View>
                                 <View >
-                                    <ImagePlaceHolderComponent />
+                                    <ImagePlaceHolderComponent setImage={(image) => setUserData({ ...userData, profile_img: image })} image={userData?.profile_img ? `${IMAGE_URL}${userData?.profile_img?.uri || userData?.profile_img}` : ""} />
                                     <View>
                                         <TextInputComponent placeholder={"Username"} onChangeText={(text) => setUserData({ ...userData, username: text })} value={userData?.username} />
                                     </View>
@@ -145,9 +147,7 @@ const UserProfile = () => {
                                         <TextInputComponent placeholder={"Gender"} onChangeText={(text) => setUserData({ ...userData, gender: text })} value={userData?.gender} />
                                     </View>
                                 </View>
-                                <View style={{ alignItems: "center", height: "15%", justifyContent: "center" }}>
-                                    <ButtonComponent text="Next" onPress={() => setIndex(1)} />
-                                </View>
+
 
                             </View> : index === 1 ?
                                 <View style={{ marginVertical: Matrics.vs30 }}>
@@ -185,10 +185,7 @@ const UserProfile = () => {
                                         </View>
 
                                     </View>
-                                    <View style={{ flexDirection: "row", alignItems: "center", height: "15%", justifyContent: "space-between" }}>
-                                        <ButtonComponent text="Back" onPress={() => setIndex(0)} />
-                                        <ButtonComponent text="Next" onPress={() => setIndex(2)} />
-                                    </View>
+
 
                                 </View> : index === 2 ?
                                     <View style={{ marginVertical: Matrics.vs30 }}>
@@ -238,10 +235,7 @@ const UserProfile = () => {
                                             </View>
 
                                         </View>
-                                        <View style={{ flexDirection: "row", alignItems: "center", height: "15%", justifyContent: "space-between" }}>
-                                            <ButtonComponent text="Back" onPress={() => setIndex(1)} />
-                                            <ButtonComponent text="Next" onPress={() => setIndex(3)} />
-                                        </View>
+
 
                                     </View> : index === 3 ?
                                         <View style={{ marginVertical: Matrics.vs30 }}>
@@ -294,10 +288,7 @@ const UserProfile = () => {
                                                 </View>
 
                                             </View>
-                                            <View style={{ flexDirection: "row", alignItems: "center", height: "15%", justifyContent: "space-between" }}>
-                                                <ButtonComponent text="Back" onPress={() => setIndex(2)} />
-                                                <ButtonComponent text="Next" onPress={() => setIndex(4)} />
-                                            </View>
+
 
                                         </View> : index === 4 ?
                                             <View style={{ marginVertical: Matrics.vs30 }}>
@@ -375,10 +366,7 @@ const UserProfile = () => {
                                                     </View>
 
                                                 </View>
-                                                <View style={{ flexDirection: "row", alignItems: "center", height: "15%", justifyContent: "space-between" }}>
-                                                    <ButtonComponent text="Back" onPress={() => setIndex(3)} />
-                                                    <ButtonComponent text="Next" onPress={() => setIndex(5)} />
-                                                </View>
+
 
                                             </View> : null
 
@@ -395,7 +383,7 @@ const UserProfile = () => {
                                             <TextComponent fontFamily={getRobotoFont("Medium")} size={Matrics.ms23} color={Colors.DARKGRAY} marginTop={Matrics.vs5}>Let's get you ready!</TextComponent>
                                         </View>
                                         <View>
-                                            <ImagePlaceHolderComponent />
+                                            <ImagePlaceHolderComponent setImage={(image) => setUserData({ ...userData, profile_img: image })} image={userData?.profile_img ? userData?.profile_img?.uri || `${IMAGE_URL}${userData?.profile_img?.uri || userData?.profile_img}` : ""} />
                                             <View style={{ flexDirection: "row", paddingHorizontal: Matrics.hs50 }}>
                                                 <FlatList
                                                     data={usersData}
@@ -423,9 +411,7 @@ const UserProfile = () => {
                                                 })} */}
                                             </View>
 
-                                            <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                                <ButtonComponent text="Edit Profile" />
-                                            </View>
+
 
                                         </View>
                                     </View> : null
@@ -433,6 +419,31 @@ const UserProfile = () => {
                         </View>
                     </View>
                 </ScrollView>
+                <View style={{ marginHorizontal: Matrics.hs20, paddingVertical: Matrics.vs15 }}>
+                    {index === 0 ? <View style={{ alignItems: "center", justifyContent: "center" }}>
+                        <ButtonComponent text="Next" onPress={() => setIndex(1)} />
+                    </View> : index === 1 ?
+                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                            <ButtonComponent text="Back" onPress={() => setIndex(0)} />
+                            <ButtonComponent text="Next" onPress={() => setIndex(2)} />
+                        </View> : index === 2 ?
+                            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                                <ButtonComponent text="Back" onPress={() => setIndex(1)} />
+                                <ButtonComponent text="Next" onPress={() => setIndex(3)} />
+                            </View> : index === 3 ? <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                                <ButtonComponent text="Back" onPress={() => setIndex(2)} />
+                                <ButtonComponent text="Next" onPress={() => setIndex(4)} />
+                            </View> : index === 4 ? <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                                <ButtonComponent text="Back" onPress={() => setIndex(3)} />
+                                <ButtonComponent text="Next" onPress={() => setIndex(5)} />
+                            </View> : index === 5 ?
+                                <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                    <ButtonComponent text="Edit Profile" />
+                                </View> : null
+
+
+                    }
+                </View>
             </SafeAreaView>
         </KeyboardAvoidingView>
     )
@@ -441,7 +452,7 @@ const UserProfile = () => {
 export default UserProfile
 
 const styles = StyleSheet.create({
-    bodyTypeTextStyle: { fontFamily: getRobotoFont(), fontSize: Matrics.ms20, color: Colors.DARKGRAY },
+    bodyTypeTextStyle: { fontFamily: getRubikFont("Regular"), fontSize: Matrics.ms20, color: Colors.DARKGRAY },
     mainView: { height: Matrics.vs40, justifyContent: "center", alignItems: "flex-end" }
 
 })

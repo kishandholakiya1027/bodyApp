@@ -189,6 +189,8 @@ export const Matrics = {
   ms95: scalling.ms(95),
   ms100: scalling.ms(100),
   ms120: scalling.ms(120),
+  ms160: scalling.ms(160),
+  ms180: scalling.ms(180),
   ms241: scalling.ms(240),
   ms450: scalling.ms(450)
 

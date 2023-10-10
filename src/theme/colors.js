@@ -2,12 +2,16 @@ const Colors = {
 
   GRAY: "#AFAFAF",
   DARKGRAY: "#707070",
-  LIGHTGRAY: "#70707080",
+  LIGHTGRAY: "#929AAA",
+  LIGHTERGRAY: "#70707040",
   MEDIUMGRAY: "#C4C4C4",
   LIGHTBLACK: "#344054",
-  BLUE: "#444ce6",
+  BLUE: "#444ce7",
   WHITE: "#ffffff",
-  RED: "#f04438"
+  RED: "#F04438",
+  CRAYON: "#929AAA",
+  MEDIUMRED: "#E31B54",
+  MEDIUMREDOPACITY: "#E31B5420"
 
 }
 export default Colors;

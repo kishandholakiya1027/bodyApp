@@ -1,12 +1,11 @@
 import { Platform } from "react-native";
 
 export const getRobotoFont = (variant = 'Regular') => {
-  console.log("🚀 ~ file: utils.js:6 ~ getRobotoFont ~ `Roboto-${variant}`:", `Roboto-${variant}`)
   return `Roboto-${variant}`;
 };
 
-export const getGothamFont = (variant = 'Medium') => {
-  return `Gotham-${variant}`;
+export const getRubikFont = (variant = 'Medium') => {
+  return `Rubik-${variant}`;
 };
 
 export const IS_IOS = Platform.OS === 'ios';

@@ -1,11 +1,12 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import DropDownPicker from 'react-native-dropdown-picker';
-import { getRobotoFont } from '../../core-utils/utils';
+import { getRobotoFont, getRubikFont } from '../../core-utils/utils';
 import { Colors, Matrics } from '../../theme';
 import { Dropdown } from 'react-native-element-dropdown';
 
-const DropdownComponent = ({ setOpen, open, value, setValue, items = [] }) => {
+const DropdownComponent = ({ setOpen, open, value, setValue, items = [], backgroundColor = Colors.MEDIUMGRAY, color = Colors.DARKGRAY, borderWidth = 0, placeholder }) => {
+    console.log("🚀 ~ file: DropdownComponent.jsx:9 ~ DropdownComponent ~ value:", value)
 
     return (
         <View style={styles.dropdownCompany}>
@@ -14,10 +15,10 @@ const DropdownComponent = ({ setOpen, open, value, setValue, items = [] }) => {
                 <Text style={{ fontFamily: getRobotoFont(), color: Colors.DARKGRAY, fontSize: Matrics.ms15 }}>Select</Text>
             </Pressable> */}
             <Dropdown
-                style={[styles.dropdown]}
+                style={[styles.dropdown, { backgroundColor, borderWidth }]}
                 placeholderStyle={styles.placeholderStyle}
                 selectedTextStyle={styles.selectedTextStyle}
-                itemContainerStyle={{ backgroundColor: Colors.MEDIUMGRAY, color: Colors.DARKGRAY }}
+                itemContainerStyle={{ backgroundColor, color }}
                 inputSearchStyle={styles.inputSearchStyle}
                 itemTextStyle={{ color: Colors.DARKGRAY }}
                 iconStyle={styles.iconStyle}
@@ -25,7 +26,7 @@ const DropdownComponent = ({ setOpen, open, value, setValue, items = [] }) => {
                 maxHeight={300}
                 labelField="label"
                 valueField="value"
-                placeholder={'Select item'}
+                placeholder={placeholder || 'Select item'}
                 searchPlaceholder="Search..."
                 value={value}
                 // onFocus={() => setIsFocus(true)}
@@ -68,15 +69,15 @@ const styles = StyleSheet.create({
 
         width: "100%"
     },
-    menuHeader: { backgroundColor: Colors.WHITE, paddingHorizontal: Matrics.ms15, top: Matrics.hs15, borderWidth: 1, borderColor: Colors.DARKGRAY, left: Matrics.vs0, paddingVertical: Matrics.vs10, zIndex: 1, shadowColor: Colors.SHADOWCOLOR, shadowOffset: { height: 2, width: 5 }, shadowColor: Colors.LIGHTGRAY, shadowOpacity: 0.4, borderRadius: Matrics.ms4, elevation: 10, shadowRadius: Matrics.ms7, width: "90%" },
+    menuHeader: { backgroundColor: Colors.WHITE, paddingHorizontal: Matrics.ms15, top: Matrics.hs15, borderWidth: 1, borderColor: Colors.LIGHTGRAY, left: Matrics.vs0, paddingVertical: Matrics.vs10, zIndex: 1, shadowColor: Colors.SHADOWCOLOR, shadowOffset: { height: 2, width: 5 }, shadowColor: Colors.LIGHTGRAY, shadowOpacity: 0.4, borderRadius: Matrics.ms4, elevation: 10, shadowRadius: Matrics.ms7, width: "90%" },
     headerItem: { paddingVertical: Matrics.vs10, flexDirection: "row", zIndex: 999, alignItems: "center", justifyContent: "space-between" },
     container: {
         backgroundColor: '#C4C4C4',
         padding: 16,
     },
     dropdown: {
-        height: 50,
-        borderColor: 'gray',
+        height: 55,
+        borderColor: Colors.LIGHTGRAY,
         borderRadius: 0,
         paddingHorizontal: 8,
     },
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
     },
     label: {
         position: 'absolute',
-        backgroundColor: Colors.MEDIUMGRAY,
+        backgroundColor: Colors.LIGHTGRAY,
         // backgroundColor: 'white',
         left: 22,
         top: 8,
@@ -95,13 +96,16 @@ const styles = StyleSheet.create({
     },
     placeholderStyle: {
         fontSize: 18,
-        fontFamily: getRobotoFont(),
-        color: Colors.DARKGRAY
+        fontFamily: getRubikFont("Regular"),
+        color: Colors.LIGHTGRAY,
+        paddingHorizontal: Matrics.hs10
     },
     selectedTextStyle: {
         fontSize: 18,
-        fontFamily: getRobotoFont(),
-        color: Colors.DARKGRAY
+        fontFamily: getRubikFont("Regular"),
+        color: Colors.LIGHTGRAY,
+        paddingHorizontal: Matrics.hs10
+
 
     },
     iconStyle: {

@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Colors, Matrics } from '../../theme'
 import TextComponent from '../atom/TextComponent'
-import { getRobotoFont } from '../../core-utils/utils'
+import { getRobotoFont, getRubikFont } from '../../core-utils/utils'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 
 
@@ -31,8 +31,8 @@ const SocialMediaComponent = () => {
     return (
         <View style={{ alignItems: "center" }}>
 
-            <TextComponent fontFamily={getRobotoFont("")} size={Matrics.ms19} color={Colors.LIGHTBLACK}  >Or</TextComponent>
-            <TextComponent fontFamily={getRobotoFont("")} size={Matrics.ms19} color={Colors.LIGHTBLACK} marginTop={Matrics.vs15}>Sign in using</TextComponent>
+            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK}  >Or</TextComponent>
+            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs15}>Sign in using</TextComponent>
             <View style={{ marginTop: Matrics.vs20 }}>
                 <Pressable style={styles.buttonView} onPress={signInWithGoogle}>
                     <Text style={styles.textStyle}>{"  Google  "}</Text>
@@ -58,6 +58,6 @@ const SocialMediaComponent = () => {
 export default SocialMediaComponent
 
 const styles = StyleSheet.create({
-    textStyle: { color: Colors.BLUE, fontFamily: getRobotoFont("Bold"), fontSize: Matrics.ms20, },
+    textStyle: { color: Colors.BLUE, fontFamily: getRubikFont("Medium"), fontSize: Matrics.ms18, },
     buttonView: { marginTop: Matrics.vs10, borderWidth: 1, borderColor: Colors.BLUE, paddingHorizontal: Matrics.hs30, height: Matrics.vs50, alignItems: "center", justifyContent: "center", flexDirection: "row" },
 })

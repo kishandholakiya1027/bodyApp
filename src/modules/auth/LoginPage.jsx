@@ -1,6 +1,6 @@
 import { Alert, Button, Image, KeyboardAvoidingView, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
-import { IS_ANDROID, getRobotoFont } from '../../core-utils/utils'
+import { IS_ANDROID, getRobotoFont, getRubikFont } from '../../core-utils/utils'
 import { Colors, Images, Matrics } from '../../theme'
 import TextInputComponent from '../../core-component/atom/TextInputComponent'
 
@@ -9,12 +9,15 @@ import Header from '../../core-component/atom/header'
 import axios from 'axios'
 import { API_URL } from '../../../config'
 import SocialMediaComponent from '../../core-component/organism/Social-MediaComponent'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 // import auth from '@react-native-firebase/auth';
 
 
 const LoginPage = () => {
     const [email, setEmail] = useState()
+    console.log("🚀 ~ file: LoginPage.jsx:18 ~ LoginPage ~ email:", email)
     const [password, setPassword] = useState()
+    console.log("🚀 ~ file: LoginPage.jsx:20 ~ LoginPage ~ password:", password)
     const [error, setError] = useState()
 
     const navigation = useNavigation()
@@ -29,26 +32,30 @@ const LoginPage = () => {
 
         } else {
             let body = {
-                "email": email?.toString(),
+                "email": email,
                 "password": password,
             }
+            console.log("🚀 ~ file: LoginPage.jsx:39 ~ onSubmit ~ body:", body, `${API_URL}/google_signin`)
             await axios.post(`${API_URL}/google_signin`, body, {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-            }).then(({ data }) => {
+            }).then(async ({ data }) => {
                 console.log("🚀 ~ file: LoginPage.jsx:56 ~ onSubmit ~ data:", data)
                 if (data?.status === 200) {
 
                     Alert.alert(data?.msg)
-                    navigation.navigate("UserProfile")
+                    await AsyncStorage.setItem("token", data?.data?.token)
+                    await AsyncStorage.setItem("user", JSON.stringify(data?.data))
+                    navigation.navigate("OnBoarding")
 
                 } else {
                     Alert.alert(data?.msg)
                 }
 
             }).catch(err => {
-                Alert.alert(err)
+                console.log("🚀 ~ file: LoginPage.jsx:57 ~ onSubmit ~ err:", err)
+                Alert.alert(err?.message)
 
 
             })
@@ -104,8 +111,6 @@ const LoginPage = () => {
 export default LoginPage
 
 const styles = StyleSheet.create({
-    textStyle: { color: Colors.BLUE, fontFamily: getRobotoFont("Bold"), fontSize: Matrics.ms20, },
+    textStyle: { color: Colors.BLUE, fontFamily: getRubikFont("Medium"), fontSize: Matrics.ms18, },
     buttonView: { marginTop: Matrics.vs10, borderWidth: 1, borderColor: Colors.BLUE, paddingHorizontal: Matrics.hs30, height: Matrics.vs50, alignItems: "center", justifyContent: "center", flexDirection: "row" },
-    alreadyText: { fontFamily: getRobotoFont("Medium"), fontSize: Matrics.ms18 },
-    signInText: { color: Colors.BLUE, fontFamily: getRobotoFont("Bold"), fontSize: Matrics.ms18, textDecorationLine: "underline" }
 })

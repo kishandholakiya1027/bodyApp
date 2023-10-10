@@ -4,6 +4,7 @@ import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactActivityDelegate;
+import io.wazo.callkeep.RNCallKeepModule;
 
 public class MainActivity extends ReactActivity {
 
@@ -15,7 +16,15 @@ public class MainActivity extends ReactActivity {
   protected String getMainComponentName() {
     return "bodyapp";
   }
-
+   @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case RNCallKeepModule.REQUEST_READ_PHONE_STATE:
+                RNCallKeepModule.onRequestPermissionsResult(requestCode, permissions, grantResults);
+                break;
+        }
+    }
   /**
    * Returns the instance of the {@link ReactActivityDelegate}. Here we use a util class {@link
    * DefaultReactActivityDelegate} which allows you to easily enable Fabric and Concurrent React

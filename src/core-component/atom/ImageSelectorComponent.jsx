@@ -4,15 +4,32 @@ import Modal from './Modal'
 import { Colors } from '../../theme'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
 
-const ImageSelectorComponent = ({ visible, onDecline, imgurl, imageName }) => {
+const ImageSelectorComponent = ({ visible, onDecline, imgurl, imageName, multiple }) => {
     const onSetImage = (image, type) => {
+        console.log("🚀 ~ file: ImageSelectorComponent.jsx:9 ~ onSetImage ~ image:", image)
         return (
             {
                 name: image?.fileName || image?.name,
                 type: image?.type || type,
-                uri: Platform.OS === "android" ? image.uri : image.uri.replace("file://", "")
+                uri: Platform.OS === "android" ? image.uri : image.uri.replace("file://", ""),
+                // uri: image.uri,
+                size: image?.fileSize
             }
         )
+    }
+    const onSetMultipleImage = (images, type) => {
+        return images.map(image => {
+            return (
+                {
+                    name: image?.fileName || image?.name,
+                    type: image?.type || type,
+                    uri: Platform.OS === "android" ? image.uri : image.uri.replace("file://", ""),
+                    // uri: image.uri,
+                    size: image?.fileSize
+                }
+            )
+
+        })
     }
 
     const onCameraOpen = async () => {
@@ -32,16 +49,16 @@ const ImageSelectorComponent = ({ visible, onDecline, imgurl, imageName }) => {
                     } else {
                         // _showImagePicker(false);
                         let image = response?.assets[0]
-                        ImageResizer.createResizedImage(response?.assets[0]?.uri, Matrics.ms450, Matrics.ms450, "JPEG", 80, 0)
-                            .then(res => {
-                                dispatch(setBackgroundActive(false))
-                                imageName(onSetImage(res, image?.type));
-                                // RNFS.readFile(response?.uri, 'base64').then(res => {
-                                //   base64Img(`data:${image};base64,${res}`); setNewUserImage(false);
-                                // }).catch((err) => { });
-                            })
+                        // ImageResizer.createResizedImage(response?.assets[0]?.uri, Matrics.ms450, Matrics.ms450, "JPEG", 80, 0)
+                        //     .then(res => {
+                        //         dispatch(setBackgroundActive(false))
+                        //         imageName(onSetImage(res, image?.type));
+                        //         // RNFS.readFile(response?.uri, 'base64').then(res => {
+                        //         //   base64Img(`data:${image};base64,${res}`); setNewUserImage(false);
+                        //         // }).catch((err) => { });
+                        //     })
                         imgurl(image?.uri);
-                        // imageName(onSetImage(image));
+                        imageName(onSetImage(image));
                     }
                 });
             }
@@ -55,17 +72,17 @@ const ImageSelectorComponent = ({ visible, onDecline, imgurl, imageName }) => {
                 } else {
                     // _showImagePicker(false);
                     let image = response?.assets[0]
-                    ImageResizer.createResizedImage(response?.assets[0]?.uri, Matrics.ms450, Matrics.ms450, "JPEG", 70, 0)
-                        .then(res => {
-                            imageName(onSetImage(res, image?.type));
-                            dispatch(setBackgroundActive(false))
-                            // RNFS.readFile(response?.uri, 'base64').then(res => {
-                            //   base64Img(`data:${image};base64,${res}`); setNewUserImage(false);
-                            // }).catch((err) => { });
-                        })
+                    // ImageResizer.createResizedImage(response?.assets[0]?.uri, Matrics.ms450, Matrics.ms450, "JPEG", 70, 0)
+                    //     .then(res => {
+                    //         imageName(onSetImage(res, image?.type));
+                    //         dispatch(setBackgroundActive(false))
+                    //         // RNFS.readFile(response?.uri, 'base64').then(res => {
+                    //         //   base64Img(`data:${image};base64,${res}`); setNewUserImage(false);
+                    //         // }).catch((err) => { });
+                    //     })
                     imgurl(response?.assets[0]?.uri);
 
-                    // imageName(onSetImage(image));
+                    imageName(onSetImage(image));
                 }
             });
         }
@@ -77,7 +94,8 @@ const ImageSelectorComponent = ({ visible, onDecline, imgurl, imageName }) => {
             width: 300,
             height: 300,
             includeBase64: true,
-            cropping: true
+            cropping: true,
+            selectionLimit: 10
         }, async (response) => {
             onDecline()
             if (response.didCancel) {
@@ -98,8 +116,8 @@ const ImageSelectorComponent = ({ visible, onDecline, imgurl, imageName }) => {
                 //     })
                 //     .catch(() => { });
 
-                // imgurl(response?.assets[0]?.uri);
-                // imageName(onSetImage(image));
+                imgurl(multiple ? response?.assets : response?.assets[0]?.uri);
+                imageName(multiple ? onSetMultipleImage(response?.assets) : onSetImage(image));
             }
         });
     }

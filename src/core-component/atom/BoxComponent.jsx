@@ -1,7 +1,7 @@
 import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Colors, Matrics } from '../../theme'
-import { getRobotoFont } from '../../core-utils/utils';
+import { getRobotoFont, getRubikFont } from '../../core-utils/utils';
 const { width, height } = Dimensions.get('window');
 
 const BoxComponent = ({ width, height, type, onPress, value }) => {
@@ -18,5 +18,5 @@ export default BoxComponent
 
 const styles = StyleSheet.create({
     boxView: { backgroundColor: Colors.MEDIUMGRAY },
-    textStyle: { fontFamily: getRobotoFont(), fontSize: Matrics.ms16, color: Colors.DARKGRAY, textAlign: "center", marginTop: Matrics.vs15 }
+    textStyle: { fontFamily: getRubikFont("Regular"), fontSize: Matrics.ms16, color: Colors.DARKGRAY, textAlign: "center", marginTop: Matrics.vs15 }
 })
