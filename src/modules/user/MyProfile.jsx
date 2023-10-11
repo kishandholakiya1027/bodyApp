@@ -40,7 +40,7 @@ const MyProfile = () => {
                     <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                         <TextComponent fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0}>{"My Profile"}</TextComponent>
 
-                        <Pressable onPress={() => navigation.navigate("OnBoarding")}>
+                        <Pressable onPress={() => navigation.navigate("Home")}>
                             <Image source={Images.close} style={{ width: Matrics.ms50, height: Matrics.ms50 }} />
                         </Pressable>
                     </View>
@@ -79,7 +79,7 @@ const MyProfile = () => {
                         </View>
                         <View style={{ borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY, paddingBottom: Matrics.vs30 }}>
                             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.CRAYON} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{"Consultation Fees"}</TextComponent>
-                            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{`INR ${userData?.consultationCharge}/ 30 min session`}</TextComponent>
+                            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{`INR ${userData?.consultationCharge || 0}/ 30 min session`}</TextComponent>
 
                         </View>
                         <View style={{ borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY, paddingBottom: Matrics.vs30, marginTop: Matrics.vs20 }}>

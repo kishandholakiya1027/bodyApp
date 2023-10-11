@@ -69,7 +69,7 @@ const CompleteProfile = () => {
         delete user["id"]
         let body = convertToformData(user)
         console.log("🚀 ~ file: completeProfile.jsx:58 ~ onSubmit ~ body:", body)
-        await axios.put(`${API_URL}/edit_user/${userData?.id}`, body, {
+        await axios.put(`${API_URL}user/edit_user/${userData?.id}`, body, {
             headers: {
                 "Content-Type": "multipart/form-data"
             }

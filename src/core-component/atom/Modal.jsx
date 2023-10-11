@@ -4,7 +4,6 @@ import Modal from "react-native-modal";
 import { Matrics } from '../../theme';
 
 const ModalComponent = ({ visible, content, onDecline, setEventName, type, labelKey, children }) => {
-    console.log("🚀 ~ file: Modal.jsx:6 ~ ModalComponent ~ visible:", visible)
     return (
         <Modal
             isVisible={visible}

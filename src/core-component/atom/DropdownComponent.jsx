@@ -6,7 +6,6 @@ import { Colors, Matrics } from '../../theme';
 import { Dropdown } from 'react-native-element-dropdown';
 
 const DropdownComponent = ({ setOpen, open, value, setValue, items = [], backgroundColor = Colors.MEDIUMGRAY, color = Colors.DARKGRAY, borderWidth = 0, placeholder }) => {
-    console.log("🚀 ~ file: DropdownComponent.jsx:9 ~ DropdownComponent ~ value:", value)
 
     return (
         <View style={styles.dropdownCompany}>

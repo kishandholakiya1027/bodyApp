@@ -4,6 +4,7 @@ const Images = {
     close: require('../assets/images/common/Close.png'),
     google: require('../assets/images/common/Frame.png'),
     menu: require('../assets/images/common/menu.png'),
+    heart: require('../assets/images/common/heart.png'),
 
     // user: require('../assets/images/home/user.png'),
     // book: require('../assets/images/home/book.png'),

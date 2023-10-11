@@ -1,7 +1,7 @@
 import { Image, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import { NavigationContainer, useNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import React from 'react'
+import React, { useState } from 'react'
 import UserProfile from '../modules/user/UserProfile'
 import LoginPage from '../modules/auth/LoginPage'
 import RegisterPage from '../modules/auth/RegisterPage'
@@ -12,6 +12,9 @@ import { DrawerContentScrollView, DrawerItem, DrawerItemList, createDrawerNaviga
 import Home from '../modules/Home'
 import { Colors, Images, Matrics } from '../theme'
 import { getRubikFont } from '../core-utils/utils'
+import AllUsers from '../modules/Home/AllUsers'
+import UserParamContext from '../context/setUserContext'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator()
 
@@ -32,10 +35,20 @@ const drawerConstant = [
         name: "My Profile",
         component: MyProfile
     },
+    {
+        route: "VideoCall",
+        name: "Video Call",
+        component: VideoCall
+    },
 ]
-
 function CustomDrawerContent(props) {
-    console.log("🚀 ~ file: index.jsx:18 ~ CustomDrawerContent ~ props:", props)
+    const logOut = () => {
+        AsyncStorage.multiRemove(["token"])
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'RegisterPage' }]
+        })
+    }
     const navigation = useNavigation()
     return (
         <DrawerContentScrollView {...props}>
@@ -49,6 +62,8 @@ function CustomDrawerContent(props) {
                     )
                 })
             }
+            <DrawerItem label="Log out" onPress={() => logOut()} />
+
         </DrawerContentScrollView>
     );
 }
@@ -101,19 +116,25 @@ function DrawerComponent() {
 
 
 const Index = () => {
+    const [user, setUser] = useState()
+    console.log("🚀 ~ file: index.jsx:107 ~ Index ~ user:", user)
     return (
         <>
             <NavigationContainer>
-                <Stack.Navigator headerMode="none" initialRouteName='Home' screenOptions={{ headerShown: false, cardStyle: { backgroundColor: 'transparent' } }}>
-                    <Stack.Screen name='RegisterPage' component={RegisterPage} />
-                    <Stack.Screen name='UserProfile' component={UserProfile} />
-                    <Stack.Screen name='OnBoarding' component={CompleteProfile} />
-                    <Stack.Screen name='MyProfile' component={MyProfile} />
-                    <Stack.Screen name='LoginPage' component={LoginPage} />
-                    <Stack.Screen name='VideoCall' component={VideoCall} />
-                    <Stack.Screen name='Home' component={DrawerComponent} />
-                </Stack.Navigator>
+                <UserParamContext.Provider value={{ user, setUser }}>
+                    <Stack.Navigator headerMode="none" initialRouteName='RegisterPage' screenOptions={{ headerShown: false, cardStyle: { backgroundColor: 'transparent' } }}>
+                        <Stack.Screen name='RegisterPage' component={RegisterPage} />
+                        <Stack.Screen name='UserProfile' component={UserProfile} />
+                        <Stack.Screen name='OnBoarding' component={CompleteProfile} />
+                        <Stack.Screen name='MyProfile' component={MyProfile} />
+                        <Stack.Screen name='LoginPage' component={LoginPage} />
+                        <Stack.Screen name='VideoCall' component={VideoCall} />
+                        <Stack.Screen name='Home' component={DrawerComponent} />
+                        <Stack.Screen name='AllUsers' component={AllUsers} />
+                    </Stack.Navigator>
+                </UserParamContext.Provider>
             </NavigationContainer>
+
         </>
     )
 }

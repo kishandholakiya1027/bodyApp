@@ -17,14 +17,12 @@ export const convertToformData = (data) => {
         if (key === "profile_img") {
             formData.append(key, data[key], data[key]?.fileName);
         } else if (Array.isArray(data[key])) {
-            console.log("🚀 ~ file: dataConverter.js:21 ~ data[key]?.map ~ data[key]:", data[key])
             data[key]?.map((value, i) => {
                 if (key === "portfolio") {
                     formData.append(`${key}`, value);
 
                 } else {
 
-                    console.log("🚀 ~ file: dataConverter.js:28 ~ data[key]?.map ~ `${key}[${i}]`:", `${key}[${i}]`)
                     formData.append(`${key}[${i}]`, value);
                 }
 

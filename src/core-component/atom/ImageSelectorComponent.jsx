@@ -6,7 +6,6 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
 
 const ImageSelectorComponent = ({ visible, onDecline, imgurl, imageName, multiple }) => {
     const onSetImage = (image, type) => {
-        console.log("🚀 ~ file: ImageSelectorComponent.jsx:9 ~ onSetImage ~ image:", image)
         return (
             {
                 name: image?.fileName || image?.name,
@@ -104,8 +103,6 @@ const ImageSelectorComponent = ({ visible, onDecline, imgurl, imageName, multipl
             } else {
                 // _showImagePicker(false);
                 let image = response?.assets[0]
-                console.log("🚀 ~ file: ImageSelectorComponent.jsx:91 ~ onPhotoLibrary ~ response?.assets:", response?.assets)
-                console.log("🚀 ~ file: ImageSelectorComponent.jsx:90 ~ onPhotoLibrary ~ image:", image)
                 // ImageResizer.createResizedImage(response?.assets[0]?.uri, Matrics.ms450, Matrics.ms450, "JPEG", 70, 0)
                 //     .then(res => {
                 //         imageName(onSetImage(res, image?.type));

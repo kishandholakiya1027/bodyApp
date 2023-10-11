@@ -4,7 +4,6 @@ import { Colors, Matrics } from '../../theme'
 import { IS_IOS, getRobotoFont, getRubikFont } from '../../core-utils/utils'
 
 const TextInputComponent = ({ value, multiline = false, secureTextEntry, placeholderTextColor, onChangeText, placeholder, keyboardType, error, height = Matrics.vs50 }) => {
-    console.log("🚀 ~ file: TextInputComponent.jsx:7 ~ TextInputComponent ~ value:", value)
     return (
         <View style={{ marginBottom: Matrics.vs15 }}>
             <View style={[styles.inputView, { borderColor: error ? Colors.RED : Colors.LIGHTGRAY, height }]}>

@@ -7,6 +7,9 @@ import { IS_ANDROID, getRubikFont } from '../../core-utils/utils'
 import ImagePlaceHolderComponent from '../../core-component/atom/imagePlaceHolderComponent'
 import { API_URL, IMAGE_URL } from '../../../config'
 import axios from 'axios'
+import UsedataComponent from '../../core-component/organism/UsedataComponent'
+import { useNavigation } from '@react-navigation/native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const data = [
     {
@@ -34,15 +37,19 @@ const data = [
 const Home = () => {
     const [search, setSearch] = useState()
     const [users, setUsers] = useState([])
-    console.log("🚀 ~ file: index.jsx:37 ~ Home ~ users:", users)
-
+    const [user, setUser] = useState([])
+    const navigation = useNavigation()
     const getUsers = async () => {
-        await axios.get(`${API_URL}/get_user`).then(({ data }) => {
-            setUsers(data)
+        const user = JSON.parse(await AsyncStorage.getItem("user"))
+        setUser(user)
+        await axios.get(`${API_URL}user/get_user_rating`).then(({ data }) => {
+            setUsers(data?.data)
         }).catch(err => {
 
 
         })
+
+
     }
     useEffect(() => {
         getUsers()
@@ -79,62 +86,13 @@ const Home = () => {
                             <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10}>{"Popular on StyleCrew"}</TextComponent>
                         </View>
                         <View style={{ height: "58%" }}>
-                            <FlatList
-                                data={users}
-                                showsVerticalScrollIndicator={false}
-                                renderItem={({ item }) => {
-                                    console.log("🚀 ~ file: index.jsx:92 ~ Home ~ item?.profile_img:", item?.profile_img)
-
-                                    return (
-                                        <View style={{ marginTop: Matrics.vs10, paddingBottom: Matrics.vs20, flex: 1 }}>
-                                            <View style={{ flexDirection: "row" }}>
-                                                <View style={{ flex: 0.50, alignItems: "center", marginRight: Matrics.hs10 }}>
-                                                    <ImagePlaceHolderComponent size={Matrics.ms160} borderRadius={Matrics.ms80} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => { }} image={item?.profile_img ? `${IMAGE_URL}${item?.profile_img}` : ""} borderColor={Colors.MEDIUMREDOPACITY} backgroundColor={item?.profile_img ? "none" : Colors.MEDIUMREDOPACITY} />
-
-
-                                                </View>
-                                                <View style={{ flex: 0.50, }}>
-                                                    <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms20} color={Colors.BLUE} marginTop={Matrics.vs15}>{item?.username}</TextComponent>
-                                                    <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs5}>{item?.profession}</TextComponent>
-                                                    <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs5}>{`${item?.yearExperience} Years of Experience`}</TextComponent>
-                                                    <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.MEDIUMRED} marginTop={Matrics.vs10}>{"(20) Reviews"}</TextComponent>
-                                                    <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTGRAY} marginTop={Matrics.vs10}>{"Consultation fees: "}</TextComponent>
-                                                    <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0}>{`INR ${item?.consultationCharge}/30 min session`}</TextComponent>
-
-                                                </View>
-                                            </View>
-                                            <View style={{ flexDirection: "row" }}>
-                                                <View style={{ flex: 0.48, alignItems: "center", marginRight: Matrics.hs10 }}>
-
-                                                    <View style={{ marginTop: Matrics.vs10 }}>
-                                                        <Pressable style={[styles.buttonView, { paddingHorizontal: Matrics.hs10 }]} onPress={() => { }}>
-                                                            <Text style={styles.textStyle}>{"View Portfolio"}</Text>
-                                                        </Pressable>
-
-                                                    </View>
-                                                </View>
-                                                <View style={{ flex: 0.52, }}>
-                                                    <View style={{ marginTop: Matrics.vs10 }}>
-                                                        <Pressable style={[styles.buttonView, { paddingHorizontal: Matrics.hs5 }]} onPress={() => { }}>
-                                                            <Text style={styles.textStyle}>{"Book Consultation"}</Text>
-                                                        </Pressable>
-
-                                                    </View>
-
-                                                </View>
-                                            </View>
-
-                                        </View>
-
-                                    )
-                                }}
-                            />
+                            <UsedataComponent slice={2} userId={user?.id} />
 
                         </View>
-                        <View style={{ alignItems: "center" }}>
+                        <Pressable style={{ alignItems: "center" }} onPress={() => navigation.navigate("AllUsers", { users })}>
                             <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms18} color={Colors.BLUE} marginTop={Matrics.vs10} textDecorationLine='underline'>{"View all"}</TextComponent>
 
-                        </View>
+                        </Pressable>
 
                     </View>
                 </View>

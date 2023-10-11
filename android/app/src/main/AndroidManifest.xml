@@ -1,6 +1,6 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.avatar.app">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"  xmlns:tools="http://schemas.android.com/tools" package="com.avatar.app">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.BIND_TELECOM_CONNECTION_SERVICE"/>
 <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -13,7 +13,7 @@
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
-          <service android:name="io.wazo.callkeep.VoiceConnectionService"
+          <!-- <service android:name="io.wazo.callkeep.VoiceConnectionService"
         android:label="Wazo"
         android:permission="android.permission.BIND_TELECOM_CONNECTION_SERVICE"
         android:foregroundServiceType="camera|microphone"
@@ -23,8 +23,8 @@
         <intent-filter>
             <action android:name="android.telecom.ConnectionService" />
         </intent-filter>
-    </service>
-    <service android:name="io.wazo.callkeep.RNCallKeepBackgroundMessagingService" />
+    </service> -->
+    <!-- <service android:name="io.wazo.callkeep.RNCallKeepBackgroundMessagingService" /> -->
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"

@@ -10,7 +10,6 @@ export default async function requestCameraAndAudioPermission() {
       PermissionsAndroid.PERMISSIONS.CAMERA,
       PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
     ]);
-    console.log("🚀 ~ file: Permission.js:13 ~ requestCameraAndAudioPermission ~ granted:", granted)
     if (
       granted['android.permission.RECORD_AUDIO'] ===
       PermissionsAndroid.RESULTS.GRANTED &&

@@ -1,5 +1,5 @@
 import { Alert, Button, Image, KeyboardAvoidingView, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { IS_ANDROID, getRobotoFont, getRubikFont } from '../../core-utils/utils'
 import { Colors, Images, Matrics } from '../../theme'
 import TextInputComponent from '../../core-component/atom/TextInputComponent'
@@ -10,15 +10,16 @@ import axios from 'axios'
 import { API_URL } from '../../../config'
 import SocialMediaComponent from '../../core-component/organism/Social-MediaComponent'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import UserParamContext from '../../context/setUserContext'
 // import auth from '@react-native-firebase/auth';
 
 
 const LoginPage = () => {
     const [email, setEmail] = useState()
-    console.log("🚀 ~ file: LoginPage.jsx:18 ~ LoginPage ~ email:", email)
     const [password, setPassword] = useState()
-    console.log("🚀 ~ file: LoginPage.jsx:20 ~ LoginPage ~ password:", password)
     const [error, setError] = useState()
+    const { user, setUser } = useContext(UserParamContext)
+    console.log("🚀 ~ file: LoginPage.jsx:22 ~ LoginPage ~ user:", user)
 
     const navigation = useNavigation()
 
@@ -35,19 +36,18 @@ const LoginPage = () => {
                 "email": email,
                 "password": password,
             }
-            console.log("🚀 ~ file: LoginPage.jsx:39 ~ onSubmit ~ body:", body, `${API_URL}/google_signin`)
-            await axios.post(`${API_URL}/google_signin`, body, {
+            await axios.post(`${API_URL}auth/login`, body, {
                 headers: {
                     'Content-Type': 'application/json'
                 },
             }).then(async ({ data }) => {
-                console.log("🚀 ~ file: LoginPage.jsx:56 ~ onSubmit ~ data:", data)
                 if (data?.status === 200) {
 
                     Alert.alert(data?.msg)
                     await AsyncStorage.setItem("token", data?.data?.token)
+                    setUser(data?.data)
                     await AsyncStorage.setItem("user", JSON.stringify(data?.data))
-                    navigation.navigate("OnBoarding")
+                    navigation.navigate("Home")
 
                 } else {
                     Alert.alert(data?.msg)

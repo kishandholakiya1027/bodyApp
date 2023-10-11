@@ -74,6 +74,7 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     namespace "com.avatar.app"
+    testNamespace "com.avatar.app"
     defaultConfig {
         applicationId "com.avatar.app"
         minSdkVersion rootProject.ext.minSdkVersion

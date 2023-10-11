@@ -1,5 +1,5 @@
 import { Alert, Button, Image, KeyboardAvoidingView, Platform, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { IS_ANDROID, getRobotoFont, getRubikFont } from '../../core-utils/utils'
 import { Colors, Images, Matrics } from '../../theme'
 import TextInputComponent from '../../core-component/atom/TextInputComponent'
@@ -12,6 +12,7 @@ import SocialMediaComponent from '../../core-component/organism/Social-MediaComp
 import AsyncStorage from '@react-native-async-storage/async-storage'
 // import auth from '@react-native-firebase/auth';
 import { createAgoraRtcEngine } from 'react-native-agora';
+import UserParamContext from '../../context/setUserContext'
 const engine = createAgoraRtcEngine();
 
 const RegisterPage = () => {
@@ -19,7 +20,7 @@ const RegisterPage = () => {
     const [password, setPassword] = useState()
     const [confPass, setConfPass] = useState()
     const [error, setError] = useState()
-
+    const { setUser, user } = useContext(UserParamContext)
     const navigation = useNavigation()
 
     useEffect(() => {
@@ -41,7 +42,9 @@ const RegisterPage = () => {
     const getToken = async () => {
         const token = await AsyncStorage.getItem("token")
         if (token) {
-            navigation.navigate("OnBoarding")
+            const user = JSON.parse(await AsyncStorage.getItem("user"))
+            setUser(user)
+            navigation.navigate("Home")
         }
     }
     const onSubmit = async () => {
@@ -61,7 +64,6 @@ const RegisterPage = () => {
         if (password !== confPass) {
             err = { ...err, pass: "Password doesn't match" }
         }
-        console.log("🚀 ~ file: RegisterPage.jsx:41 ~ onSubmit ~ err:", err)
         setError(err)
         if (!err) {
 
@@ -70,7 +72,6 @@ const RegisterPage = () => {
                 "password": password,
                 "cpassword": confPass
             }
-            console.log("🚀 ~ file: LoginPage.jsx:55 ~ awaitaxios.post ~ ${API_URL}/register:", `${API_URL}/register`)
             await axios.post(`http://10.0.2.2:5203/api/register`, body, {
                 headers: {
                     Accept: 'application/json',
