@@ -26,7 +26,6 @@ import { getRobotoFont } from './src/core-utils/utils';
 import TextComponent from './src/core-component/atom/TextComponent';
 import { Colors, Matrics } from './src/theme';
 import AppNav from "./src/navigation"
-import 'react-native-gesture-handler';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';

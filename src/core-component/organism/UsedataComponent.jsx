@@ -17,8 +17,6 @@ const UsedataComponent = ({ userId, slice }) => {
     const [users, setUsers] = useState([])
 
     const { user } = useContext(UserParamContext)
-    console.log("🚀 ~ file: UsedataComponent.jsx:19 ~ UsedataComponent ~ user:", user)
-    console.log("🚀 ~    file: UsedataComponent.jsx:16 ~ UsedataComponent ~ likedUser:", likedUser)
 
     // useEffect(() => {
     //     getData()
@@ -39,7 +37,6 @@ const UsedataComponent = ({ userId, slice }) => {
         getUser()
         await axios.get(`${API_URL}like/get_like_login_user/${user?.id}`).then(({ data }) => {
             setLikedUsers(data?.likes?.map(user => user?.profileId))
-            console.log("🚀 ~ file: index.jsx:52 ~ awaitaxios.get ~ data:", data)
         }).catch(err => {
 
 
@@ -83,14 +80,12 @@ const UsedataComponent = ({ userId, slice }) => {
             rating,
             desc: "rate"
         }
-        console.log("🚀 ~ file: UsedataComponent.jsx:65 ~ addRating ~ body:", body)
         await axios.post(`${API_URL}review/add_review`, body, {
             headers: {
                 'Content-Type': 'application/json'
             },
         }).then(({ data }) => {
             getUser()
-            console.log("🚀 ~ file: UsedataComponent.jsx:74 ~ addRating ~ data:", data)
         }).catch(err => {
 
 
@@ -103,14 +98,12 @@ const UsedataComponent = ({ userId, slice }) => {
             rating,
             desc: "rate"
         }
-        console.log("🚀 ~ file: UsedataComponent.jsx:65 ~ addRating ~ body:", body)
         await axios.post(`${API_URL}review/remove_review`, body, {
             headers: {
                 'Content-Type': 'application/json'
             },
         }).then(({ data }) => {
             getUser()
-            console.log("🚀 ~ file: UsedataComponent.jsx:74 ~ addRating ~ data:", data)
         }).catch(err => {
 
 
@@ -143,8 +136,6 @@ const UsedataComponent = ({ userId, slice }) => {
             data={users?.slice(0, slice)}
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) => {
-                console.log("🚀 ~ file: UsedataComponent.jsx:110 ~ UsedataComponent ~ likedUser?.includes(item?._id):", likedUser?.includes(item?._id), item?._id)
-                let likes = [...likedUser]
                 return (
                     userId !== item?._id ? <View style={{ marginTop: Matrics.vs10, paddingBottom: Matrics.vs20, flex: 1 }}>
                         <View style={{ flexDirection: "row" }}>

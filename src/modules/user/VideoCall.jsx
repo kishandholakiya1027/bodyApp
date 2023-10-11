@@ -11,6 +11,8 @@ import Header from '../../core-component/atom/header';
 import requestCameraAndAudioPermission from '../../core-component/atom/Permission';
 import AgoraUIKit from 'agora-rn-uikit';
 import RtmEngine from 'agora-react-native-rtm';
+import IncominCall from '../../core-component/organism/IncominCall';
+import { useNavigation } from '@react-navigation/native';
 
 
 // const VideoCall = () => {
@@ -134,7 +136,7 @@ const VideoCall = () => {
     const [isJoined, setJoined] = useState(false);
     const [peerIds, setPeerIds] = useState([]);
     const client = new RtmEngine();
-
+    const navigation = useNavigation()
     const connectionData = {
         appId: 'd4bab57c33a74881813563b96ec5470c',
         channel: 'test-',
@@ -216,7 +218,7 @@ const VideoCall = () => {
                         <SafeAreaView style={{ flex: 1 }}>
                             <StatusBar barStyle="dark-content" backgroundColor="white" />
                             <View style={{ borderBottomWidth: 0.5 }}>
-                                <Header text={"Video Call"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => { }} />
+                                <Header text={"Video Call"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => navigation.navigate("Home")} />
 
                             </View>
                             <View>

@@ -15,6 +15,7 @@ import { getRubikFont } from '../core-utils/utils'
 import AllUsers from '../modules/Home/AllUsers'
 import UserParamContext from '../context/setUserContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import IncominCall from '../core-component/organism/IncominCall'
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator()
 
@@ -38,7 +39,8 @@ const drawerConstant = [
     {
         route: "VideoCall",
         name: "Video Call",
-        component: VideoCall
+        component: IncominCall
+
     },
 ]
 function CustomDrawerContent(props) {
@@ -128,7 +130,7 @@ const Index = () => {
                         <Stack.Screen name='OnBoarding' component={CompleteProfile} />
                         <Stack.Screen name='MyProfile' component={MyProfile} />
                         <Stack.Screen name='LoginPage' component={LoginPage} />
-                        <Stack.Screen name='VideoCall' component={VideoCall} />
+                        <Stack.Screen name='VideoCall' component={IncominCall} />
                         <Stack.Screen name='Home' component={DrawerComponent} />
                         <Stack.Screen name='AllUsers' component={AllUsers} />
                     </Stack.Navigator>

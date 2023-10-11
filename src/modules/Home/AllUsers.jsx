@@ -9,7 +9,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import TextInputComponent from '../../core-component/atom/TextInputComponent'
 
 const AllUsers = (props) => {
-    console.log("🚀 ~ file: AllUsers.jsx:9 ~ AllUsers ~ props:", props)
     // const navigation = useNavigation()
 
     const [user, setUser] = useState([])

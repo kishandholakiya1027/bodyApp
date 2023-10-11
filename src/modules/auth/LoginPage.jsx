@@ -19,7 +19,6 @@ const LoginPage = () => {
     const [password, setPassword] = useState()
     const [error, setError] = useState()
     const { user, setUser } = useContext(UserParamContext)
-    console.log("🚀 ~ file: LoginPage.jsx:22 ~ LoginPage ~ user:", user)
 
     const navigation = useNavigation()
 

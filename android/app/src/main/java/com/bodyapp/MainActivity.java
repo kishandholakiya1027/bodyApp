@@ -4,7 +4,7 @@ import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactActivityDelegate;
-import io.wazo.callkeep.RNCallKeepModule;
+// import io.wazo.callkeep.RNCallKeepModule;
 
 public class MainActivity extends ReactActivity {
 

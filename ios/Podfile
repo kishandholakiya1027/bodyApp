@@ -46,7 +46,7 @@ target 'bodyapp' do
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
-  pod 'RNCallKeep', :path => '../node_modules/react-native-callkeep'
+  # pod 'RNCallKeep', :path => '../node_modules/react-native-callkeep'
 
   target 'bodyappTests' do
     inherit! :complete

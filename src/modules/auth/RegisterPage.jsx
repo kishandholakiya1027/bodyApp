@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 // import auth from '@react-native-firebase/auth';
 import { createAgoraRtcEngine } from 'react-native-agora';
 import UserParamContext from '../../context/setUserContext'
+import requestCameraAndAudioPermission from '../../core-component/atom/Permission'
 const engine = createAgoraRtcEngine();
 
 const RegisterPage = () => {

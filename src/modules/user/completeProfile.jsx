@@ -17,7 +17,6 @@ const CompleteProfile = () => {
     const [index, setIndex] = useState(0)
     const [userData, setUserData] = useState({})
     const [showlink, setShowLink] = useState(false)
-    console.log("🚀 ~ file: completeProfile.jsx:19 ~ CompleteProfile ~ userData:", userData)
 
     const navigation = useNavigation()
     useEffect(() => {
@@ -26,9 +25,7 @@ const CompleteProfile = () => {
 
     const getUserData = async () => {
         let user = JSON.parse(await AsyncStorage.getItem("user"))
-        console.log("🚀 ~ file: completeProfile.jsx:29 ~ getUserData ~ user:", user)
         await axios.get(`${API_URL}/get_user/${user?.id}`).then(async ({ data }) => {
-            console.log("🚀 ~ file: completeProfile.jsx:32 ~ awaitaxios.get ~ data:", data)
             setUserData(data)
             setIndex(0)
             await AsyncStorage.setItem("user", JSON.stringify(data))
@@ -65,16 +62,13 @@ const CompleteProfile = () => {
         if (user?.socialChanels) {
             user.socialChanels = user?.socialChanels?.map(channel => channel ? channel : 0)
         }
-        console.log("🚀 ~ file: completeProfile.jsx:65 ~ onSubmit ~ user:", user)
         delete user["id"]
         let body = convertToformData(user)
-        console.log("🚀 ~ file: completeProfile.jsx:58 ~ onSubmit ~ body:", body)
         await axios.put(`${API_URL}user/edit_user/${userData?.id}`, body, {
             headers: {
                 "Content-Type": "multipart/form-data"
             }
         }).then(async ({ data }) => {
-            console.log("🚀 ~ file: completeProfile.jsx:34 ~ onSubmit ~ data:", data)
             await AsyncStorage.setItem("user", JSON.stringify({ ...user, id: userData?.id }))
             Alert.alert(data?.msg)
             setTimeout(() => {
