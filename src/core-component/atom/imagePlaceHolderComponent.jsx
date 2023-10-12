@@ -4,12 +4,12 @@ import { Colors, Matrics } from '../../theme'
 import { getRobotoFont, getRubikFont } from '../../core-utils/utils'
 import ImageSelectorComponent from './ImageSelectorComponent'
 
-const ImagePlaceHolderComponent = ({ size = Matrics.ms241, borderRadius = Matrics.ms120, padding = Matrics.hs50, marginVertical = Matrics.vs40, setImage, image, borderColor = Colors.DARKGRAY, multiple, backgroundColor = "none" }) => {
+const ImagePlaceHolderComponent = ({ size = Matrics.ms241, borderRadius = Matrics.ms120, padding = Matrics.hs50, marginVertical = Matrics.vs40, setImage, image, borderColor = Colors.DARKGRAY, multiple, backgroundColor = "none", disabled }) => {
     const [visible, setVisible] = useState(false)
     const [imageUrl, setImageUrl] = useState()
     return (
         <View style={[styles.mainViw, { marginVertical }]}>
-            <Pressable onPress={() => setVisible(true)}>
+            <Pressable onPress={() => setVisible(true)} disabled>
                 <View style={[styles.imageView, { width: size, height: size, borderRadius, borderColor, backgroundColor }]} >
                     {imageUrl || image ? <Image style={[styles.imageView, { width: size, height: size, borderRadius, borderColor }]} source={{ uri: (imageUrl || image) }} />
                         : <Text style={[styles.textStyle, { paddingHorizontal: padding }]}>Upload your profile picture</Text>}

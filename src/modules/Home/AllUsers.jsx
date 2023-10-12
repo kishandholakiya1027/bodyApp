@@ -57,7 +57,7 @@ const AllUsers = (props) => {
                         </View>
                     </View>
                     <View style={{ height: "75%" }}>
-                        <UsedataComponent users={props?.route?.params?.users} userId={user?.id} />
+                        <UsedataComponent users={props?.route?.params?.users} userId={user?.id} search={search} />
 
                     </View>
                 </View>

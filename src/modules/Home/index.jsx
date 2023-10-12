@@ -1,4 +1,4 @@
-import { FlatList, KeyboardAvoidingView, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Alert, FlatList, KeyboardAvoidingView, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Colors, Matrics } from '../../theme'
 import TextInputComponent from '../../core-component/atom/TextInputComponent'
@@ -37,6 +37,7 @@ const data = [
 const Home = () => {
     const [search, setSearch] = useState()
     const [users, setUsers] = useState([])
+    const [allUsers, setAllUsers] = useState([])
     const [user, setUser] = useState([])
     const navigation = useNavigation()
     const getUsers = async () => {
@@ -44,6 +45,7 @@ const Home = () => {
         setUser(user)
         await axios.get(`${API_URL}user/get_user_rating`).then(({ data }) => {
             setUsers(data?.data)
+            setAllUsers(data?.data)
         }).catch(err => {
 
 
@@ -56,12 +58,17 @@ const Home = () => {
     }, [])
 
 
+    const onSearch = async (text) => {
+        setSearch(text)
+
+    }
+
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.WHITE, }} behavior={IS_ANDROID ? '' : 'padding'} enabled>
             <SafeAreaView style={{ flex: 1 }}>
                 <View style={{ margin: Matrics.ms20, flex: 1 }}>
                     <View >
-                        <TextInputComponent placeholder={"Search for designers, stylists or trends"} onChangeText={(text) => setSearch(text)} value={search} />
+                        <TextInputComponent placeholder={"Search for designers, stylists or trends"} onChangeText={(text) => onSearch(text)} value={search} />
                         <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10}>{"How can we assist you today?"}</TextComponent>
                         <View style={{ flexDirection: "row" }}>
                             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
@@ -85,8 +92,8 @@ const Home = () => {
 
                             <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10}>{"Popular on StyleCrew"}</TextComponent>
                         </View>
-                        <View style={{ height: "58%" }}>
-                            <UsedataComponent slice={2} userId={user?.id} />
+                        <View style={{ height: "58%", justifyContent: "center" }}>
+                            <UsedataComponent slice={2} userId={user?.id} search={search} />
 
                         </View>
                         <Pressable style={{ alignItems: "center" }} onPress={() => navigation.navigate("AllUsers", { users })}>
