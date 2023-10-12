@@ -1,5 +1,5 @@
 #import "AppDelegate.h"
-
+#import "RNCallKeep.h"
 #import <React/RCTBundleURLProvider.h>
 
 @implementation AppDelegate
@@ -22,5 +22,12 @@
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
 }
-
+ - (BOOL)application:(UIApplication *)application
+ continueUserActivity:(NSUserActivity *)userActivity
+   restorationHandler:(void(^)(NSArray<id<UIUserActivityRestoring>> * __nullable restorableObjects))restorationHandler
+ {
+   return [RNCallKeep application:application
+            continueUserActivity:userActivity
+              restorationHandler:restorationHandler];
+ }
 @end

@@ -16,6 +16,7 @@ import AllUsers from '../modules/Home/AllUsers'
 import UserParamContext from '../context/setUserContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import IncominCall from '../core-component/organism/IncominCall'
+import GoogleLogin from '../modules/auth/GoogleLogin'
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator()
 

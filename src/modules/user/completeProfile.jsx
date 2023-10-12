@@ -97,7 +97,6 @@ const CompleteProfile = () => {
         "Youtube",
         "Linkedin"
     ]
-    console.log("🚀 ~ file: completeProfile.jsx:101 ~ CompleteProfile ~ socialMedia?.at(showlink):", socialMedia?.indexOf(showlink))
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.WHITE, }} behavior={IS_ANDROID ? '' : 'padding'} enabled>
             <SafeAreaView style={{ flex: 1 }}>

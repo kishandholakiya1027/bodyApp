@@ -12,7 +12,6 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native'
 const MyProfile = () => {
     const [userData, setUserData] = useState()
     const navigation = useNavigation()
-    console.log("🚀 ~ file: MyProfile.jsx:12 ~ MyProfile ~ userData:", userData)
 
     // useEffect(() => {
     //     getUserData()
@@ -25,7 +24,6 @@ const MyProfile = () => {
 
     const getUserData = async () => {
         const user = JSON.parse(await AsyncStorage.getItem("user"))
-        console.log("🚀 ~ file: MyProfile.jsx:23 ~ getUserData ~ user:", user)
         setUserData(user)
     }
     const socialMedia = [
