@@ -1,4 +1,4 @@
-package com.avatar.app;
+package com.avatarbody.app;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

@@ -13,6 +13,7 @@ import AgoraUIKit from 'agora-rn-uikit';
 import RtmEngine from 'agora-react-native-rtm';
 import IncominCall from '../../core-component/organism/IncominCall';
 import { useNavigation } from '@react-navigation/native';
+import IncomingCall from '../../core-component/organism/IncomingCall';
 
 
 // const VideoCall = () => {
@@ -214,37 +215,7 @@ const VideoCall = () => {
                 videoCall ? (
                     <AgoraUIKit connectionData={connectionData} rtcCallbacks={rtcCallbacks} />
                 ) : (
-                    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.WHITE, }} behavior={IS_ANDROID ? '' : 'padding'} enabled>
-                        <SafeAreaView style={{ flex: 1 }}>
-                            <StatusBar barStyle="dark-content" backgroundColor="white" />
-                            <View style={{ borderBottomWidth: 0.5 }}>
-                                <Header text={"Video Call"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => navigation.navigate("Home")} />
-
-                            </View>
-                            <View>
-                                {/* <View style={{ marginTop: Matrics.vs10 }}>
-                                    <Pressable style={styles.buttonView} onPress={startCall}>
-                                        <Text style={styles.textStyle}>{"Start Call"}</Text>
-                                    </Pressable>
-            
-                                </View>
-                                <View style={{ marginTop: Matrics.vs10 }}>
-                                    <Pressable style={styles.buttonView} onPress={endCall}>
-                                    </Pressable>
-                                    
-                                </View> */}
-                                <View style={{ marginTop: Matrics.vs10 }}>
-                                    <Pressable style={styles.buttonView} onPress={() => {
-                                        // startCall()
-                                        setVideoCall(true)
-                                    }}>
-                                        <Text style={styles.textStyle}>{"Start Call"}</Text>
-                                    </Pressable>
-
-                                </View>
-                            </View>
-                        </SafeAreaView>
-                    </KeyboardAvoidingView>
+                    <IncomingCall onReceive={() => setVideoCall(true)} />
                 )
             }
         </>

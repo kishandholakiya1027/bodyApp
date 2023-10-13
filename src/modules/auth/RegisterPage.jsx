@@ -1,4 +1,4 @@
-import { Alert, Button, Image, KeyboardAvoidingView, Platform, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native'
+import { Alert, Button, Image, KeyboardAvoidingView, PermissionsAndroid, Platform, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { IS_ANDROID, getRobotoFont, getRubikFont } from '../../core-utils/utils'
 import { Colors, Images, Matrics } from '../../theme'
@@ -14,6 +14,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { createAgoraRtcEngine } from 'react-native-agora';
 import UserParamContext from '../../context/setUserContext'
 import requestCameraAndAudioPermission from '../../core-component/atom/Permission'
+import messaging from '@react-native-firebase/messaging';
+import RNCallKeep from 'react-native-callkeep'
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
 const engine = createAgoraRtcEngine();
 
 const RegisterPage = () => {
@@ -33,12 +37,120 @@ const RegisterPage = () => {
                 console.log('requested!')
             })
         }
+
+        messaging()
+            .registerDeviceForRemoteMessages()
+            .then(async res => {
+
+                console.log('-*-res*-', res)
+            })
+            .catch(err => console.log('*-* registrer error ', err));
+        messaging().getAPNSToken().then(data => {
+            console.log("🚀 ~ file: RegisterPage.jsx:47 ~ messaging ~ data:", data)
+            messaging().setAPNSToken(data || "385757dhnfudhf8487398890", "unknown")
+
+        })
+        messaging().getToken().then(async device_id => {
+            console.log("🚀 ~ file: signinScreen.js:49 ~ messaging ~ device_id:", device_id)
+        }).catch(err => console.log("🚀 ~ file: signinScreen.js ~ line 58 ~ useEffect ~ err", err))
+        createNotificationListeners(); //add this line
+        // getToken();
+        RNCallKeep.setup({
+            ios: {
+                appName: "Example",
+                supportsVideo: true,
+                displayCallReachabilityTimeout: 1000,
+            },
+            android: {
+                alertTitle: "Permissions required",
+                alertDescription:
+                    "This application needs to access your phone accounts",
+                cancelButton: "Cancel",
+                okButton: "ok",
+                imageName: "phone_account_icon",
+                additionalPermissions: [
+                    PermissionsAndroid.PERMISSIONS.READ_PHONE_STATE,
+                    PermissionsAndroid.PERMISSIONS.CALL_PHONE,
+                    PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+                    PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
+                    PermissionsAndroid.PERMISSIONS.READ_CALL_LOG,
+                ],
+                foregroundService: {
+                    channelId: "com.company.my",
+                    channelName: "Foreground service for my app",
+                    notificationTitle:
+                        "My app is running on background",
+                    notificationIcon:
+                        "Path to the resource icon of the notification",
+                },
+                displayCallReachabilityTimeout: 30000,
+            },
+        });
         engine.enableVideo();
         engine.enableAudio();
         engine.setVideoEncoderConfiguration(360, 640, 15, 300);
         engine.setChannelProfile(engine.AgoraChannelProfileCommunication);
         engine.startPreview();
     }, [])
+
+
+    const createNotificationListeners = async () => {
+        console.log("call");
+        await messaging().requestPermission();
+        await messaging()
+            .hasPermission()
+            .then(data => { });
+
+        messaging().onNotificationOpenedApp(remoteMessage => {
+            console.log(
+                'Notification caused app to open from background state:',
+                remoteMessage.notification,
+            );
+        });
+
+        // Check whether an initial notification is available
+        messaging()
+            .getInitialNotification()
+            .then(remoteMessage => {
+                console.log("🚀 ~ file: initialScreen.js:130 ~ createNotificationListeners ~ remoteMessage:", remoteMessage)
+                // if (remoteMessage && token) {
+                //   navigation.navigate('LeadScreen', {
+                //     id: remoteMessage?.data?.inquiryId,
+                //   });
+                // }
+            });
+
+        messaging().onMessage(async noti => {
+            console.log("🚀 ~ file: initialScreen.js:148 ~ messaging ~ noti:", noti)
+            // Alert.alert(noti?.notification?.title)
+            const callUUID = uuidv4(); // Generate a unique ID for the call
+            console.log("🚀 ~ file: IncominCall.jsx:40 ~ IncominCall ~ callUUID:", callUUID)
+            const handle = 'recipient_username'; // The recipient's username or phone number
+            // RNCallKeep.answerIncomingCall(callUUID)
+
+            RNCallKeep.displayIncomingCall(callUUID, handle, 'Incoming Call', 'default', true);
+            //   PushNotification.localNotification({
+            //     channelId: noti?.data?.android_channel_id,
+            //     smallIcon: '',
+            //     soundName: noti?.data?.sound,
+            //     title: noti?.notification?.title,
+            //     message: noti?.notification?.body,
+            //     invokeApp: false, // (required)
+            //   });
+        });
+        messaging()
+            .onNotificationOpenedApp(async msg => {
+                console.log("🚀 ~ file: RegisterPage.jsx:105 ~ createNotificationListeners ~ msg:", msg)
+
+            })
+
+        messaging().setBackgroundMessageHandler(async msg => {
+            console.log("🚀 ~ file: RegisterPage.jsx:110 ~ messaging ~ msg:", msg)
+
+        })
+
+    };
+
 
     const getToken = async () => {
         const token = await AsyncStorage.getItem("token")

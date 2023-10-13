@@ -14,7 +14,7 @@ import UserParamContext from '../../context/setUserContext'
 GoogleSignin.configure({
     scopes: ['https://www.googleapis.com/auth/userinfo.profile'], // what API you want to access on behalf of the user, default is email and profile
     webClientId: '106151688664-uk4t2b84ge5pi08ueom8fd9is3eckfjc.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
-    // webClientId: '496217348738-9ljnc359ollbn6g8n54vggstt2v5o3eh.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+    // webClientId: '106151688664-d1lm72i0v39fptm6ejvg2cn2tuo4ko6s.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
     offlineAccess: true,
     forceCodeForRefreshToken: true,// if you want to access Google API on behalf of the user FROM YOUR SERVER
     // iosClientId: '106151688664-ndprsrur540i58p72p0s16k06uroukmu.apps.googleusercontent.com', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
@@ -36,11 +36,14 @@ const SocialMediaComponent = () => {
 
             // })
             const isSignedIn = await GoogleSignin.isSignedIn();
+            console.log("🚀 ~ file: Social-MediaComponent.jsx:39 ~ signInWithGoogle ~ isSignedIn:", isSignedIn)
             if (isSignedIn) {
                 await GoogleSignin.signOut()
             }
             await GoogleSignin.hasPlayServices();
+
             let userInfo = await GoogleSignin.signIn();
+            console.log("🚀 ~ file: Social-MediaComponent.jsx:45 ~ signInWithGoogle ~ userInfo:", userInfo)
 
             const data = await axios.post(`${API_URL}auth/verify`, { token: userInfo?.idToken })
             if (data?.data?.status === 200) {

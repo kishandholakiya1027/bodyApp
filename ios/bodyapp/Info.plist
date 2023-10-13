@@ -27,7 +27,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.106151688664-ndprsrur540i58p72p0s16k06uroukmu</string>
+				<string>com.googleusercontent.apps.106151688664-01cr7qsahcdnjqv2jrfqe2up9ncuf5lc</string>
 			</array>
 		</dict>
 		<dict>
@@ -35,12 +35,14 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.106151688664-ndprsrur540i58p72p0s16k06uroukmu</string>
+				<string>com.googleusercontent.apps.106151688664-01cr7qsahcdnjqv2jrfqe2up9ncuf5lc</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -54,11 +56,21 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string></string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string></string>
+	<key>NSCameraPortraitEffectEnabled</key>
+	<false/>
 	<key>NSCameraUsageDescription</key>
 	<string></string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string></string>
 	<key>NSPhotoLibraryUsageDescription</key>
+	<string></string>
+	<key>NSVideoSubscriberAccountUsageDescription</key>
 	<string></string>
 	<key>UIAppFonts</key>
 	<array>
@@ -89,6 +101,12 @@
 		<string>Rubik-SemiBold.ttf</string>
 		<string>Rubik-SemiBoldItalic.ttf</string>
 	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>processing</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchImageFile</key>
 	<string></string>
 	<key>UILaunchStoryboardName</key>
@@ -105,19 +123,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSCameraPortraitEffectEnabled</key>
-	<false/>
-	<key>NSMicrophoneUsageDescription</key>
-	<string></string>
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string></string>
-	<key>NSAppleMusicUsageDescription</key>
-	<string></string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>voip</string>
-	</array>
-	<key>NSVideoSubscriberAccountUsageDescription</key>
-	<string></string>
 </dict>
 </plist>

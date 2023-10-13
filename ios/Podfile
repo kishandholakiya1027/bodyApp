@@ -27,7 +27,7 @@ end
 
 target 'bodyapp' do
   config = use_native_modules!
-
+  # use_modular_headers!
   # Flags change depending on the env values.
   flags = get_default_flags()
   # pod 'Firebase', :modular_headers => true
@@ -47,7 +47,10 @@ target 'bodyapp' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
   pod 'RNCallKeep', :path => '../node_modules/react-native-callkeep'
-
+  # pod 'Firebase', :modular_headers => true
+  # pod 'FirebaseCoreInternal', :modular_headers => true
+  pod 'FirebaseCore', :modular_headers => true
+  pod 'GoogleUtilities', :modular_headers => true
   target 'bodyappTests' do
     inherit! :complete
     # Pods for testing

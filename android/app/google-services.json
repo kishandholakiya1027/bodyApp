@@ -7,33 +7,33 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:106151688664:android:8f910f5c208668489b5aad",
+        "mobilesdk_app_id": "1:106151688664:android:4a35c043f201d5cc9b5aad",
         "android_client_info": {
-          "package_name": "com.avatar.app"
+          "package_name": "com.avatarbody.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "106151688664-9gchr51jdv3ue1spqouffb6sp57vo2i7.apps.googleusercontent.com",
+          "client_id": "106151688664-b6ss2e1if32kpcp2bbr1at2jghc4jbfb.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.avatar.app",
+            "package_name": "com.avatarbody.app",
             "certificate_hash": "840798a1f1979aec369623051b0b13d477ae3db0"
           }
         },
         {
-          "client_id": "106151688664-dcphbvv0rrncifv09t42kh5nkonp7fvt.apps.googleusercontent.com",
+          "client_id": "106151688664-i80v9l2v9avgrdkek8o4p9k4n796gr00.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.avatar.app",
+            "package_name": "com.avatarbody.app",
             "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
           }
         },
         {
-          "client_id": "106151688664-ponghoh6pa2idua5fhma1ne06fibh7b9.apps.googleusercontent.com",
+          "client_id": "106151688664-lim811c7qcl9n32c5l43et03jgjnhgke.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.avatar.app",
+            "package_name": "com.avatarbody.app",
             "certificate_hash": "e1cf93536f6145747235cfe36160b8daaa606f49"
           }
         },
@@ -44,7 +44,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAueAo_OB_pcP9mGTYfg-gCjmvSM_jKY9A"
+          "current_key": "AIzaSyCREPaM4LjLEVK0rW9nFpI93sYyc2t9u7I"
         }
       ],
       "services": {
@@ -55,10 +55,11 @@
               "client_type": 3
             },
             {
-              "client_id": "106151688664-ndprsrur540i58p72p0s16k06uroukmu.apps.googleusercontent.com",
+              "client_id": "106151688664-01cr7qsahcdnjqv2jrfqe2up9ncuf5lc.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.avatar.app"
+                "bundle_id": "com.avatarbody.app",
+                "app_store_id": "6469298024"
               }
             }
           ]
