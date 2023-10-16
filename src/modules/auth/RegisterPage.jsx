@@ -19,6 +19,8 @@ import RNCallKeep from 'react-native-callkeep'
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import PushNotification from "react-native-push-notification";
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import useNotification from '../../core-component/organism/notification'
 const engine = createAgoraRtcEngine();
 
 const RegisterPage = () => {
@@ -29,7 +31,8 @@ const RegisterPage = () => {
     const { setUser, user } = useContext(UserParamContext)
     const navigation = useNavigation()
 
-
+    const data = useNotification()
+    console.log("🚀 ~ file: RegisterPage.jsx:35 ~ RegisterPage ~ data:", data)
 
     PushNotification.configure({
         // (optional) Called when Token is generated (iOS and Android)
@@ -40,19 +43,19 @@ const RegisterPage = () => {
         // (required) Called when a remote is received or opened, or local notification is opened
         onNotification: function (notification) {
             console.log("NOTIFICATION:", notification);
-            PushNotification.localNotification({
-                channelId: notification?.channelId,
-                smallIcon: "",
-                soundName: notification?.sound,
-                // color: "red",
-                title: notification?.title,
-                // bigText: notification?.body, // it will be shown when user expands notification
-                message: notification?.message, // (required)
-            });
+            // PushNotification.localNotification({
+            //     channelId: notification?.channelId,
+            //     smallIcon: "",
+            //     soundName: notification?.sound,
+            //     // color: "red",
+            //     title: notification?.title,
+            //     // bigText: notification?.body, // it will be shown when user expands notification
+            //     message: notification?.message, // (required)
+            // });
             // process the notification
 
             // (required) Called when a remote is received or opened, or local notification is opened
-            // notification.finish(PushNotificationIOS.FetchResult.NoData);
+            notification.finish(PushNotificationIOS.FetchResult.NoData);
         },
 
         // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
@@ -74,7 +77,7 @@ const RegisterPage = () => {
             badge: true,
             sound: true,
         },
-
+        senderId: "106151688664",
         // Should the initial notification be popped automatically
         // default: true
         popInitialNotification: true,
@@ -107,6 +110,20 @@ const RegisterPage = () => {
                 console.log('-*-res*-', res)
             })
             .catch(err => console.log('*-* registrer error ', err));
+
+        messaging()
+            .registerDeviceForRemoteMessages()
+            .then(res => console.log('-*-res*-', res))
+            .catch(err => console.log('*-* registrer error ', err));
+        PushNotification.localNotification({
+            channelId: "noti?.data?.android_channel_id",
+            smallIcon: "",
+            soundName: "noti?.data?.sound",
+            // color: "red",
+            title: "noti?.notification?.title",
+            // bigText: noti?.notification?.body, // it will be shown when user expands notification
+            message: "noti?.notification?.body", // (required)
+        });
         messaging().getAPNSToken().then(data => {
             console.log("🚀 ~ file: RegisterPage.jsx:47 ~ messaging ~ data:", data)
             messaging().setAPNSToken(data || "385757dhnfudhf8487398890", "unknown")
@@ -148,13 +165,32 @@ const RegisterPage = () => {
                 displayCallReachabilityTimeout: 30000,
             },
         });
+
         engine.enableVideo();
         engine.enableAudio();
         engine.setVideoEncoderConfiguration(360, 640, 15, 300);
         engine.setChannelProfile(engine.AgoraChannelProfileCommunication);
         engine.startPreview();
     }, [])
-
+    PushNotificationIOS.setNotificationCategories([
+        {
+            id: 'userAction',
+            actions: [
+                { id: 'open', title: 'Open', options: { foreground: true } },
+                {
+                    id: 'ignore',
+                    title: 'Desruptive',
+                    options: { foreground: true, destructive: true },
+                },
+                {
+                    id: 'text',
+                    title: 'Text Input',
+                    options: { foreground: true },
+                    textInput: { buttonTitle: 'Send' },
+                },
+            ],
+        },
+    ]);
 
     const createNotificationListeners = async () => {
         console.log("call");
@@ -162,6 +198,12 @@ const RegisterPage = () => {
         await messaging()
             .hasPermission()
             .then(data => { });
+        let enabled = await messaging().hasPermission();
+        console.log("🚀 ~ file: RegisterPage.jsx:176 ~ createNotificationListeners ~ enabled:", enabled)
+        PushNotification.popInitialNotification(not => {
+            console.log("🚀 ~ file: RegisterPage.jsx:92 ~ RegisterPage ~ not:", not)
+
+        })
 
         messaging().onNotificationOpenedApp(remoteMessage => {
             console.log(
@@ -172,7 +214,7 @@ const RegisterPage = () => {
 
         // Check whether an initial notification is available
         messaging()
-            .getInitialNotification()
+            .getInitialNotification(async msg => { })
             .then(remoteMessage => {
                 console.log("🚀 ~ file: initialScreen.js:130 ~ createNotificationListeners ~ remoteMessage:", remoteMessage)
                 // if (remoteMessage && token) {
@@ -181,7 +223,7 @@ const RegisterPage = () => {
                 //   });
                 // }
             });
-
+        PushNotificationIOS.presentLocalNotification()
         messaging().onMessage(async noti => {
             console.log("🚀 ~ file: initialScreen.js:148 ~ messaging ~ noti:", noti)
             // Alert.alert(noti?.notification?.title)
@@ -199,14 +241,14 @@ const RegisterPage = () => {
             //     message: noti?.notification?.body, // (required)
             // });
             // RNCallKeep.displayIncomingCall(callUUID, handle, 'Incoming Call', 'default', true);
-            //   PushNotification.localNotification({
-            //     channelId: noti?.data?.android_channel_id,
-            //     smallIcon: '',
-            //     soundName: noti?.data?.sound,
-            //     title: noti?.notification?.title,
-            //     message: noti?.notification?.body,
-            //     invokeApp: false, // (required)
-            //   });
+            PushNotification.localNotification({
+                channelId: noti?.notification?.android?.channelId,
+                smallIcon: '',
+                soundName: noti?.data?.sound,
+                title: noti?.notification?.title,
+                message: noti?.notification?.body,
+                invokeApp: true, // (required)
+            });
         });
         messaging()
             .onNotificationOpenedApp(async msg => {
@@ -220,7 +262,26 @@ const RegisterPage = () => {
         })
 
     };
+    useEffect(() => {
+        const type = 'notification';
+        PushNotificationIOS.addEventListener(type, onRemoteNotification);
+        return () => {
+            PushNotificationIOS.removeEventListener(type);
+        };
+    });
 
+    const onRemoteNotification = (notification) => {
+        const isClicked = notification.getData().userInteraction === 1;
+
+        if (isClicked) {
+            // Navigate user to another screen
+        } else {
+            // Do something else with push notification
+        }
+        // Use the appropriate result based on what you needed to do for this notification
+        const result = PushNotificationIOS.FetchResult.NoData;
+        notification.finish(result);
+    };
 
     const getToken = async () => {
         const token = await AsyncStorage.getItem("token")
@@ -286,7 +347,6 @@ const RegisterPage = () => {
                 <View style={{ height: "100%", backgroundColor: Colors.WHITE }}>
                     <View style={{ borderBottomWidth: 0.5 }}>
                         <Header text={"Create Your Account"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} />
-
                     </View>
                     <View style={{ marginVertical: Matrics.vs20 }}>
 
