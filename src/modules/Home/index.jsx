@@ -1,4 +1,4 @@
-import { Alert, FlatList, KeyboardAvoidingView, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Alert, Dimensions, FlatList, KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Colors, Matrics } from '../../theme'
 import TextInputComponent from '../../core-component/atom/TextInputComponent'
@@ -10,6 +10,7 @@ import axios from 'axios'
 import UsedataComponent from '../../core-component/organism/UsedataComponent'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { SafeAreaView, initialWindowMetrics, useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const data = [
     {
@@ -40,6 +41,12 @@ const Home = () => {
     const [allUsers, setAllUsers] = useState([])
     const [user, setUser] = useState([])
     const navigation = useNavigation()
+    const insets = useSafeAreaInsets();
+    console.log("🚀 ~ file: index.jsx:45 ~ Home ~ insets:", insets)
+    const { width: _width, height: _height } = Dimensions.get('window');
+    console.log("🚀 ~ file: index.jsx:44 ~ Home ~ _height:", _height)
+    console.log("🚀 ~ file: index.jsx:44 ~ Home ~ _width:", _width)
+
     const getUsers = async () => {
         const user = JSON.parse(await AsyncStorage.getItem("user"))
         setUser(user)
@@ -65,8 +72,8 @@ const Home = () => {
 
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.WHITE, }} behavior={IS_ANDROID ? '' : 'padding'} enabled>
-            <SafeAreaView style={{ flex: 1 }}>
-                <View style={{ margin: Matrics.ms20, flex: 1 }}>
+            <SafeAreaView initialMetrics={initialWindowMetrics} style={{ flex: 1 }} >
+                <View style={{ marginHorizontal: Matrics.ms20, flex: 1 }}>
                     <View >
                         <TextInputComponent placeholder={"Search for designers, stylists or trends"} onChangeText={(text) => onSearch(text)} value={search} />
                         <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10}>{"How can we assist you today?"}</TextComponent>
@@ -92,7 +99,7 @@ const Home = () => {
 
                             <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10}>{"Popular on StyleCrew"}</TextComponent>
                         </View>
-                        <View style={{ height: "58%", justifyContent: "center" }}>
+                        <View style={{ height: "54%", justifyContent: "center" }}>
                             <UsedataComponent slice={2} userId={user?.id} search={search} />
 
                         </View>

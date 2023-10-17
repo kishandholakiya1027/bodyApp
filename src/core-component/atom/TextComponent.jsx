@@ -2,10 +2,10 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Matrics } from '../../theme'
 
-const TextComponent = ({ color, size, fontFamily, children, marginTop, paddingHorizontal = Matrics.hs20, textDecorationLine = "none", textAlign = "left" }) => {
+const TextComponent = ({ color, size, fontFamily, children, marginTop, paddingHorizontal = Matrics.hs20, textDecorationLine = "none", textAlign = "left", textTransform = "capitalize" }) => {
     return (
         <View style={[styles.textView, { marginTop, paddingHorizontal }]}>
-            <Text style={{ fontFamily: fontFamily, color, fontSize: size, textDecorationLine, textAlign }}>{children}</Text>
+            <Text style={{ fontFamily: fontFamily, color, fontSize: size, textDecorationLine, textAlign, textTransform }} numberOfLines={2}>{children}</Text>
         </View>
     )
 }

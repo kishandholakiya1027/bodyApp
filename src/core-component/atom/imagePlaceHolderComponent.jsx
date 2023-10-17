@@ -12,7 +12,7 @@ const ImagePlaceHolderComponent = ({ size = Matrics.ms241, borderRadius = Matric
             <Pressable onPress={() => setVisible(true)} disabled>
                 <View style={[styles.imageView, { width: size, height: size, borderRadius, borderColor, backgroundColor }]} >
                     {imageUrl || image ? <Image style={[styles.imageView, { width: size, height: size, borderRadius, borderColor }]} source={{ uri: (imageUrl || image) }} />
-                        : <Text style={[styles.textStyle, { paddingHorizontal: padding }]}>Upload your profile picture</Text>}
+                        : disabled ? null : <Text style={[styles.textStyle, { paddingHorizontal: padding }]}>Upload your profile picture</Text>}
                 </View>
 
             </Pressable>

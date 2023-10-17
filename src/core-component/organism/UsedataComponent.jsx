@@ -16,6 +16,7 @@ const UsedataComponent = ({ userId, slice, search }) => {
     const [loginUser, setLoginUser] = useState()
     const [likedUser, setLikedUsers] = useState([])
     const [users, setUsers] = useState([])
+    console.log("🚀 ~ file: UsedataComponent.jsx:19 ~ UsedataComponent ~ users:", users)
     const [allUsers, setAllUsers] = useState([])
     const [loader, setLoader] = useState(false)
 
@@ -164,13 +165,13 @@ const UsedataComponent = ({ userId, slice, search }) => {
     }
 
     return (
-        <View style={{ flex: 1, }}>
+        <View style={{ flex: 1, height: "auto" }}>
             {loader ? <Loader /> :
                 <FlatList
                     // data={[]}
-                    contentContainerStyle={{ flexGrow: 1 }}
-                    disableVirtualization={false}
+                    contentContainerStyle={{ flexGrow: 1, height: "auto" }}
                     data={users.slice(0, slice)}
+                    keyExtractor={(item) => item?._id}
                     showsVerticalScrollIndicator={false}
                     renderItem={({ item }) => {
                         return (
@@ -201,7 +202,7 @@ const UsedataComponent = ({ userId, slice, search }) => {
                                     <View style={{ flex: 0.53, }}>
                                         <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms20} color={Colors.BLUE} marginTop={Matrics.vs15}>{item?.username}</TextComponent>
                                         <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs5}>{item?.profession}</TextComponent>
-                                        <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs5}>{`${item?.yearExperience} Years of Experience`}</TextComponent>
+                                        <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs5}>{`${item?.yearExperience || 0} Years of Experience`}</TextComponent>
                                         <View style={{ flexDirection: "row", justifyContent: "flex-start", alignItems: "center", flexWrap: "wrap", marginTop: Matrics.vs10 }}>
                                             <AirbnbRating
                                                 count={4}
@@ -218,7 +219,7 @@ const UsedataComponent = ({ userId, slice, search }) => {
 
                                         </View>
                                         <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTGRAY} marginTop={Matrics.vs10}>{"Consultation fees: "}</TextComponent>
-                                        <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0}>{`INR ${item?.consultationCharge}/30 min session`}</TextComponent>
+                                        <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0}>{`INR ${item?.consultationCharge || 0}/30 min session`}</TextComponent>
 
                                     </View>
                                 </View>

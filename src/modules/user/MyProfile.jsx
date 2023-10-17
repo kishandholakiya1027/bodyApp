@@ -78,6 +78,9 @@ const MyProfile = () => {
                         <View style={{ borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY, paddingBottom: Matrics.vs30 }}>
                             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.CRAYON} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{"Consultation Fees"}</TextComponent>
                             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{`INR ${userData?.consultationCharge || 0}/ 30 min session`}</TextComponent>
+                            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.CRAYON} marginTop={Matrics.vs25} paddingHorizontal={Matrics.hs5}>{"Availability"}</TextComponent>
+                            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{`${userData?.availability[0]} - ${userData?.availability[userData?.availability?.length - 1]}`}</TextComponent>
+                            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{`${userData?.time[0]}`}</TextComponent>
 
                         </View>
                         <View style={{ borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY, paddingBottom: Matrics.vs30, marginTop: Matrics.vs20 }}>
@@ -89,7 +92,7 @@ const MyProfile = () => {
                         <View style={{ borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY, paddingBottom: Matrics.vs30, marginTop: Matrics.vs20, justifyContent: "flex-start", alignItems: "flex-start" }}>
                             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.CRAYON} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{"Portfolio"}</TextComponent>
                             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{userData?.websiteUrl}</TextComponent>
-                            <View style={{ marginTop: Matrics.vs10, flexDirection: "row" }}>
+                            <View style={{ marginTop: Matrics.vs10, flexDirection: "row", flexWrap: "wrap" }}>
                                 {userData?.portfolio ?
                                     userData?.portfolio?.map(item =>
                                         <View style={{ marginRight: Matrics.vs15 }}>
@@ -104,11 +107,27 @@ const MyProfile = () => {
 
                         </View>
                         <View style={{ borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY, paddingBottom: Matrics.vs30, marginTop: Matrics.vs20 }}>
+                            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.CRAYON} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{"Focused Assistance in"}</TextComponent>
+                            <View style={{ marginTop: Matrics.vs10, flexWrap: "wrap", flexDirection: "row" }}>
+                                {userData?.assist ?
+                                    userData?.assist?.map(item =>
+                                        <View style={{ backgroundColor: Colors.MEDIUMREDOPACITY, height: Matrics.vs40, borderRadius: Matrics.ms20, paddingHorizontal: Matrics.hs15, marginRight: Matrics.hs10, marginTop: Matrics.vs10 }}>
+                                            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.MEDIUMRED} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{item}</TextComponent>
+
+                                        </View>
+
+
+                                    ) : null}
+
+                            </View>
+
+                        </View>
+                        <View style={{ borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY, paddingBottom: Matrics.vs30, marginTop: Matrics.vs20 }}>
                             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.CRAYON} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{"Expertise"}</TextComponent>
                             <View style={{ marginTop: Matrics.vs10, flexWrap: "wrap", flexDirection: "row" }}>
                                 {userData?.expertise ?
                                     userData?.expertise?.map(item =>
-                                        <View style={{ backgroundColor: Colors.MEDIUMREDOPACITY, height: Matrics.vs40, borderRadius: Matrics.ms20, paddingHorizontal: Matrics.hs20, marginRight: Matrics.hs15, marginTop: Matrics.vs10 }}>
+                                        <View style={{ backgroundColor: Colors.MEDIUMREDOPACITY, height: Matrics.vs40, borderRadius: Matrics.ms20, paddingHorizontal: Matrics.hs15, marginRight: Matrics.hs10, marginTop: Matrics.vs10 }}>
                                             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.MEDIUMRED} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{item}</TextComponent>
 
                                         </View>

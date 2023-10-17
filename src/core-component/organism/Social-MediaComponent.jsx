@@ -11,6 +11,13 @@ import { API_URL } from '../../../config'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import UserParamContext from '../../context/setUserContext'
 
+
+import { AccessToken, LoginButton, LoginManager, Settings } from 'react-native-fbsdk-next';
+
+// Setting the facebook app id using setAppID
+// Remember to set CFBundleURLSchemes in Info.plist on iOS if needed
+// Settings.initializeSDK();
+// Settings.setAppID('1692987181095341');
 GoogleSignin.configure({
     scopes: ['https://www.googleapis.com/auth/userinfo.profile'], // what API you want to access on behalf of the user, default is email and profile
     webClientId: '106151688664-uk4t2b84ge5pi08ueom8fd9is3eckfjc.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
@@ -62,6 +69,49 @@ const SocialMediaComponent = () => {
             console.error('Google Sign-In Error:', error);
         }
     };
+
+
+    const handleFBLogin = async () => {
+        // setLoader(true);
+        LoginManager.logInWithPermissions(['public_profile']).then(
+            login => {
+                console.log("🚀 ~ file: Social-MediaComponent.jsx:78 ~ handleFBLogin ~ login:", login)
+                if (login?.isCancelled) {
+                    // setLoader(false);
+                    // setTimeout(() => {
+                    //     Toast.show('SignIn cancelled');
+                    // }, 1000);
+                } else {
+                    AccessToken.getCurrentAccessToken().then(async data => {
+                        // let input = {
+                        //     accessToken: data?.accessToken,
+                        //     provider: 'facebook',
+                        // };
+                        // socialLoginMutation({
+                        //     variables: { ...input },
+                        // }).then(async ({ data }) => {
+                        //     setLoader(false);
+                        //     const user = data?.socialLogin?.user;
+                        //     SaveUserOnLoginCommon(user, data?.socialLogin?.token);
+                        // }).catch(err => {
+                        //     setLoader(false);
+                        //     showToastMessage(err.message, 'error')
+                        // });
+                    });
+                }
+            },
+            error => {
+                console.log("🚀 ~ file: Social-MediaComponent.jsx:103 ~ handleFBLogin ~ error:", error)
+                // setLoader(false);
+                // setTimeout(() => {
+                //   Toast.show('Signin fail with error: ' + error);
+                // }, 1000);
+            },
+        );
+    };
+
+
+
     return (
         <View style={{ alignItems: "center" }}>
 
@@ -73,8 +123,25 @@ const SocialMediaComponent = () => {
                 </Pressable>
 
             </View>
+            {/* <LoginButton
+                onLoginFinished={
+                    (error, result) => {
+                        if (error) {
+                            console.log("login has error: " + result.error);
+                        } else if (result.isCancelled) {
+                            console.log("login is cancelled.");
+                        } else {
+                            AccessToken.getCurrentAccessToken().then(
+                                (data) => {
+                                    console.log(data.accessToken.toString())
+                                }
+                            )
+                        }
+                    }
+                }
+                onLogoutFinished={() => console.log("logout.")} /> */}
             <View style={{ marginTop: Matrics.vs10 }}>
-                <Pressable style={styles.buttonView} onPress={() => { }}>
+                <Pressable style={styles.buttonView} onPress={() => handleFBLogin()}>
                     <Text style={styles.textStyle}>{"Facebook"}</Text>
                 </Pressable>
 

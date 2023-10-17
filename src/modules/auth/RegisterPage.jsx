@@ -115,15 +115,7 @@ const RegisterPage = () => {
             .registerDeviceForRemoteMessages()
             .then(res => console.log('-*-res*-', res))
             .catch(err => console.log('*-* registrer error ', err));
-        PushNotification.localNotification({
-            channelId: "noti?.data?.android_channel_id",
-            smallIcon: "",
-            soundName: "noti?.data?.sound",
-            // color: "red",
-            title: "noti?.notification?.title",
-            // bigText: noti?.notification?.body, // it will be shown when user expands notification
-            message: "noti?.notification?.body", // (required)
-        });
+
         messaging().getAPNSToken().then(data => {
             console.log("🚀 ~ file: RegisterPage.jsx:47 ~ messaging ~ data:", data)
             messaging().setAPNSToken(data || "385757dhnfudhf8487398890", "unknown")
@@ -172,25 +164,7 @@ const RegisterPage = () => {
         engine.setChannelProfile(engine.AgoraChannelProfileCommunication);
         engine.startPreview();
     }, [])
-    PushNotificationIOS.setNotificationCategories([
-        {
-            id: 'userAction',
-            actions: [
-                { id: 'open', title: 'Open', options: { foreground: true } },
-                {
-                    id: 'ignore',
-                    title: 'Desruptive',
-                    options: { foreground: true, destructive: true },
-                },
-                {
-                    id: 'text',
-                    title: 'Text Input',
-                    options: { foreground: true },
-                    textInput: { buttonTitle: 'Send' },
-                },
-            ],
-        },
-    ]);
+
 
     const createNotificationListeners = async () => {
         console.log("call");
