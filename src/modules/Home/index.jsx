@@ -40,6 +40,7 @@ const Home = () => {
     const [users, setUsers] = useState([])
     const [allUsers, setAllUsers] = useState([])
     const [user, setUser] = useState([])
+    const [filter, setFilter] = useState()
     const navigation = useNavigation()
     const insets = useSafeAreaInsets();
     console.log("🚀 ~ file: index.jsx:45 ~ Home ~ insets:", insets)
@@ -81,12 +82,12 @@ const Home = () => {
                             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                                 {data ?
                                     data?.map(item =>
-                                        <View style={{ marginRight: Matrics.vs15, width: Matrics.vs100, justifyContent: "center", marginTop: Matrics.vs10 }}>
+                                        <Pressable onPress={() => setFilter(item?.title)} style={{ marginRight: Matrics.vs15, width: Matrics.vs100, justifyContent: "center", marginTop: Matrics.vs10 }}>
 
-                                            <ImagePlaceHolderComponent size={Matrics.ms90} borderRadius={Matrics.ms45} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => { }} image={`${IMAGE_URL}${item?.image}`} borderColor={Colors.MEDIUMREDOPACITY} backgroundColor={Colors.MEDIUMREDOPACITY} />
+                                            <ImagePlaceHolderComponent size={Matrics.ms90} borderRadius={Matrics.ms45} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => { }} image={`${IMAGE_URL}${item?.image}`} borderColor={filter === item?.title ? Colors.MEDIUMRED : Colors.MEDIUMREDOPACITY} backgroundColor={Colors.MEDIUMREDOPACITY} />
                                             <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} textAlign="center">{item?.title}</TextComponent>
 
-                                        </View>
+                                        </Pressable>
 
                                     ) : null}
 
@@ -100,7 +101,7 @@ const Home = () => {
                             <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10}>{"Popular on StyleCrew"}</TextComponent>
                         </View>
                         <View style={{ height: "54%", justifyContent: "center" }}>
-                            <UsedataComponent slice={2} userId={user?.id} search={search} />
+                            <UsedataComponent slice={2} userId={user?.id} search={search} filter={filter} />
 
                         </View>
                         <Pressable style={{ alignItems: "center" }} onPress={() => navigation.navigate("AllUsers", { users })}>

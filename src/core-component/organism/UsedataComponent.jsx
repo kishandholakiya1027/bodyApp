@@ -12,7 +12,7 @@ import { useFocusEffect } from '@react-navigation/native'
 import UserParamContext from '../../context/setUserContext'
 import Loader from '../atom/Loader'
 
-const UsedataComponent = ({ userId, slice, search }) => {
+const UsedataComponent = ({ userId, slice, search, filter }) => {
     const [loginUser, setLoginUser] = useState()
     const [likedUser, setLikedUsers] = useState([])
     const [users, setUsers] = useState([])
@@ -26,7 +26,7 @@ const UsedataComponent = ({ userId, slice, search }) => {
         setLoader(true)
         if (search)
             setTimeout(async () => {
-                await axios.get(`${API_URL}user/get_user_search/${search}`).then(({ data }) => {
+                await axios.get(`${API_URL}designer/get_designer_search/${search}`).then(({ data }) => {
                     console.log("🚀 ~ file: index.jsx:66 ~ awaitaxios.get ~ data:", data)
                     if (data?.status === 200) {
                         setUsers(data?.data)
@@ -48,6 +48,33 @@ const UsedataComponent = ({ userId, slice, search }) => {
 
         }
     }, [search])
+    useEffect(() => {
+        setLoader(true)
+        if (filter)
+            setTimeout(async () => {
+                console.log("🚀 ~ file: UsedataComponent.jsx:54 ~ useEffect ~ filter:", filter)
+                await axios.get(`${API_URL}designer/get_designer_assist/${filter}`).then(({ data }) => {
+                    console.log("🚀 ~ file: index.jsx:66 ~ awaitaxios.get ~ data:", data)
+                    if (data?.status === 200) {
+                        setUsers(data?.data)
+
+                    } else {
+                        Alert.alert("something went wrong")
+                    }
+                    setLoader(false)
+
+                }).catch(err => {
+                    setLoader(false)
+
+
+                })
+            }, 2000);
+        else {
+            setUsers(allUsers)
+            setLoader(false)
+
+        }
+    }, [filter])
 
     useFocusEffect(useCallback(
         () => {
@@ -63,7 +90,8 @@ const UsedataComponent = ({ userId, slice, search }) => {
             setLoginUser(user)
         getUser()
         await axios.get(`${API_URL}like/get_like_login_user/${user?.id}`).then(({ data }) => {
-            setLikedUsers(data?.likes?.map(user => user?.profileId))
+            setLikedUsers(data?.likes?.map(user => user?.designerId))
+            console.log("🚀 ~ file: UsedataComponent.jsx:67 ~ awaitaxios.get ~ data:", data)
         }).catch(err => {
 
 
@@ -73,9 +101,8 @@ const UsedataComponent = ({ userId, slice, search }) => {
     const getUser = async () => {
         setLoader(true)
 
-        await axios.get(`${API_URL}user/get_user_rating`).then(({ data }) => {
+        await axios.get(`${API_URL}designer/get_designer_rating`).then(({ data }) => {
             setLoader(false)
-
             setUsers(data?.data)
             setAllUsers(data?.data)
         }).catch(err => {
@@ -87,28 +114,31 @@ const UsedataComponent = ({ userId, slice, search }) => {
 
     const addLike = async (id, userId) => {
         let body = {
-            "profileId": id,
+            "designerId": id,
             "loginUserId": user?.id
         }
+        console.log("🚀 ~ file: UsedataComponent.jsx:90 ~ addLike ~ body:", body)
         await axios.post(`${API_URL}like/add_like`, body, {
             headers: {
                 'Content-Type': 'application/json'
             },
         }).then(({ data }) => {
+            console.log("🚀 ~ file: UsedataComponent.jsx:99 ~ addLike ~ data:", data)
             if (data?.status === 200) {
-                setLikedUsers([...likedUser, id])
+                setLikedUsers([...likedUser || [], id])
                 Alert.alert("User liked ")
 
 
             }
         }).catch(err => {
+            console.log("🚀 ~ file: UsedataComponent.jsx:107 ~ addLike ~ err:", err)
 
 
         })
     }
     const addRating = async (rating, id, userId) => {
         let body = {
-            "profileId": id,
+            "designerId": id,
             "loginUserId": user?.id,
             rating,
             desc: "rate"
@@ -126,7 +156,7 @@ const UsedataComponent = ({ userId, slice, search }) => {
     }
     const removeRating = async (rating, id, userId) => {
         let body = {
-            "profileId": id,
+            "designerId": id,
             "loginUserId": user?.id,
             rating,
             desc: "rate"
@@ -145,7 +175,7 @@ const UsedataComponent = ({ userId, slice, search }) => {
     const removeLike = async (id, userId) => {
 
         let body = {
-            "profileId": id,
+            "designerId": id,
             "loginUserId": user?.id
         }
         await axios.post(`${API_URL}like/remove_like`, body, {
@@ -170,7 +200,7 @@ const UsedataComponent = ({ userId, slice, search }) => {
                 <FlatList
                     // data={[]}
                     contentContainerStyle={{ flexGrow: 1, height: "auto" }}
-                    data={users.slice(0, slice)}
+                    data={users.filter(user => user?._id !== userId)?.slice(0, slice)}
                     keyExtractor={(item) => item?._id}
                     showsVerticalScrollIndicator={false}
                     renderItem={({ item }) => {
@@ -178,7 +208,7 @@ const UsedataComponent = ({ userId, slice, search }) => {
                             userId !== item?._id ? <View style={{ marginTop: Matrics.vs10, paddingBottom: Matrics.vs20, flex: 1 }}>
                                 <View style={{ flexDirection: "row" }}>
                                     <View style={{ flex: 0.48, alignItems: "center", marginRight: Matrics.hs10 }}>
-                                        <ImagePlaceHolderComponent size={Matrics.ms160} borderRadius={Matrics.ms80} padding={Matrics.hs10} marginVertical={Matrics.vs10} image={item?.profile_img ? `${IMAGE_URL}${item?.profile_img}` : ""} borderColor={Colors.MEDIUMREDOPACITY} backgroundColor={item?.profile_img ? "none" : Colors.MEDIUMREDOPACITY} disabled={true} />
+                                        <ImagePlaceHolderComponent size={Matrics.ms150} borderRadius={Matrics.ms75} padding={Matrics.hs10} marginVertical={Matrics.vs10} image={item?.profile_img ? `${IMAGE_URL}${item?.profile_img}` : ""} borderColor={Colors.MEDIUMREDOPACITY} backgroundColor={item?.profile_img ? "none" : Colors.MEDIUMREDOPACITY} disabled={true} />
                                         <View style={{ position: "absolute", top: 5, left: -2 }}>
                                             <Pressable style={{ padding: 5, zIndex: 99999 }} hitSlop={60} onPress={() => likedUser?.includes(item?._id) ? removeLike(item?._id, userId) : addLike(item?._id, userId)}>
                                                 <Image source={Images.heart} width={Matrics.ms15} height={Matrics.ms15} style={{ width: Matrics.ms15, height: Matrics.ms15, tintColor: likedUser?.includes(item?._id) ? Colors.MEDIUMRED : Colors.MEDIUMREDOPACITY }} />

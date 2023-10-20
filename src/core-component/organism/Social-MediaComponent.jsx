@@ -97,6 +97,7 @@ const SocialMediaComponent = () => {
                         //     setLoader(false);
                         //     showToastMessage(err.message, 'error')
                         // });
+                        console.log("🚀 ~ file: Social-MediaComponent.jsx:101 ~ AccessToken.getCurrentAccessToken ~ data:", data)
                     });
                 }
             },
