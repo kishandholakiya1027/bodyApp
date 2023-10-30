@@ -3,10 +3,10 @@ import React from 'react'
 import { Colors, Matrics } from '../../theme'
 import { IS_IOS, getRobotoFont, getRubikFont } from '../../core-utils/utils'
 
-const TextInputComponent = ({ value, multiline = false, secureTextEntry, placeholderTextColor, onChangeText, placeholder, keyboardType, error, height = Matrics.vs50 }) => {
+const TextInputComponent = ({ marginBottom = Matrics.vs15, value, multiline = false, secureTextEntry, placeholderTextColor, onChangeText, placeholder, keyboardType, error, height = Matrics.vs50 }) => {
     return (
-        <View style={{ marginBottom: Matrics.vs15 }}>
-            <View style={[styles.inputView, { borderColor: error ? Colors.RED : Colors.LIGHTGRAY, height }]}>
+        <View style={{ marginBottom }}>
+            <View style={[styles.inputView, { borderColor: error ? Colors.RED : Colors.LIGHTGRAY, height, justifyContent: multiline ? "flex-start" : "center" }]}>
                 <TextInput
                     value={value}
                     placeholderTextColor={Colors.LIGHTGRAY}
@@ -34,8 +34,8 @@ const TextInputComponent = ({ value, multiline = false, secureTextEntry, placeho
 export default TextInputComponent
 
 const styles = StyleSheet.create({
-    inputView: { borderWidth: Matrics.ms1, height: Matrics.vs50, paddingTop: IS_IOS ? Matrics.hs13 : Matrics.ms0, paddingHorizontal: Matrics.hs15 },
+    inputView: { borderWidth: Matrics.ms1, height: Matrics.vs50, paddingHorizontal: Matrics.hs15, justifyContent: "center" },
 
-    textStyle: { color: Colors.LIGHTGRAY, fontSize: Matrics.ms18, fontFamily: getRubikFont("Regular") },
+    textStyle: { color: Colors.LIGHTGRAY, fontSize: Matrics.ms18, fontFamily: getRubikFont("Regular"), paddingVertical: 0, marginVertical: Matrics.vs5 },
     errorText: { color: Colors.RED, fontSize: Matrics.ms16, marginTop: Matrics.vs5, fontFamily: getRubikFont() }
 })

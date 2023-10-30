@@ -27,6 +27,7 @@ import TextComponent from './src/core-component/atom/TextComponent';
 import { Colors, Matrics } from './src/theme';
 import AppNav from "./src/navigation"
 import PushNotification, { Importance } from 'react-native-push-notification';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -46,7 +47,12 @@ function App() {
 
   return (
     <>
-      <AppNav />
+      <SafeAreaProvider>
+
+        <AppNav />
+      </SafeAreaProvider>
+
+      {/* <AppNav /> */}
       {/* <TextComponent fontFamily={getRobotoFont("Medium")} size={Matrics.ms23} color={Colors.DARKGRAY}  >Update your profile to help ourassociates serve you better.</TextComponent> */}
     </>
   );

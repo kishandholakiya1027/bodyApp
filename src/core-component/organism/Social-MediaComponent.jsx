@@ -1,5 +1,5 @@
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native'
-import React, { useContext } from 'react'
+import React, { useContext, useRef } from 'react'
 import { Colors, Matrics } from '../../theme'
 import TextComponent from '../atom/TextComponent'
 import { getRobotoFont, getRubikFont } from '../../core-utils/utils'
@@ -10,6 +10,7 @@ import { useNavigation } from '@react-navigation/native'
 import { API_URL } from '../../../config'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import UserParamContext from '../../context/setUserContext'
+import InstagramLogin from 'react-native-instagram-login';
 
 
 import { AccessToken, LoginButton, LoginManager, Settings } from 'react-native-fbsdk-next';
@@ -30,6 +31,7 @@ GoogleSignin.configure({
 const SocialMediaComponent = () => {
     const navigation = useNavigation()
     const { user, setUser } = useContext(UserParamContext)
+    const insRef = useRef();
 
     let signInWithGoogle = async () => {
         try {
@@ -147,9 +149,20 @@ const SocialMediaComponent = () => {
                 </Pressable>
 
             </View>
+            <InstagramLogin
+                ref={insRef}
+                appId='343985794654199'
+                appSecret='9676d54d4f990c2c78c764a8eb5e9761'
+                redirectUrl='https://socialsizzle.heroku.com/auth/'
+                scopes={['user_profile']}
+                onLoginSuccess={(token) => {
+                    console.log("🚀 ~ file: Social-MediaComponent.jsx:159 ~ SocialMediaComponent ~ token:", token)
 
+                }}
+                onLoginFailure={(data) => console.log(data)}
+            />
             <View style={{ marginTop: Matrics.vs10 }}>
-                <Pressable style={styles.buttonView} onPress={() => { }}>
+                <Pressable style={styles.buttonView} onPress={() => insRef.current.show()}>
                     <Text style={styles.textStyle}>{"Instagram"}</Text>
                 </Pressable>
 

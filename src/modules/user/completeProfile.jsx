@@ -41,7 +41,7 @@ const CompleteProfile = () => {
     const getUserData = async () => {
         if (user) {
             console.log("🚀 ~ file: completeProfile.jsx:31 ~ awaitaxios.get ~ `${API_URL}user/get_user/${user?.id}`:", `${API_URL}user/get_user/${user?.id}`, user?.id)
-            await axios.get(`${API_URL}user/get_user/${user?.id || user?._id}`).then(async ({ data }) => {
+            await axios.get(`${API_URL}designer/get_designer/${user?.id || user?._id}`).then(async ({ data }) => {
                 if (data?.status === 200) {
 
                     setUserData({ ...data?.data, availability: data?.data?.availability || [] })
@@ -49,8 +49,8 @@ const CompleteProfile = () => {
                     setSecondDate(data?.data?.time ? moment(data?.data?.time[0]?.split("-")[1], "HH:mm")._d : "")
                     // setDate(data?.data?.time[0]?.split("-")[1])
                     console.log("🚀 ~ file: completeProfile.jsx:30 ~ awaitaxios.get ~ data:", data)
-                    setIndex(1)
-                    await AsyncStorage.setItem("user", JSON.stringify(data?.data))
+                    setIndex(0)
+                    await AsyncStorage.setItem("user", JSON.stringify({ ...data?.data, role: user?.role }))
                 } else {
                     Alert.alert(data?.msg)
                 }
@@ -101,7 +101,7 @@ const CompleteProfile = () => {
             console.log("🚀 ~ file: completeProfile.jsx:97 ~ onSubmit ~ data:", data)
             if (data?.status === 200) {
 
-                await AsyncStorage.setItem("user", JSON.stringify({ ...user, id: userData?.id }))
+                await AsyncStorage.setItem("user", JSON.stringify({ ...user, id: userData?.id, role: user?.role }))
                 setTimeout(() => {
                     navigation.navigate("MyProfile")
 

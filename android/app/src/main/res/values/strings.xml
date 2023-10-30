@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">bodyapp</string>
     <!-- <string name="facebook_app_id">341562851595418</string> -->
-    <string name="facebook_app_id">1210611102772671</string>
-    <string name="facebook_client_token">f46df52c57ce310796d9ac6104f3f938</string>
+    <string name="facebook_app_id">707302934586805</string>
+    <string name="fb_login_protocol_scheme">fb707302934586805</string>
+
+    <string name="facebook_client_token">7b091e8be945207cd43291ae0eb12950</string>
     <!-- <string name="facebook_app_id">704583808369345</string>
     <string name="facebook_client_token">ae29d42c91fc5671cf686aaabaf99cc0</string> -->
 </resources>

@@ -376,7 +376,7 @@ const UserProfile = () => {
                                 index === 5 ?
                                     <View>
                                         <View style={styles.mainView}>
-                                            <Image source={Images.close} style={{ width: Matrics.ms70, height: Matrics.ms70 }} />
+                                            <Image source={Images.close} style={{ width: Matrics.ms26, height: Matrics.ms26 }} />
                                         </View >
                                         <View >
                                             <TextComponent fontFamily={getRobotoFont("Medium")} size={Matrics.ms36} color={Colors.DARKGRAY} marginTop={Matrics.vs5}>Welcome Username</TextComponent>
@@ -386,7 +386,7 @@ const UserProfile = () => {
                                             <ImagePlaceHolderComponent setImage={(image) => setUserData({ ...userData, profile_img: image })} image={userData?.profile_img ? userData?.profile_img?.uri || `${IMAGE_URL}${userData?.profile_img?.uri || userData?.profile_img}` : ""} />
                                             <View style={{ flexDirection: "row", paddingHorizontal: Matrics.hs50 }}>
                                                 <FlatList
-                                                    data={usersData}
+                                                    data={userData}
                                                     numColumns={2}
                                                     horizontal={false}
                                                     renderItem={({ item }) => {
@@ -453,6 +453,6 @@ export default UserProfile
 
 const styles = StyleSheet.create({
     bodyTypeTextStyle: { fontFamily: getRubikFont("Regular"), fontSize: Matrics.ms20, color: Colors.DARKGRAY },
-    mainView: { height: Matrics.vs40, justifyContent: "center", alignItems: "flex-end" }
+    mainView: { height: Matrics.vs50, justifyContent: "center", alignItems: "flex-end", marginRight: Matrics.vs20 }
 
 })

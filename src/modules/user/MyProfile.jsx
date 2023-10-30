@@ -35,11 +35,11 @@ const MyProfile = () => {
             <SafeAreaView style={{ flex: 1 }}>
                 <StatusBar barStyle="dark-content" backgroundColor="transparent" />
                 <View style={{ borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY }}>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", height: Matrics.vs55, marginRight: Matrics.vs20 }}>
                         <TextComponent fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0}>{"My Profile"}</TextComponent>
 
                         <Pressable onPress={() => navigation.navigate("Home")}>
-                            <Image source={Images.close} style={{ width: Matrics.ms50, height: Matrics.ms50 }} />
+                            <Image source={Images.close} style={{ width: Matrics.ms26, height: Matrics.ms26 }} />
                         </Pressable>
                     </View>
                     {/* <Header text={"Complete Profile"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => index == 1 ? setIndex(0) : logOut()} /> */}

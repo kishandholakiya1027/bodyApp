@@ -6,6 +6,7 @@ const Images = {
     menu: require('../assets/images/common/menu.png'),
     heart: require('../assets/images/common/heart.png'),
     answer: require('../assets/images/common/answer.png'),
+    downArrow: require('../assets/images/home/downArrow.png'),
     call: require('../assets/images/call.png'),
 
     // user: require('../assets/images/home/user.png'),

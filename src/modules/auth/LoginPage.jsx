@@ -54,7 +54,7 @@ const LoginPage = () => {
 
             }).catch(err => {
                 console.log("🚀 ~ file: LoginPage.jsx:57 ~ onSubmit ~ err:", err)
-                Alert.alert(err?.message)
+                Alert.alert(`${err?.request?._response}`)
 
 
             })
@@ -68,7 +68,7 @@ const LoginPage = () => {
                 <StatusBar barStyle="dark-content" backgroundColor="transparent" />
                 <View style={{ height: "100%", backgroundColor: Colors.WHITE }}>
                     <View style={{ borderBottomWidth: 0.5 }}>
-                        <Header text={"Login Your Account"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => navigation.navigate("RegisterPage")} />
+                        <Header text={"Login Your Account"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => navigation.goBack()} />
 
                     </View>
                     <View style={{ marginVertical: Matrics.vs20 }}>
