@@ -105,7 +105,6 @@ const MyBooking = () => {
                 }
             } 
                 ).then(({data}) => {
-                    console.log("🚀 ~ file: MyBooking.jsx:108 ~ ).then ~ data:", data)
                     if(data?.status === 200){
                         getBooking()
                         setVisible(false)
