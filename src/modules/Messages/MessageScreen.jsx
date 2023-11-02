@@ -37,8 +37,7 @@ const MessageScreen = (props) => {
             "senderId": user?.id||user?._id,
             "receiverId": receiverId
         }).then(({ data }) => {
-            console.log("🚀 ~ file: MessageScreen.jsx:39 ~ getMessages ~ data:", data)
-            if (data?.status === 200) {
+           if (data?.status === 200) {
                 setMessages(data?.data)
                 setTimeout(() => {
                     msgRef?.current?.scrollToEnd()
