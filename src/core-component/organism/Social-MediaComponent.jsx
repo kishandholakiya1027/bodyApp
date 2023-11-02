@@ -28,14 +28,44 @@ GoogleSignin.configure({
     // iosClientId: '106151688664-ndprsrur540i58p72p0s16k06uroukmu.apps.googleusercontent.com', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
 });
 
-const SocialMediaComponent = () => {
+const SocialMediaComponent = ({role,checkRole}) => {
     const navigation = useNavigation()
     const { user, setUser } = useContext(UserParamContext)
     const insRef = useRef();
 
     let signInWithGoogle = async () => {
         try {
+            let userRole = role ?? "s"
+            console.log("🚀 ~ file: Social-MediaComponent.jsx:39 ~ signInWithGoogle ~ userRole:", userRole)
+if(userRole === "s" &&checkRole){
+    Alert.alert("Please select role")
 
+}else{
+    const isSignedIn = await GoogleSignin.isSignedIn();
+    if (isSignedIn) {
+        await GoogleSignin.signOut()
+    }
+    await GoogleSignin.hasPlayServices();
+
+    let userInfo = await GoogleSignin.signIn();
+
+    const data = await axios.post(`${API_URL}auth/verify`, { token: userInfo?.idToken })
+    if (data?.data?.status === 200) {
+        Alert.alert(data?.data?.msg)
+        await AsyncStorage.setItem("token", data?.data?.data?.token)
+        setUser(data?.data?.data)
+        await AsyncStorage.setItem("user", JSON.stringify(data?.data?.data))
+        navigation.navigate("Home")
+
+    } else {
+        Alert.alert(data?.msg)
+    }
+    // navigation.navigate("UserProfile")
+    // Handle user info or navigate to the next screen.
+}
+} catch (error) {
+    console.error('Google Sign-In Error:', error);
+}
             // await axios.get("http://localhost:5203/auth/google").then(data => {
             //     console.log("🚀 ~ file: Social-MediaComponent.jsx:24 ~ awaitaxios.get ~ data:", data)
             // }).catch(err => {
@@ -44,32 +74,7 @@ const SocialMediaComponent = () => {
             //     }
 
             // })
-            const isSignedIn = await GoogleSignin.isSignedIn();
-            console.log("🚀 ~ file: Social-MediaComponent.jsx:39 ~ signInWithGoogle ~ isSignedIn:", isSignedIn)
-            if (isSignedIn) {
-                await GoogleSignin.signOut()
-            }
-            await GoogleSignin.hasPlayServices();
-
-            let userInfo = await GoogleSignin.signIn();
-            console.log("🚀 ~ file: Social-MediaComponent.jsx:45 ~ signInWithGoogle ~ userInfo:", userInfo)
-
-            const data = await axios.post(`${API_URL}auth/verify`, { token: userInfo?.idToken })
-            if (data?.data?.status === 200) {
-                Alert.alert(data?.data?.msg)
-                await AsyncStorage.setItem("token", data?.data?.data?.token)
-                setUser(data?.data?.data)
-                await AsyncStorage.setItem("user", JSON.stringify(data?.data?.data))
-                navigation.navigate("Home")
-
-            } else {
-                Alert.alert(data?.msg)
-            }
-            // navigation.navigate("UserProfile")
-            // Handle user info or navigate to the next screen.
-        } catch (error) {
-            console.error('Google Sign-In Error:', error);
-        }
+           
     };
 
 
@@ -77,7 +82,6 @@ const SocialMediaComponent = () => {
         // setLoader(true);
         LoginManager.logInWithPermissions(['public_profile']).then(
             login => {
-                console.log("🚀 ~ file: Social-MediaComponent.jsx:78 ~ handleFBLogin ~ login:", login)
                 if (login?.isCancelled) {
                     // setLoader(false);
                     // setTimeout(() => {
@@ -85,6 +89,21 @@ const SocialMediaComponent = () => {
                     // }, 1000);
                 } else {
                     AccessToken.getCurrentAccessToken().then(async data => {
+                  await axios.post(`${API_URL}auth/verify-facebook`, { token: data?.accessToken,role:role||false  }).then(async({data})=>{
+                      if (data?.status === 200) {
+                          Alert.alert(data?.msg)
+                          console.log("🚀 ~ file: Social-MediaComponent.jsx:87 ~ awaitaxios.post ~ data:", data,data?.status)
+                          await AsyncStorage.setItem("token", data?.data?.token)
+                          await AsyncStorage.setItem("user", JSON.stringify(data?.data))
+                        navigation.navigate("Home")
+                
+                            } else {
+                                Alert.alert(data?.msg)
+                            }
+
+                        }).catch( (error)=> {
+                            console.error(' Error:', error);
+                        })
                         // let input = {
                         //     accessToken: data?.accessToken,
                         //     provider: 'facebook',
@@ -111,6 +130,42 @@ const SocialMediaComponent = () => {
                 // }, 1000);
             },
         );
+    };
+    const handleInstagramLogin = async (token) => {
+        console.log("🚀 ~ file: Social-MediaComponent.jsx:135 ~ handleInstagramLogin ~ token:", token)
+        // setLoader(true);
+       
+              
+                  await axios.post(`${API_URL}auth/verify-instagram`, { token,role:role||false }).then(async({data})=>{
+                      if (data?.status === 200) {
+                          Alert.alert(data?.msg)
+                          console.log("🚀 ~ file: Social-MediaComponent.jsx:87 ~ awaitaxios.post ~ data:", data,data?.status)
+                          await AsyncStorage.setItem("token", data?.data?.token)
+                          await AsyncStorage.setItem("user", JSON.stringify(data?.data))
+                        navigation.navigate("Home")
+                
+                            } else {
+                                Alert.alert(data?.msg)
+                            }
+
+                        }).catch( (error)=> {
+                            console.error(' Error:', error);
+                        })
+                        // let input = {
+                        //     accessToken: data?.accessToken,
+                        //     provider: 'facebook',
+                        // };
+                        // socialLoginMutation({
+                        //     variables: { ...input },
+                        // }).then(async ({ data }) => {
+                        //     setLoader(false);
+                        //     const user = data?.socialLogin?.user;
+                        //     SaveUserOnLoginCommon(user, data?.socialLogin?.token);
+                        // }).catch(err => {
+                        //     setLoader(false);
+                        //     showToastMessage(err.message, 'error')
+                        // });
+            
     };
 
 
@@ -155,10 +210,7 @@ const SocialMediaComponent = () => {
                 appSecret='9676d54d4f990c2c78c764a8eb5e9761'
                 redirectUrl='https://socialsizzle.heroku.com/auth/'
                 scopes={['user_profile']}
-                onLoginSuccess={(token) => {
-                    console.log("🚀 ~ file: Social-MediaComponent.jsx:159 ~ SocialMediaComponent ~ token:", token)
-
-                }}
+                onLoginSuccess={(token) => handleInstagramLogin(token?.access_token)}
                 onLoginFailure={(data) => console.log(data)}
             />
             <View style={{ marginTop: Matrics.vs10 }}>

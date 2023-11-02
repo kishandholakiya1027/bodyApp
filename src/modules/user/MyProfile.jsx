@@ -1,17 +1,25 @@
-import { Image, KeyboardAvoidingView, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
+import { Alert, FlatList, Image, KeyboardAvoidingView, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Header from '../../core-component/atom/header'
 import { Colors, Images, Matrics } from '../../theme'
 import { IS_ANDROID, getRubikFont } from '../../core-utils/utils'
 import TextComponent from '../../core-component/atom/TextComponent'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import ImagePlaceHolderComponent from '../../core-component/atom/imagePlaceHolderComponent'
-import { IMAGE_URL } from '../../../config'
+import { API_URL, IMAGE_URL } from '../../../config'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import axios from 'axios'
+import UserParamContext from '../../context/setUserContext'
+import CommonButton from '../../core-component/molecules/CommonButton'
 
 const MyProfile = () => {
     const [userData, setUserData] = useState()
+    const [profileData, setProfileData] = useState()
+    const [image, setImage] = useState()
+    console.log("🚀 ~ file: MyProfile.jsx:17 ~ MyProfile ~ image:", image)
     const navigation = useNavigation()
+    const { user } = useContext(UserParamContext)
+    console.log("🚀 ~ file: MyProfile.jsx:18 ~ MyProfile ~ user:", user)
 
     // useEffect(() => {
     //     getUserData()
@@ -22,12 +30,54 @@ const MyProfile = () => {
         }, [])
     )
 
+
     const getUserData = async () => {
-        const user = JSON.parse(await AsyncStorage.getItem("user"))
-        setUserData(user)
+        if (user) {
+            let url = user?.role ? "designer/get_designer/" : "user/get_user/"
+            console.log("🚀 ~ file: MyProfile.jsx:32 ~ getUserData ~ url:", url)
+            await axios.get(`${API_URL}${url}${user?.id || user?._id}`).then(async ({ data }) => {
+                console.log("🚀 ~ file: MyProfile.jsx:33 ~ awaitaxios.get ~ data:", data)
+                setImage(data?.data?.profile_img)
+                if (data?.status === 200) {
+                if(user?.role)
+                    setUserData({ ...data?.data, availability: data?.data?.availability || [] })
+                else {
+                    let userdata = []
+                    usersData?.map(itm=>{
+                        userdata = [...userdata||[],{label:itm?.label,value:data?.data[itm?.key]}]
+
+                    })
+                 
+                    setProfileData(userdata)
+                    setUserData(data?.data)
+                }
+                await AsyncStorage.setItem("user", JSON.stringify({ ...data?.data, role: user?.role }))
+                // setDate(data?.data?.time[0]?.split("-")[1])
+                } else {
+                    Alert.alert(data?.msg)
+                }
+            }).catch(err => {
+                console.log("🚀 ~ file: MyProfile.jsx:43 ~ awaitaxios.get ~ err:", err)
+
+            })
+
+        }
     }
+
     const socialMedia = [
         "IN", "FB", "YT", "LI"
+    ]
+    const usersData = [
+        { key: "age", label: "Age", value: 32 },
+        { key: "gender", label: "Gender", value: "Female" },
+        { key: "body_type", label: "Body type", value: "Pear" },
+        { key: "face_type", label: "Face type", value: "Pear" },
+        { key: "complexion", label: "Complexion", value: "Pear" },
+        { key: "hair_length", label: "Hair", value: "Pear" },
+        { key: "height", label: "Height", value: "Pear" },
+        { key: "waist_size", label: "Waist", value: "Pear" },
+        { key: "bust_size", label: "Bust", value: "Pear" },
+        { key: "hip_bust", label: "Hip", value: "Pear" },
     ]
 
     return (
@@ -39,7 +89,7 @@ const MyProfile = () => {
                         <TextComponent fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0}>{"My Profile"}</TextComponent>
 
                         <Pressable onPress={() => navigation.navigate("Home")}>
-                            <Image source={Images.close} style={{ width: Matrics.ms26, height: Matrics.ms26 }} />
+                            <Image source={Images.close} style={{ width: Matrics.ms18, height: Matrics.ms18 }} />
                         </Pressable>
                     </View>
                     {/* <Header text={"Complete Profile"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => index == 1 ? setIndex(0) : logOut()} /> */}
@@ -47,6 +97,8 @@ const MyProfile = () => {
                 </View>
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
                     <View style={{ margin: Matrics.ms20 }}>
+                      { user?.role ? <View>
+
                         <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginBottom: Matrics.vs15 }}>
                             <View>
                                 <ImagePlaceHolderComponent size={Matrics.ms160} borderRadius={Matrics.ms80} padding={Matrics.hs10} marginVertical={Matrics.vs25} setImage={(image) => setUserData({ ...userData, profile_img: image })} image={userData?.profile_img ? `${IMAGE_URL}${userData?.profile_img?.uri || userData?.profile_img}` : ""} />
@@ -79,8 +131,8 @@ const MyProfile = () => {
                             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.CRAYON} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{"Consultation Fees"}</TextComponent>
                             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{`INR ${userData?.consultationCharge || 0}/ 30 min session`}</TextComponent>
                             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.CRAYON} marginTop={Matrics.vs25} paddingHorizontal={Matrics.hs5}>{"Availability"}</TextComponent>
-                            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{`${userData?.availability[0]} - ${userData?.availability[userData?.availability?.length - 1]}`}</TextComponent>
-                            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{`${userData?.time[0]}`}</TextComponent>
+                            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{`${userData?.availability ? userData?.availability[0] : ""} - ${userData?.availability ? userData?.availability[userData?.availability?.length - 1] : ""}`}</TextComponent>
+                            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{`${userData?.time && userData?.time[0] || ""}`}</TextComponent>
 
                         </View>
                         <View style={{ borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY, paddingBottom: Matrics.vs30, marginTop: Matrics.vs20 }}>
@@ -138,8 +190,56 @@ const MyProfile = () => {
                             </View>
 
                         </View>
+                        </View>:
+                          <View style={{marginTop:Matrics.vs20}}>
+                          <ImagePlaceHolderComponent size={Matrics.ms215} padding={Matrics.hs40} setImage={(image) => setImage( image )} image={image ? image?.uri || `${IMAGE_URL}${image}` : ""} marginVertical={Matrics.vs0}/>
+                          <View style={{ flexDirection: "row", alignItems:"center",justifyContent:"center" }}>
+
+                          <TextComponent fontFamily={getRubikFont()} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs13} paddingHorizontal={Matrics.hs5}>{userData?.username}</TextComponent>
+                          </View>
+
+                          <View style={{ flexDirection: "row", alignItems:"center",justifyContent:"center", marginTop:Matrics.vs30}}>
+                            <View style={{width:"80%"}}>
+                              <FlatList
+                                  data={profileData}
+                                  numColumns={2}
+                                  horizontal={false}
+                                  renderItem={({ item }) => {
+                                      return (
+                                          <View style={{ marginHorizontal: Matrics.hs0, marginVertical: Matrics.vs5, justifyContent: "flex-start", alignItems: "flex-start", minWidth:"52%",}}>
+
+                                              <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTGRAY} marginTop={Matrics.vs5}>{`${item?.label}:`}</TextComponent>
+                                              <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs5}>{item?.value}</TextComponent>
+                                          </View>
+                                      )
+                                  }}
+
+                              />
+
+                            </View>
+                              {/* {userData?.map(user => {
+                                  return (
+                                      <View style={{ flex: 0.3 }}>
+                                          <TextComponent fontFamily={getRobotoFont("")} size={Matrics.ms16} color={Colors.DARKGRAY} marginTop={Matrics.vs5}>{user?.label}</TextComponent>
+                                          <TextComponent fontFamily={getRobotoFont("")} size={Matrics.ms16} color={Colors.DARKGRAY} marginTop={Matrics.vs5}>{user?.value}</TextComponent>
+
+                                      </View>
+                                  )
+                              })} */}
+                          </View>
+
+
+
+                      </View>
+                        }
                     </View>
                 </ScrollView>
+                <View style={{alignItems:"center"}}>
+                    <View style={{width:"50%"}}>
+                    <CommonButton text={"Edit Profile"} onPress={()=> navigation.navigate(user?.role ?"OnBoarding":"UserProfile")} viewStyle={{backgroundColor:Colors.BLUE}} textStyle={{color:Colors.WHITE}}/>
+
+                    </View>
+                </View>
             </SafeAreaView>
         </KeyboardAvoidingView>
     )

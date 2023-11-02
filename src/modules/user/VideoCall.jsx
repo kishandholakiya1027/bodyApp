@@ -14,6 +14,9 @@ import RtmEngine from 'agora-react-native-rtm';
 import IncominCall from '../../core-component/organism/IncominCall';
 import { useNavigation } from '@react-navigation/native';
 import IncomingCall from '../../core-component/organism/IncomingCall';
+import CommonButton from '../../core-component/molecules/CommonButton';
+import axios from 'axios';
+import { API_URL } from '../../../config';
 
 
 // const VideoCall = () => {
@@ -129,7 +132,9 @@ import IncomingCall from '../../core-component/organism/IncomingCall';
 
 
 
-const VideoCall = () => {
+const VideoCall = (props) => {
+    console.log("🚀 ~ file: VideoCall.jsx:136 ~ VideoCall ~ props:", props)
+    const {item,user} = props?.route?.params
     const [videoCall, setVideoCall] = useState(false);
     const [channelId, setChannelId] = useState(false);
     const _engine = useRef(null);
@@ -140,9 +145,10 @@ const VideoCall = () => {
     const navigation = useNavigation()
     const connectionData = {
         appId: 'd4bab57c33a74881813563b96ec5470c',
-        channel: 'test-',
+        channel:`test-${item?._id}`,
         rtcUid: 0
     };
+    console.log("🚀 ~ file: VideoCall.jsx:151 ~ VideoCall ~ connectionData:", connectionData)
     const events = [
         'tokenExpired',
         'remoteInvitationRefused',
@@ -195,13 +201,11 @@ const VideoCall = () => {
     const rtcCallbacks = {
 
         EndCall: () => {
+            navigation.navigate("MyBooking")
             setVideoCall(false)
         },
     };
-    const startCall = async () => {
-        // Join Channel using null token and channel name
 
-    };
 
     //     /**
     //      * @name endCall
@@ -211,46 +215,8 @@ const VideoCall = () => {
     return (
 
         <>
-            {
-                videoCall ? (
-                    <AgoraUIKit connectionData={connectionData} rtcCallbacks={rtcCallbacks} />
-                ) : (
-                    <>
-                        <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.WHITE, }} behavior={IS_ANDROID ? '' : 'padding'} enabled>
-                            <SafeAreaView style={{ flex: 1 }}>
-                                <StatusBar barStyle="dark-content" backgroundColor="white" />
-                                <View style={{ borderBottomWidth: 0.5 }}>
-                                    <Header text={"Video Call"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => navigation.navigate("Home")} />
+                                <AgoraUIKit connectionData={connectionData} rtcCallbacks={rtcCallbacks} />
 
-                                </View>
-                                <View>
-                                    {/* <View style={{ marginTop: Matrics.vs10 }}>
-                                    <Pressable style={styles.buttonView} onPress={startCall}>
-                                        <Text style={styles.textStyle}>{"Start Call"}</Text>
-                                    </Pressable>
-            
-                                </View>
-                                <View style={{ marginTop: Matrics.vs10 }}>
-                                    <Pressable style={styles.buttonView} onPress={endCall}>
-                                    </Pressable>
-                                    
-                                </View> */}
-                                    <View style={{ marginTop: Matrics.vs10 }}>
-                                        <Pressable style={styles.buttonView} onPress={() => {
-                                            // startCall()
-                                            setVideoCall(true)
-                                        }}>
-                                            <Text style={styles.textStyle}>{"Start Call"}</Text>
-                                        </Pressable>
-
-                                    </View>
-                                </View>
-                            </SafeAreaView>
-                        </KeyboardAvoidingView>
-                    </>
-
-                )
-            }
         </>
     )
 }

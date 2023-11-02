@@ -44,7 +44,6 @@ function TitleComponent({ open, setOpen, title }) {
 
 
 function CheckBoxComponent({ open, setOpen, filter, setFilter, data, title, component, keyName }) {
-    console.log("🚀 ~ file: AllUsers.jsx:45 ~ CheckBoxComponent ~ filter:", filter, keyName)
     return (
         <View style={{ marginTop: Matrics.vs20 }}>
             <View>
@@ -90,7 +89,6 @@ const AllUsers = (props) => {
     const [sort, setSort] = useState()
     const [submitSort, setSubmitSort] = useState()
     const [submitFilter, setSubmitFilter] = useState(false)
-    console.log("🚀 ~ file: AllUsers.jsx:24 ~ AllUsers ~ filter:", filter)
 
     const navigation = useNavigation()
     const getUsers = async () => {
@@ -181,7 +179,12 @@ const AllUsers = (props) => {
 
                         </View>
                         <View style={{ margin: Matrics.ms20, paddinBottom: Matrics.vs50 }}>
-                            <TextInputComponent placeholder={"Search for designers, stylists or trends"} onChangeText={(text) => setSearch(text)} value={search} />
+                            <TextInputComponent placeholder={"Search for designers, stylists or trends"} onChangeText={(text) =>{ 
+                                setTimeout(() => {
+                                    
+                                    setSubmitFilter(true)
+                                }, 3000);
+                                setFilter({...filter,search:text})}} value={search} />
                             <View style={{ flexDirection: "row", marginBottom: Matrics.vs15 }}>
                                 <View style={{ flex: 0.48, alignItems: "center", marginRight: Matrics.hs10 }}>
 
@@ -203,7 +206,7 @@ const AllUsers = (props) => {
                                 </View>
                             </View>
                             <View style={{ height: "75%" }}>
-                                <UsedataComponent key={Object.keys(filter)?.length || sort} users={props?.route?.params?.users} userId={user?.id} search={search} userFilter={Object.keys(filter)?.length && submitFilter ? filter : ""} setSubmitFilter={setSubmitFilter} sort={sort} />
+                                <UsedataComponent users={props?.route?.params?.users} userId={user?.id} search={search} userFilter={Object.keys(filter)?.length && submitFilter ? filter : ""} setSubmitFilter={setSubmitFilter} sort={sort} />
 
                             </View>
                         </View>
@@ -221,7 +224,7 @@ const AllUsers = (props) => {
                                     <TextComponent fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0}>{"Filter Profiles"}</TextComponent>
 
                                     <Pressable onPress={() => setFilterModal(false)}>
-                                        <Image source={Images.close} style={{ width: Matrics.ms26, height: Matrics.ms26, tintColor: Colors.LIGHTBLACK }} />
+                                        <Image source={Images.close} style={{ width: Matrics.ms18, height: Matrics.ms18, tintColor: Colors.LIGHTBLACK }} />
                                     </Pressable>
                                 </View>
                                 {/* <Header text={"Complete Profile"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => index == 1 ? setIndex(0) : logOut()} /> */}
@@ -282,7 +285,7 @@ const AllUsers = (props) => {
                                     <TextComponent fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0}>{"Sort Profiles"}</TextComponent>
 
                                     <Pressable onPress={() => setSortModal(false)}>
-                                        <Image source={Images.close} style={{ width: Matrics.ms26, height: Matrics.ms26, tintColor: Colors.LIGHTBLACK }} />
+                                        <Image source={Images.close} style={{ width: Matrics.ms18, height: Matrics.ms18, tintColor: Colors.LIGHTBLACK }} />
                                     </Pressable>
                                 </View>
                                 {/* <Header text={"Complete Profile"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => index == 1 ? setIndex(0) : logOut()} /> */}
@@ -293,10 +296,11 @@ const AllUsers = (props) => {
                                 {sortData?.map(item => {
                                     return (
                                         <Pressable onPress={() => {
-                                            setSort(item?.value)
+                                            setFilter({...filter,sort:item?.value})
+                                            setSubmitFilter(true)
                                             setSortModal(false)
                                         }}>
-                                            <TextComponent fontFamily={sort === item?.value ? getRubikFont("SemiBold") : getRubikFont("Regular")} size={Matrics.ms18} color={sort === item?.value ? Colors?.BLUE : Colors.LIGHTBLACK} marginTop={Matrics.vs20} paddingHorizontal={0}>{item?.label}</TextComponent>
+                                            <TextComponent fontFamily={filter?.sort === item?.value ? getRubikFont("SemiBold") : getRubikFont("Regular")} size={Matrics.ms18} color={sort === item?.value ? Colors?.BLUE : Colors.LIGHTBLACK} marginTop={Matrics.vs20} paddingHorizontal={0}>{item?.label}</TextComponent>
 
                                         </Pressable>
                                     )

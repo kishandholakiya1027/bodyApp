@@ -27,7 +27,6 @@ function TitleComponent({ open, setOpen, title }) {
     </View>);
 }
 const CheckBoxComponent = ({ open, setOpen, filter, setFilter, data, title, component, keyName }) => {
-    console.log("🚀 ~ file: AllUsers.jsx:45 ~ CheckBoxComponent ~ filter:", filter, keyName)
     return (
         <View style={{ marginTop: Matrics.vs20 }}>
             <View>

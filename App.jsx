@@ -28,6 +28,7 @@ import { Colors, Matrics } from './src/theme';
 import AppNav from "./src/navigation"
 import PushNotification, { Importance } from 'react-native-push-notification';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { StripeProvider } from '@stripe/stripe-react-native';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -48,8 +49,13 @@ function App() {
   return (
     <>
       <SafeAreaProvider>
+        <StripeProvider 
+         urlScheme="app" // required for 3D Secure and bank redirects
+         merchantIdentifier="merchant.com.avatar" // required for Apple Pay
+        publishableKey="pk_test_51O64sZSFiZpukCb1koBaLSCCv40GOVxnSLKacNtngbHYSgqh85uDrFqU4Es4TTiFNvZSR6cxHOYwsTZGvPFhmWoj00C6ULlfzv">
 
-        <AppNav />
+          <AppNav />
+        </StripeProvider>
       </SafeAreaProvider>
 
       {/* <AppNav /> */}

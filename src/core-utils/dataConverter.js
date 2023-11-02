@@ -18,7 +18,7 @@ export const convertToformData = (data) => {
             formData.append(key, data[key], data[key]?.fileName);
         } else if (Array.isArray(data[key])) {
             data[key]?.map((value, i) => {
-                if (key === "portfolio") {
+                if (key === "portfolio"||key==="images") {
                     formData.append(`${key}`, value);
 
                 } else {

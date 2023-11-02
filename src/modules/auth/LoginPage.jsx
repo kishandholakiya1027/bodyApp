@@ -1,5 +1,5 @@
 import { Alert, Button, Image, KeyboardAvoidingView, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { IS_ANDROID, getRobotoFont, getRubikFont } from '../../core-utils/utils'
 import { Colors, Images, Matrics } from '../../theme'
 import TextInputComponent from '../../core-component/atom/TextInputComponent'
@@ -11,18 +11,41 @@ import { API_URL } from '../../../config'
 import SocialMediaComponent from '../../core-component/organism/Social-MediaComponent'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import UserParamContext from '../../context/setUserContext'
+import messaging from '@react-native-firebase/messaging';
+
 // import auth from '@react-native-firebase/auth';
 
 
 const LoginPage = () => {
     const [email, setEmail] = useState()
     const [password, setPassword] = useState()
+    const [deviceToken, setDeviceToken] = useState()
     const [error, setError] = useState()
     const { user, setUser } = useContext(UserParamContext)
 
     const navigation = useNavigation()
 
+    const messageSetup = async () => {
+        messaging()
+            .registerDeviceForRemoteMessages()
+            .then(res => console.log('-*-res*-', res))
+            .catch(err => console.log('*-* registrer error ', err));
 
+        await messaging().getAPNSToken().then(data => {
+            messaging().setAPNSToken(data || "385757dhnfudhf8487398890", "unknown")
+
+        })
+        messaging().getToken().then(async device_id => {
+            setDeviceToken(device_id)
+        }).catch(err => console.log("🚀 ~ file: signinScreen.js ~ line 58 ~ useEffect ~ err", err))
+       
+
+    }
+
+    useEffect(() => {
+     messageSetup()
+    }, [])
+    
     const onSubmit = async () => {
         if (!email) {
             setError({ email: "Email is required" })
@@ -34,6 +57,7 @@ const LoginPage = () => {
             let body = {
                 "email": email,
                 "password": password,
+                fcm_token:deviceToken
             }
             await axios.post(`${API_URL}auth/login`, body, {
                 headers: {
@@ -54,7 +78,7 @@ const LoginPage = () => {
 
             }).catch(err => {
                 console.log("🚀 ~ file: LoginPage.jsx:57 ~ onSubmit ~ err:", err)
-                Alert.alert(`${err?.request?._response}`)
+                Alert.alert(`${err?.message}`)
 
 
             })
@@ -86,7 +110,7 @@ const LoginPage = () => {
                                     </Pressable>
 
                                 </View>
-                                <SocialMediaComponent />
+                                <SocialMediaComponent role={null} checkRole={false}/>
                                 {/* <View>
                                     <Pressable style={styles.buttonView} onPress={signInWithGoogle}>
                                         <Image source={Images.google} style={{ width: Matrics.ms30, height: Matrics.ms30, marginRight: Matrics.hs10 }} />

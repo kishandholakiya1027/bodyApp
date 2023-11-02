@@ -13,7 +13,7 @@ import UserParamContext from '../../context/setUserContext'
 import Loader from '../atom/Loader'
 import BookingContext from '../../context/BookingContext';
 
-const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmitFilter, sort }) => {
+const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmitFilter=()=>{}, sort }) => {
     const [loginUser, setLoginUser] = useState()
     const [likedUser, setLikedUsers] = useState([])
     const [users, setUsers] = useState([])
@@ -21,73 +21,16 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
     const [loader, setLoader] = useState(false)
     const navigation = useNavigation()
     const { user } = useContext(UserParamContext)
-    console.log("🚀 ~ file: UsedataComponent.jsx:24 ~ UsedataComponent ~ user:", user)
     const { setBooking } = useContext(BookingContext)
 
-    useEffect(() => {
-        setLoader(true)
-        if (search)
-            setTimeout(async () => {
-                await axios.get(`${API_URL}designer/get_designer_search/${search}`).then(({ data }) => {
-                    console.log("🚀 ~ file: index.jsx:66 ~ awaitaxios.get ~ data:", data)
-                    if (data?.status === 200) {
-                        setUsers(data?.data)
 
-                    } else {
-                        Alert.alert("something went wrong")
-                    }
-                    setLoader(false)
-
-                }).catch(err => {
-                    setLoader(false)
-
-
-                })
-            }, 2000);
-        else {
-            setUsers(sort !== 0 || !sort || !filter || !search ? allUsers : users)
-            console.log("🚀 ~ file: UsedataComponent.jsx:49 ~ useEffect ~ users:", users)
-            setLoader(false)
-
-        }
-    }, [search])
-
-    useEffect(() => {
-        setLoader(true)
-        if (filter)
-            setTimeout(async () => {
-                console.log("🚀 ~ file: UsedataComponent.jsx:54 ~ useEffect ~ filter:", filter)
-                await axios.get(`${API_URL}designer/get_designer_assist/${filter}`).then(({ data }) => {
-                    console.log("🚀 ~ file: index.jsx:66 ~ awaitaxios.get ~ data:", data)
-                    if (data?.status === 200) {
-                        setUsers(data?.data)
-
-                    } else {
-                        Alert.alert("something went wrong")
-                    }
-                    setLoader(false)
-
-                }).catch(err => {
-                    setLoader(false)
-
-
-                })
-            }, 2000);
-        else {
-            setUsers(sort !== 0 || !sort || !filter || !search ? allUsers : users)
-            console.log("🚀 ~ file: UsedataComponent.jsx:77 ~ useEffect ~ users:", users)
-            setLoader(false)
-
-        }
-    }, [filter])
+  
 
     useEffect(() => {
         onFilter()
     }, [userFilter])
 
-    useEffect(() => {
-        onSort()
-    }, [sort])
+
 
     const onFilter = async () => {
         setLoader(true)
@@ -102,7 +45,6 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
                     "Content-Type": "application/json"
                 }
             }).then(({ data }) => {
-                console.log("🚀 ~ file: UsedataComponent.jsx:104 ~ onFilter ~ data:", data)
                 if (data?.status === 200) {
                     setUsers(data?.data)
 
@@ -119,43 +61,11 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
         }
         else {
             setUsers(sort !== 0 || !sort || !filter || !search ? allUsers : users)
-            console.log("🚀 ~ file: UsedataComponent.jsx:119 ~ onFilter ~ users:", users)
             setLoader(false)
 
         }
     }
-    const onSort = async () => {
-        setLoader(true)
-        if (sort === 0 || sort) {
-
-            await axios.get(`${API_URL}designer/get_designer_sort/${sort}`, {
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }).then((data) => {
-                console.log("🚀 ~ file: UsedataComponent.jsx:130 ~ onSort ~ data:", data)
-                if (data?.status === 200) {
-                    setUsers(data?.data)
-
-                } else {
-                    Alert.alert("something went wrong")
-                }
-                setLoader(false)
-
-            }).catch(err => {
-                console.log("🚀 ~ file: UsedataComponent.jsx:140 ~ onSort ~ err:", err)
-                setLoader(false)
-
-
-            })
-        }
-        else {
-            setUsers(allUsers)
-            console.log("🚀 ~ file: UsedataComponent.jsx:149 ~ onSort ~ allUsers:", allUsers)
-            setLoader(false)
-
-        }
-    }
+   
 
     useFocusEffect(useCallback(
         () => {
@@ -169,7 +79,7 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
         const user = JSON.parse(await AsyncStorage.getItem("user"))
         if (user)
             setLoginUser(user)
-        if (sort !== 0 && !sort && !filter && !search)
+        if (!userFilter)
             getUser()
         await axios.get(`${API_URL}like/get_like_login_user/${user?.id}`).then(({ data }) => {
             setLikedUsers(data?.likes?.map(user => user?.designerId))
@@ -184,7 +94,6 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
 
         await axios.get(`${API_URL}designer/get_designer_rating`).then(({ data }) => {
             setLoader(false)
-            console.log("🚀 ~ file: UsedataComponent.jsx:185 ~ awaitaxios.get ~ data:", data)
             setUsers(data?.data)
             setAllUsers(data?.data)
         }).catch(err => {
@@ -199,13 +108,11 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
             "designerId": id,
             "loginUserId": user?.id
         }
-        console.log("🚀 ~ file: UsedataComponent.jsx:90 ~ addLike ~ body:", body)
         await axios.post(`${API_URL}like/add_like`, body, {
             headers: {
                 'Content-Type': 'application/json'
             },
         }).then(({ data }) => {
-            console.log("🚀 ~ file: UsedataComponent.jsx:99 ~ addLike ~ data:", data)
             if (data?.status === 200) {
                 setLikedUsers([...likedUser || [], id])
                 Alert.alert("User liked ")
@@ -214,6 +121,27 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
             }
         }).catch(err => {
             console.log("🚀 ~ file: UsedataComponent.jsx:107 ~ addLike ~ err:", err)
+
+
+        })
+    }
+    const removeLike = async (id, userId) => {
+
+        let body = {
+            "designerId": id,
+            "loginUserId": user?.id
+        }
+        await axios.post(`${API_URL}like/remove_like`, body, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        }).then(({ data }) => {
+            if (data?.status === 200) {
+                Alert.alert("Removed liked ")
+                setLikedUsers([...likedUser?.filter(user => user !== id)])
+
+            }
+        }).catch(err => {
 
 
         })
@@ -254,27 +182,7 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
 
         })
     }
-    const removeLike = async (id, userId) => {
 
-        let body = {
-            "designerId": id,
-            "loginUserId": user?.id
-        }
-        await axios.post(`${API_URL}like/remove_like`, body, {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        }).then(({ data }) => {
-            if (data?.status === 200) {
-                Alert.alert("Removed liked ")
-                setLikedUsers([...likedUser?.filter(user => user !== id)])
-
-            }
-        }).catch(err => {
-
-
-        })
-    }
 
     return (
         <>
@@ -289,12 +197,12 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
                         renderItem={({ item }) => {
                             return (
                                 userId !== item?._id ? <View style={{ marginTop: Matrics.vs10, paddingBottom: Matrics.vs20, flex: 1 }}>
-                                    <View style={{ flexDirection: "row" }}>
+                                    <Pressable style={{ flexDirection: "row" }} onPress={()=>navigation.navigate("ProfileDetails",{designerId:item?.id||item?._id,likedUser})}>
                                         <View style={{ flex: 0.48, alignItems: "center", marginRight: Matrics.hs10 }}>
                                             <ImagePlaceHolderComponent size={Matrics.ms150} borderRadius={Matrics.ms75} padding={Matrics.hs10} marginVertical={Matrics.vs10} image={item?.profile_img ? `${IMAGE_URL}${item?.profile_img}` : ""} borderColor={Colors.MEDIUMREDOPACITY} backgroundColor={item?.profile_img ? "none" : Colors.MEDIUMREDOPACITY} disabled={true} />
                                             <View style={{ position: "absolute", top: 5, left: -2 }}>
                                                 <Pressable style={{ padding: 5, zIndex: 99999 }} hitSlop={60} onPress={() => likedUser?.includes(item?._id) ? removeLike(item?._id, userId) : addLike(item?._id, userId)}>
-                                                    <Image source={Images.heart} width={Matrics.ms15} height={Matrics.ms15} style={{ width: Matrics.ms15, height: Matrics.ms15, tintColor: likedUser?.includes(item?._id) ? Colors.MEDIUMRED : Colors.MEDIUMREDOPACITY }} />
+                                                    <Image source={ !likedUser?.includes(item?._id) ? Images.saveprofile:Images.heart} width={Matrics.ms15} height={Matrics.ms15} style={{ width: Matrics.ms15, height: Matrics.ms15,  }} />
                                                     {/* <Rating
                                                 type='heart'
                                                 ratingCount={1}
@@ -335,7 +243,7 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
                                             <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0}>{`INR ${item?.consultationCharge || 0}/30 min session`}</TextComponent>
 
                                         </View>
-                                    </View>
+                                    </Pressable>
                                     <View style={{ flexDirection: "row" }}>
                                         <View style={{ flex: 0.48, alignItems: "center", marginRight: Matrics.hs10 }}>
 
@@ -348,7 +256,7 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
                                                             { text: 'OK', onPress: () => navigation.navigate("LoginPage") },
                                                         ]) : null
                                                     }
-                                                    user?.id ? navigation.navigate("LeaveMessage") : ""
+                                                    user?.id ? navigation.navigate("LeaveMessage",{item}) : ""
                                                 }}>
                                                     <Text style={styles.textStyle}>{"Leave a Message"}</Text>
                                                 </Pressable>

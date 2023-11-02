@@ -1,5 +1,5 @@
-import { KeyboardAvoidingView, StatusBar, StyleSheet, Text, View } from 'react-native'
-import React, { useContext } from 'react'
+import { Button, KeyboardAvoidingView, StatusBar, StyleSheet, Text, View } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
 import { Colors, Matrics } from '../../theme'
 import { IS_ANDROID, getRubikFont } from '../../core-utils/utils'
 import Header from '../../core-component/atom/header'
@@ -9,13 +9,117 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useNavigation } from '@react-navigation/native'
 import BookingContext from '../../context/BookingContext'
 import moment from 'moment'
+import { CardField, StripeProvider, createPaymentMethod, presentPaymentSheet, useConfirmPayment, useStripe } from '@stripe/stripe-react-native';
+import UserParamContext from '../../context/setUserContext'
+import axios from 'axios'
+import { API_URL } from '../../../config'
+import CheckoutComponent from '../../core-component/organism/CheckoutComponent'
+
 
 const CompleteBooking = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation()
     const { booking } = useContext(BookingContext)
-    console.log("🚀 ~ file: CompleteBooking.jsx:16 ~ CompleteBooking ~ booking :", booking)
-    console.log("🚀 ~ file: CompleteBooking.jsx:12 ~ CompleteBooking ~ insets:", insets)
+    const { user } = useContext(UserParamContext)
+    const [card, setCard] = useState();
+    const { createPaymentMethod } = useStripe();
+    const { confirmPayment, loading } = useConfirmPayment();
+    useEffect(() => {
+        pay()
+    }, [])
+
+
+
+    const addBooking = async () => {
+        let body = {
+            "userId": user?.id,
+            "designerId": booking?.id || booking?._id,
+            "time": booking?.time,
+            "date": moment(booking?.day).format("yyyy-MM-DD")
+        }
+        console.log("🚀 ~ file: CompleteBooking.jsx:33 ~ addBoking ~ body:", body)
+        await axios.post(`${API_URL}appointment/add_appointment`, body, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        }).then(({ data }) => {
+            console.log("🚀 ~ file: CompleteBooking.jsx:46 ~ addBooking ~ data:", data)
+            if (data?.status === 200) {
+                navigation.navigate("BookingStatus", { status: true })
+            }
+        }).catch(err => {
+            console.log("🚀 ~ file: CompleteBooking.jsx:50 ~ addBooking ~ err:", err)
+
+
+        })
+    }
+
+    const pay = async () => {
+
+        const { paymentMethod, error } = await createPaymentMethod({
+            paymentMethodType: "Card",
+            paymentMethodData: {
+                billingDetails: {
+                    name: 'Jenny Rosen',
+                },
+                // token: "pi_3O6tamSFiZpukCb111W55h6Z_secret_LoH9aOzlzXEwImF1ltTuJlraj"
+            }
+
+        });
+    }
+
+    // const [paymentMethod, setPaymentMethod] = useState(null);
+    const handlePayment = async () => {
+        // Create a payment method using the Stripe API
+        // You can also add error handling here
+        const { paymentIntent, error } = await confirmPayment("pi_3O6to1SFiZpukCb10AjuBHVB_secret_UQoz5OzoSMI7PAdfTaG16fKwC", {
+            paymentMethodType: "Card",
+            paymentMethodData: {
+                billingDetails: {
+                    name: 'Jenny Rosen',
+                },
+                // token: "pi_3O6tamSFiZpukCb111W55h6Z_secret_LoH9aOzlzXEwImF1ltTuJlraj"
+            }
+        });
+
+        if (error) {
+            console.log('Payment confirmation error', error);
+        } else if (paymentIntent) {
+            console.log('Success from promise', paymentIntent);
+        }
+        // if (paymentMethod) {
+        //     // setPaymentMethod(paymentMethod);
+        // } else {
+        //     // Handle the error
+        //     console.error(error);
+        // }
+    };
+    const initializePaymentSheet = async () => {
+        const clientSecret = "pi_3O6u7mSFiZpukCb11tj9D4GI_secret_G54BHQy6PnmcW4KrGbACI6qVi"
+        if (clientSecret) {
+            const billingDetails = {
+                name: 'Test User'
+            };
+            const { error, paymentIntent } = await confirmPayment(clientSecret, {
+                paymentMethodType: 'Card',
+                paymentMethodData: { billingDetails: billingDetails }
+            });
+            if (error) {
+                console.log("🚀 ~ file: CompleteBooking.jsx:81 ~ initializePaymentSheet ~ error:", error)
+            } else if (paymentIntent) {
+                onSuccess(`Payment of EUR ${amount} is successful! `)
+            }
+        }
+    };
+    const openPaymentSheet = async () => {
+        const { error } = await presentPaymentSheet({ clientSecret });
+        if (error) {
+            Alert.alert(`Error code: ${error.code}`, error.message);
+        } else {
+            Alert.alert('Success', 'Your order is confirmed!');
+        }
+    };
+
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.WHITE, }} behavior={IS_ANDROID ? '' : 'padding'} enabled>
             <StatusBar barStyle="dark-content" backgroundColor="white" />
@@ -44,9 +148,9 @@ const CompleteBooking = () => {
 
                         </View>
                     </View>
+               
                     <View style={{ flex: 1, justifyContent: "flex-end", alignItems: "flex-end", marginHorizontal: Matrics.hs20 }}>
-
-                        <CommonButton text="Proceed to Payment" onPress={() => navigation.navigate("BookingStatus")} />
+                        <CheckoutComponent booking={booking} user={user}/>
                     </View>
                 </View>
             </SafeAreaView>

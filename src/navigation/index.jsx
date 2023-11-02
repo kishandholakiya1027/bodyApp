@@ -27,6 +27,8 @@ import TextComponent from '../core-component/atom/TextComponent'
 import MyBooking from '../modules/booking/MyBooking'
 import ListMessages from '../modules/Messages/ListMessages'
 import MessageScreen from '../modules/Messages/MessageScreen'
+import CheckoutScreen from '../core-component/organism/CheckoutComponent'
+import ProfileDetails from '../modules/Home/ProfileDetails'
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator()
 
@@ -38,9 +40,9 @@ const drawerLoginConstant = [
         component: Home,
         children: [
             {
-                route: "MyProfile",
+                route: "MyBooking",
                 name: "Bookings",
-                component: MyProfile
+                component: MyBooking
             },
             {
                 route: "ListMessages",
@@ -124,7 +126,6 @@ function CustomDrawerContent(props) {
         props.navigation?.closeDrawer()
         navigation.navigate(route)
     }
-    console.log("🚀 ~ file: index.jsx:96 ~ CustomDrawerContent ~ user:", user)
     const drawer = user?.id || user?._id ? drawerLoginConstant : drawerLogoutConstant
     return (
         <DrawerContentScrollView {...props}>
@@ -138,7 +139,7 @@ function CustomDrawerContent(props) {
                         </View>
 
                         <Pressable onPress={() => props.navigation?.closeDrawer()}>
-                            <Image source={Images.close} style={{ width: Matrics.ms26, height: Matrics.ms26, tintColor: Colors.LIGHTBLACK, resizeMode: "contain" }} />
+                            <Image source={Images.close} style={{ width: Matrics.ms18, height: Matrics.ms18, tintColor: Colors.LIGHTBLACK, resizeMode: "contain" }} />
                         </Pressable>
                     </View>
                     {/* <Header text={"Complete Profile"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => index == 1 ? setIndex(0) : logOut()} /> */}
@@ -167,7 +168,7 @@ function CustomDrawerContent(props) {
                                             {open ? item?.children?.map(child => {
                                                 return (
 
-                                                    <DrawerItem label={child?.name} onPress={() => child?.name === "Sign-out" ? logOut() : onNavigation(child?.route)} style={{ paddingVertical: Matrics.vs0, margin: 0 }} labelStyle={{ margin: 0, fontFamily: getRubikFont("Thin"), fontSize: Matrics.ms18, color: Colors.LIGHTBLACK }} />
+                                                    <DrawerItem label={child?.name} onPress={() => child?.name === "Sign-out" ? logOut() : onNavigation( child?.route)} style={{ paddingVertical: Matrics.vs0, margin: 0 }} labelStyle={{ margin: 0, fontFamily: getRubikFont("Thin"), fontSize: Matrics.ms18, color: Colors.LIGHTBLACK }} />
                                                 )
                                             }) : null}
                                         </View>
@@ -216,7 +217,7 @@ function AppHeader(params) {
         <SafeAreaView style={{}}>
             <View style={{ paddingVertical: Matrics.vs15, paddingHorizontal: Matrics.hs20, flexDirection: "row", alignItems: "center" }}>
                 <Pressable style={{ flex: 0.25 }} onPress={() => navigation.openDrawer()}>
-                    <Image source={Images.menu} style={{ width: Matrics.hs25, height: Matrics.hs30 }} />
+                    <Image source={Images.menu} style={{ width: Matrics.hs21, height: Matrics.hs18,resizeMode:"contain" }} />
                 </Pressable>
                 <View style={{ flex: 0.65, flexDirection: "row" }}>
                     <Text style={{ fontFamily: getRubikFont("regular"), fontSize: Matrics.ms25, color: Colors.LIGHTBLACK }}>The</Text>
@@ -260,13 +261,12 @@ function DrawerComponent() {
 const Index = () => {
     const [user, setUser] = useState()
     const [booking, setBooking] = useState()
-    console.log("🚀 ~ file: index.jsx:107 ~ Index ~ user:", user)
     return (
         <>
             <NavigationContainer>
                 <UserParamContext.Provider value={{ user, setUser }}>
                     <BookingContext.Provider value={{ booking, setBooking }}>
-                        <Stack.Navigator headerMode="none" initialRouteName='AllUsers' screenOptions={{ headerShown: false, cardStyle: { backgroundColor: 'transparent' } }}>
+                        <Stack.Navigator headerMode="none" initialRouteName='Home' screenOptions={{ headerShown: false, cardStyle: { backgroundColor: 'transparent' } }}>
                             <Stack.Screen name='RegisterPage' component={RegisterPage} />
                             <Stack.Screen name='UserProfile' component={UserProfile} />
                             <Stack.Screen name='OnBoarding' component={CompleteProfile} />
@@ -284,6 +284,8 @@ const Index = () => {
                             <Stack.Screen name='MyBooking' component={MyBooking} />
                             <Stack.Screen name='ListMessages' component={ListMessages} />
                             <Stack.Screen name='MessageScreen' component={MessageScreen} />
+                            <Stack.Screen name='CheckoutScreen' component={CheckoutScreen} />
+                            <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
                         </Stack.Navigator>
                     </BookingContext.Provider>
                 </UserParamContext.Provider>

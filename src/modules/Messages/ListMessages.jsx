@@ -1,27 +1,56 @@
-import { FlatList, KeyboardAvoidingView, StatusBar, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { Alert, FlatList, KeyboardAvoidingView, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
 import { Colors, Matrics } from '../../theme'
 import { IS_ANDROID, getRubikFont } from '../../core-utils/utils'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import Header from '../../core-component/atom/header'
 import TextComponent from '../../core-component/atom/TextComponent'
 import { useNavigation } from '@react-navigation/native'
+import UserParamContext from '../../context/setUserContext'
+import axios from 'axios'
+import { API_URL } from '../../../config'
+import moment from 'moment'
 
 const ListMessages = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation()
-    const msg = [
-        {
-            name: "Prerna Kanaujia",
-            message: "Here is the quick styling tip for you : is the quick styling tip for you tip for you",
-            time: "Sep 14"
-        },
-        {
-            name: "Prerna Kanaujia",
-            message: "Here is the quick styling tip for you:",
-            time: "Sep 14"
-        }
-    ]
+    const [msg,setMsgs] = useState([])
+    const {user} = useContext(UserParamContext)
+
+    // const msg = [
+    //     {
+    //         name: "Prerna Kanaujia",
+    //         message: "Here is the quick styling tip for you : is the quick styling tip for you tip for you",
+    //         time: "Sep 14"
+    //     },
+    //     {
+    //         name: "Prerna Kanaujia",
+    //         message: "Here is the quick styling tip for you:",
+    //         time: "Sep 14"
+    //     }
+    // ]
+
+    useEffect(() => {
+        getMessages()
+    }, [])
+    
+
+    const getMessages = async () => {
+        let url = "message/get_message_login_user/" 
+        await axios.get(`${API_URL}${url}${user?.id||user?._id}`).then(async ({ data }) => {
+            console.log("🚀 ~ file: ProfileDetails.jsx:33 ~ awaitaxios.get ~ data:", data)
+            if (data?.status === 200) {
+              
+            setMsgs(data?.data)
+            } else {
+                Alert.alert(data?.msg)
+            }
+        }).catch(err => {
+            console.log("🚀 ~ file: ProfileDetails.jsx:43 ~ awaitaxios.get ~ err:", err)
+
+        })
+
+}
 
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.WHITE, }} behavior={IS_ANDROID ? '' : 'padding'} enabled>
@@ -38,20 +67,20 @@ const ListMessages = () => {
                             data={msg}
                             renderItem={({ item }) => {
                                 return (
-                                    <View style={{ paddingVertical: Matrics.vs30, borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY }}>
+                                    <Pressable style={{ paddingVertical: Matrics.vs30, borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY }} onPress={()=>navigation.navigate("MessageScreen",{receiverId:item?.receiverId})}>
                                         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                                             <View>
-                                                <TextComponent fontFamily={getRubikFont("Medium")} size={Matrics.ms20} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} paddingHorizontal={0}>{item?.name}</TextComponent>
+                                                <TextComponent fontFamily={getRubikFont("Medium")} size={Matrics.ms20} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} paddingHorizontal={0}>{item?.receiver_name}</TextComponent>
 
                                             </View>
-                                            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms14} color={Colors.LIGHTGRAY} marginTop={Matrics.vs0} paddingHorizontal={0} >{item?.time}</TextComponent>
+                                            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms14} color={Colors.LIGHTGRAY} marginTop={Matrics.vs0} paddingHorizontal={0} >{moment(item?.createdAt).format("DD MMM")}</TextComponent>
 
                                         </View>
                                         <View style={{ width: "80%" }}>
-                                            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs7} paddingHorizontal={0} numberOfLines={2}>{item?.message}</TextComponent>
+                                            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs7} paddingHorizontal={0} numberOfLines={2}>{item?.description}</TextComponent>
 
                                         </View>
-                                    </View>
+                                    </Pressable>
                                 )
                             }}
                         />

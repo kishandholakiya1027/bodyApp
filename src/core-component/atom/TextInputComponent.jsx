@@ -6,7 +6,7 @@ import { IS_IOS, getRobotoFont, getRubikFont } from '../../core-utils/utils'
 const TextInputComponent = ({ marginBottom = Matrics.vs15, value, multiline = false, secureTextEntry, placeholderTextColor, onChangeText, placeholder, keyboardType, error, height = Matrics.vs50 }) => {
     return (
         <View style={{ marginBottom }}>
-            <View style={[styles.inputView, { borderColor: error ? Colors.RED : Colors.LIGHTGRAY, height, justifyContent: multiline ? "flex-start" : "center" }]}>
+            <View style={[styles.inputView, { borderColor: error ? Colors.RED : value ? Colors.BLUE:Colors.LIGHTGRAY, height, justifyContent: multiline ? "flex-start" : "center" }]}>
                 <TextInput
                     value={value}
                     placeholderTextColor={Colors.LIGHTGRAY}

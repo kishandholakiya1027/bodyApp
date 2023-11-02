@@ -20,7 +20,7 @@ const ReportIssue = () => {
                         <TextComponent fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} >{"Report an Issue"}</TextComponent>
 
                         <Pressable onPress={() => navigation.navigate("Home")}>
-                            <Image source={Images.close} style={{ width: Matrics.ms26, height: Matrics.ms26, tintColor: Colors.LIGHTBLACK }} />
+                            <Image source={Images.close} style={{ width: Matrics.ms18, height: Matrics.ms18, tintColor: Colors.LIGHTBLACK }} />
                         </Pressable>
                     </View>
                     {/* <Header text={"Complete Profile"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => index == 1 ? setIndex(0) : logOut()} /> */}

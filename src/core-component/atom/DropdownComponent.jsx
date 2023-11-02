@@ -1,8 +1,8 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import DropDownPicker from 'react-native-dropdown-picker';
 import { getRobotoFont, getRubikFont } from '../../core-utils/utils';
-import { Colors, Matrics } from '../../theme';
+import { Colors, Images, Matrics } from '../../theme';
 import { Dropdown } from 'react-native-element-dropdown';
 
 const DropdownComponent = ({ setOpen, open, value, setValue, items = [], backgroundColor = Colors.MEDIUMGRAY, color = Colors.DARKGRAY, borderWidth = 0, placeholder }) => {
@@ -14,7 +14,7 @@ const DropdownComponent = ({ setOpen, open, value, setValue, items = [], backgro
                 <Text style={{ fontFamily: getRobotoFont(), color: Colors.DARKGRAY, fontSize: Matrics.ms15 }}>Select</Text>
             </Pressable> */}
             <Dropdown
-                style={[styles.dropdown, { backgroundColor, borderWidth }]}
+                style={[styles.dropdown, { backgroundColor, borderWidth ,borderColor:value? Colors.BLUE:Colors.LIGHTGRAY}]}
                 placeholderStyle={styles.placeholderStyle}
                 selectedTextStyle={styles.selectedTextStyle}
                 itemContainerStyle={{ backgroundColor, color }}
@@ -28,6 +28,9 @@ const DropdownComponent = ({ setOpen, open, value, setValue, items = [], backgro
                 placeholder={placeholder || 'Select item'}
                 searchPlaceholder="Search..."
                 value={value}
+                renderRightIcon={() => (
+                   value ? <Image source={Images.dropdownarrow} style={{width:Matrics.vs17,height:Matrics.vs16}}/>:null
+                  )}
                 // onFocus={() => setIsFocus(true)}
                 // onBlur={() => setIsFocus(false)}
                 onChange={item => {
@@ -110,6 +113,8 @@ const styles = StyleSheet.create({
     iconStyle: {
         width: 20,
         height: 20,
+        color:Colors.BLUE,
+        tintColor:Colors.BLUE
     },
     inputSearchStyle: {
         height: 40,

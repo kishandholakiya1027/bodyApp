@@ -1,5 +1,5 @@
-import { Dimensions, FlatList, Image, KeyboardAvoidingView, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
+import { Alert, Dimensions, FlatList, Image, KeyboardAvoidingView, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
+import React, { useCallback, useContext, useState } from 'react'
 import { IS_ANDROID, getRobotoFont, getRubikFont } from '../../core-utils/utils'
 import HeaderTextComponent from '../../core-component/molecules/HeaderTextComponent'
 import ImagePlaceHolderComponent from '../../core-component/atom/imagePlaceHolderComponent'
@@ -10,7 +10,13 @@ import BoxComponent from '../../core-component/atom/BoxComponent'
 import TextComponent from '../../core-component/atom/TextComponent'
 import Header from '../../core-component/atom/header'
 import DropdownComponent from '../../core-component/atom/DropdownComponent'
-import { IMAGE_URL } from '../../../config'
+import { API_URL, IMAGE_URL } from '../../../config'
+import CommonButton from '../../core-component/molecules/CommonButton'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import axios from 'axios'
+import UserParamContext from '../../context/setUserContext'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { convertToformData } from '../../core-utils/dataConverter'
 
 const { width, height } = Dimensions.get('window');
 
@@ -26,9 +32,44 @@ const UserProfile = () => {
     // const [waistSizeOpen, setWaistSizeOpen] = useState()
     const [hipSize, setHipSize] = useState()
     const [userData, setUserData] = useState({})
+    const navigation = useNavigation()
+    const { user } = useContext(UserParamContext)
+
     console.log("🚀 ~ file: UserProfile.jsx:27 ~ UserProfile ~ userData:", userData)
     // const [hipSizeOpen, setHipSizeOpen] = useState()
+    useFocusEffect(
+        useCallback(() => {
+            getUserData()
+        }, [])
+    )
 
+
+    const getUserData = async () => {
+        if (user) {
+            let url =  "user/get_user/"
+            console.log("🚀 ~ file: MyProfile.jsx:32 ~ getUserData ~ url:", url)
+            await axios.get(`${API_URL}${url}${user?.id || user?._id}`).then(async ({ data }) => {
+                console.log("🚀 ~ file: MyProfile.jsx:33 ~ awaitaxios.get ~ data:", data)
+                if (data?.status === 200) {
+                 
+                 
+                    setUserData(data?.data)
+                await AsyncStorage.setItem("user", JSON.stringify({ ...data?.data, role: user?.role }))
+                // setDate(data?.data?.time[0]?.split("-")[1])
+                } else {
+                    Alert.alert(data?.msg)
+                }
+            }).catch(err => {
+                console.log("🚀 ~ file: MyProfile.jsx:43 ~ awaitaxios.get ~ err:", err)
+
+            })
+
+        }
+    }
+
+    const socialMedia = [
+        "IN", "FB", "YT", "LI"
+    ]
     const usersData = [
         { key: "age", label: "Age", value: 32 },
         { key: "gender", label: "Gender", value: "Female" },
@@ -123,25 +164,70 @@ const UserProfile = () => {
         { label: "45", value: "45" },
     ]
 
+    const onProfileUpdate= async()=>{
+        let usr = {...userData}
+        delete usr["_id"]
+        delete usr["__v"]
+        // if(usr)
+        let body = convertToformData(usr)
+        if(!usr?.new){
+            delete usr["profile_img"]
+        }
+        await axios.put(`${API_URL}user/edit_user/${userData?.id || userData?._id}`, body, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }).then(async ({ data }) => {
+            if (data?.status === 200) {
+
+                await AsyncStorage.setItem("user", JSON.stringify({ ...user, id: userData?.id, role: user?.role }))
+                setTimeout(() => {
+                    navigation.navigate("MyProfile")
+
+                }, 1000);
+            }
+            Alert.alert(data?.msg || data?.error)
+
+        }).catch(error => {
+            console.log("🚀 ~ file: completeProfile.jsx:38 ~ onSubmit ~ error:", error)
+
+
+        })
+    }
+
     return (
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={IS_ANDROID ? '' : 'padding'} enabled>
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView style={{ flex: 1, backgroundColor: Colors.WHITE }}>
                 <StatusBar barStyle="dark-content" backgroundColor="transparent" />
-                {index !== 5 ? <Header onBackArrow={() => setIndex(index === 1 ? 0 : index === 2 ? 1 : index === 3 ? 2 : index === 4 ? 3 : 0)} /> : null}
+                {index !== 5 ? <View style={{ borderBottomWidth: 2, borderColor: Colors.BACKGROUNDGRAY }}>
+                    <Header text={"Complete Profile"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => index === 0 ?  navigation.goBack():setIndex(index === 1 ? 0 : index === 2 ? 1 : index === 3 ? 2 : index === 4 ? 3 : 0)} />
 
+                </View> : null}
+
+                {index !== 5 ? <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs30} >Update your profile to help our associates serve you better.</TextComponent> : null}
+                <View style={{ flexDirection: "row", justifyContent: "center", marginVertical: Matrics.vs30 }}>
+                    {
+                        new Array(5).fill(0).map((item, i) => {
+                            return (
+                                <View style={{ height: Matrics.ms10, borderWidth: Matrics.ms1, width: Matrics.ms10, borderRadius: Matrics.ms5, marginHorizontal: Matrics.hs3, backgroundColor: index >= i ? Colors.RED : Colors.WHITE, borderColor: Colors.RED }}></View>
+
+                            )
+                        })
+                    }
+                    {/* <View style={{ height: Matrics.ms10, borderWidth: Matrics.ms1, width: Matrics.ms10, borderRadius: Matrics.ms5, marginHorizontal: Matrics.hs3, backgroundColor: index === 1 ? Colors.RED : Colors.WHITE, borderColor: Colors.RED }}></View> */}
+                </View>
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
                     <View style={{ flex: 1 }}>
-                        {index !== 5 ? <TextComponent fontFamily={getRubikFont("Medium")} size={Matrics.ms23} color={Colors.DARKGRAY} marginTop={Matrics.vs15} >Update your profile to help ourassociates serve you better.</TextComponent> : null}
 
                         <View style={{ paddingHorizontal: Matrics.hs20, flex: 1 }}>
                             {index === 0 ? <View>
                                 <View >
-                                    <ImagePlaceHolderComponent setImage={(image) => setUserData({ ...userData, profile_img: image })} image={userData?.profile_img ? `${IMAGE_URL}${userData?.profile_img?.uri || userData?.profile_img}` : ""} />
-                                    <View>
+                                    <ImagePlaceHolderComponent padding={Matrics.hs20} marginVertical={Matrics.vs0} setImage={(image) => setUserData({ ...userData, profile_img: image,new:true })} image={userData?.profile_img ? userData?.profile_img?.uri || `${IMAGE_URL}${userData?.profile_img}` : ""} />
+                                    <View style={{ marginTop: Matrics.vs30 }}>
                                         <TextInputComponent placeholder={"Username"} onChangeText={(text) => setUserData({ ...userData, username: text })} value={userData?.username} />
                                     </View>
                                     <View>
-                                        <TextInputComponent placeholder={"Age"} onChangeText={(text) => setUserData({ ...userData, age: text })} value={userData?.age} keyboardType={"numeric"} />
+                                        <TextInputComponent placeholder={"Age"} onChangeText={(text) => setUserData({ ...userData, age: text })} value={userData?.age?.toString()} keyboardType={"numeric"} />
                                     </View>
                                     <View>
                                         <TextInputComponent placeholder={"Gender"} onChangeText={(text) => setUserData({ ...userData, gender: text })} value={userData?.gender} />
@@ -150,34 +236,34 @@ const UserProfile = () => {
 
 
                             </View> : index === 1 ?
-                                <View style={{ marginVertical: Matrics.vs30 }}>
+                                <View style={{ marginBottom: Matrics.vs30 }}>
                                     <View>
                                         <Text style={styles.bodyTypeTextStyle}>Select your body type</Text>
                                     </View>
                                     <View style={{ flexDirection: "column" }}>
-                                        <View style={{ flexDirection: "row", marginVertical: Matrics.vs15 }}>
-                                            <View style={{ flex: 0.33 }}>
-                                                <BoxComponent width={(width - 70) / 3} height={Matrics.vs173} type={"Hour-Glass"} onPress={(type) => setUserData({ ...userData, body_type: type })} value={userData?.body_type} />
+                                        <View style={{ flexDirection: "row", marginVertical: Matrics.vs15,justifyContent:"space-between" }}>
+                                            <View style={{flex:0.33,   marginHorizontal: Matrics.hs10,justifyContent:"center" }}>
+                                                <BoxComponent image={Images.hourglass} width={Matrics.hs75} height={Matrics.vs173} type={"hour-glass"} onPress={(type) => setUserData({ ...userData, body_type: type })} value={userData?.body_type} />
 
                                             </View>
-                                            <View style={{ flex: 0.33, marginLeft: Matrics.hs10 }}>
-                                                <BoxComponent width={(width - 70) / 3} height={Matrics.vs173} type={"Triangle"} onPress={(type) => setUserData({ ...userData, body_type: type })} value={userData?.body_type} />
+                                            <View style={{flex:0.33,  marginHorizontal: Matrics.hs10 }}>
+                                                <BoxComponent image={Images.triangle} width={Matrics.hs75} height={Matrics.vs173} type={"triangle"} onPress={(type) => setUserData({ ...userData, body_type: type })} value={userData?.body_type} />
 
                                             </View>
-                                            <View style={{ flex: 0.33, marginLeft: Matrics.hs10 }}>
-                                                <BoxComponent width={(width - 70) / 3} height={Matrics.vs173} type={"Rectangle"} onPress={(type) => setUserData({ ...userData, body_type: type })} value={userData?.body_type} />
+                                            <View style={{flex:0.33,  marginHorizontal: Matrics.hs10 }}>
+                                                <BoxComponent image={Images.rectangle} width={Matrics.hs75} height={Matrics.vs173} type={"rectangle"} onPress={(type) => setUserData({ ...userData, body_type: type })} value={userData?.body_type} />
 
                                             </View>
 
                                         </View>
                                         <View style={{ flexDirection: "row", marginVertical: Matrics.vs15 }}>
-                                            <View style={{ flex: 0.17 }}></View>
-                                            <View style={{ flex: 0.33 }}>
-                                                <BoxComponent width={(width - 70) / 3} height={Matrics.vs173} type={"Pear"} onPress={(type) => setUserData({ ...userData, body_type: type })} value={userData?.body_type} />
+                                            <View style={{ flex: 0.25 }}></View>
+                                            <View style={{ flex: 0.50, }}>
+                                                <BoxComponent image={Images.invertedtriangle} width={Matrics.hs75} height={Matrics.vs173} type={"inverted triangle"} onPress={(type) => setUserData({ ...userData, body_type: type })} value={userData?.body_type} />
 
                                             </View>
-                                            <View style={{ flex: 0.33, marginLeft: Matrics.hs10 }}>
-                                                <BoxComponent width={(width - 70) / 3} height={Matrics.vs173} type={"Apple"} onPress={(type) => setUserData({ ...userData, body_type: type })} value={userData?.body_type} />
+                                            <View style={{ flex: 0.28, marginLeft: Matrics.hs10 }}>
+                                                <BoxComponent image={Images.oval} width={Matrics.hs75} height={Matrics.vs173} type={"oval"} onPress={(type) => setUserData({ ...userData, body_type: type })} value={userData?.body_type} />
 
                                             </View>
                                             <View style={{ flex: 0.17 }}></View>
@@ -195,30 +281,30 @@ const UserProfile = () => {
                                         <View style={{ flexDirection: "column" }}>
                                             <View style={{ flexDirection: "row", marginVertical: Matrics.vs15 }}>
                                                 <View style={{ flex: 0.33 }}>
-                                                    <BoxComponent width={(width - 70) / 3} height={Matrics.vs118} type={"Round"} onPress={(type) => setUserData({ ...userData, face_type: type })} value={userData?.face_type} />
+                                                    <BoxComponent image={Images.round} width={(width - 70) / 3} height={Matrics.vs118} type={"round"} onPress={(type) => setUserData({ ...userData, face_type: type })} value={userData?.face_type} />
 
                                                 </View>
                                                 <View style={{ flex: 0.33, marginLeft: Matrics.hs10 }}>
-                                                    <BoxComponent width={(width - 70) / 3} height={Matrics.vs118} type={"Triangle"} onPress={(type) => setUserData({ ...userData, face_type: type })} value={userData?.face_type} />
+                                                    <BoxComponent image={Images.triangleFace} width={(width - 70) / 3} height={Matrics.vs118} type={"triangle"} onPress={(type) => setUserData({ ...userData, face_type: type })} value={userData?.face_type} />
 
                                                 </View>
                                                 <View style={{ flex: 0.33, marginLeft: Matrics.hs10 }}>
-                                                    <BoxComponent width={(width - 70) / 3} height={Matrics.vs118} type={"Square"} onPress={(type) => setUserData({ ...userData, face_type: type })} value={userData?.face_type} />
+                                                    <BoxComponent image={Images.square} width={(width - 70) / 3} height={Matrics.vs118} type={"square"} onPress={(type) => setUserData({ ...userData, face_type: type })} value={userData?.face_type} />
 
                                                 </View>
 
                                             </View>
                                             <View style={{ flexDirection: "row", marginVertical: Matrics.vs15 }}>
                                                 <View style={{ flex: 0.33 }}>
-                                                    <BoxComponent width={(width - 70) / 3} height={Matrics.vs118} type={"Oval"} onPress={(type) => setUserData({ ...userData, face_type: type })} value={userData?.face_type} />
+                                                    <BoxComponent image={Images.ovalFace} width={(width - 70) / 3} height={Matrics.vs118} type={"oval"} onPress={(type) => setUserData({ ...userData, face_type: type })} value={userData?.face_type} />
 
                                                 </View>
                                                 <View style={{ flex: 0.33, marginLeft: Matrics.hs10 }}>
-                                                    <BoxComponent width={(width - 70) / 3} height={Matrics.vs118} type={"Daimond"} onPress={(type) => setUserData({ ...userData, face_type: type })} value={userData?.face_type} />
+                                                    <BoxComponent image={Images.diamond} width={(width - 70) / 3} height={Matrics.vs118} type={"daimond"} onPress={(type) => setUserData({ ...userData, face_type: type })} value={userData?.face_type} />
 
                                                 </View>
                                                 <View style={{ flex: 0.33, marginLeft: Matrics.hs10 }}>
-                                                    <BoxComponent width={(width - 70) / 3} height={Matrics.vs118} type={"Oblong"} onPress={(type) => setUserData({ ...userData, face_type: type })} value={userData?.face_type} />
+                                                    <BoxComponent image={Images.oblong} width={(width - 70) / 3} height={Matrics.vs118} type={"oblong"} onPress={(type) => setUserData({ ...userData, face_type: type })} value={userData?.face_type} />
 
                                                 </View>
 
@@ -227,7 +313,7 @@ const UserProfile = () => {
                                                 <View style={{ flex: 0.33 }}></View>
 
                                                 <View style={{ flex: 0.33, marginLeft: Matrics.hs10 }}>
-                                                    <BoxComponent width={(width - 70) / 3} height={Matrics.vs118} type={"Heart"} onPress={(type) => setUserData({ ...userData, face_type: type })} value={userData?.face_type} />
+                                                    <BoxComponent image={Images.heartShape} width={(width - 70) / 3} height={Matrics.vs118} type={"heart"} onPress={(type) => setUserData({ ...userData, face_type: type })} value={userData?.face_type} />
 
                                                 </View>
                                                 <View style={{ flex: 0.33 }}></View>
@@ -238,37 +324,37 @@ const UserProfile = () => {
 
 
                                     </View> : index === 3 ?
-                                        <View style={{ marginVertical: Matrics.vs30 }}>
+                                        <View style={{ marginBottom: Matrics.vs30 }}>
                                             <View>
                                                 <Text style={styles.bodyTypeTextStyle}>Select your complexion</Text>
                                             </View>
                                             <View style={{ flexDirection: "column" }}>
-                                                <View style={{ flexDirection: "row", marginVertical: Matrics.vs15 }}>
+                                                <View style={{ flexDirection: "row", marginVertical: Matrics.vs20 }}>
                                                     <View style={{ flex: 0.33 }}>
-                                                        <BoxComponent width={(width - 70) / 3} height={Matrics.vs118} type={"Light"} onPress={(type) => setUserData({ ...userData, complexion: type })} value={userData?.complexion} />
+                                                        <BoxComponent color={Colors.LIGHTSKIN} width={(width - 70) / 3} height={Matrics.vs118} type={"light"} onPress={(type) => setUserData({ ...userData, complexion: type })} value={userData?.complexion} />
 
                                                     </View>
                                                     <View style={{ flex: 0.33, marginLeft: Matrics.hs10 }}>
-                                                        <BoxComponent width={(width - 70) / 3} height={Matrics.vs118} type={"Fair"} onPress={(type) => setUserData({ ...userData, complexion: type })} value={userData?.complexion} />
+                                                        <BoxComponent color={Colors.FAIRSKIN} width={(width - 70) / 3} height={Matrics.vs118} type={"fair"} onPress={(type) => setUserData({ ...userData, complexion: type })} value={userData?.complexion} />
 
                                                     </View>
                                                     <View style={{ flex: 0.33, marginLeft: Matrics.hs10 }}>
-                                                        <BoxComponent width={(width - 70) / 3} height={Matrics.vs118} type={"Medium"} onPress={(type) => setUserData({ ...userData, complexion: type })} value={userData?.complexion} />
+                                                        <BoxComponent color={Colors.MEDIUMSKIN} width={(width - 70) / 3} height={Matrics.vs118} type={"medium"} onPress={(type) => setUserData({ ...userData, complexion: type })} value={userData?.complexion} />
 
                                                     </View>
 
                                                 </View>
                                                 <View style={{ flexDirection: "row", marginVertical: Matrics.vs15 }}>
                                                     <View style={{ flex: 0.33 }}>
-                                                        <BoxComponent width={(width - 70) / 3} height={Matrics.vs118} type={"Olive"} onPress={(type) => setUserData({ ...userData, complexion: type })} value={userData?.complexion} />
+                                                        <BoxComponent color={Colors.OLIVESKIN} width={(width - 70) / 3} height={Matrics.vs118} type={"olive"} onPress={(type) => setUserData({ ...userData, complexion: type })} value={userData?.complexion} />
 
                                                     </View>
                                                     <View style={{ flex: 0.33, marginLeft: Matrics.hs10 }}>
-                                                        <BoxComponent width={(width - 70) / 3} height={Matrics.vs118} type={"Tan"} onPress={(type) => setUserData({ ...userData, complexion: type })} value={userData?.complexion} />
+                                                        <BoxComponent color={Colors.TANSKIN} width={(width - 70) / 3} height={Matrics.vs118} type={"tan"} onPress={(type) => setUserData({ ...userData, complexion: type })} value={userData?.complexion} />
 
                                                     </View>
                                                     <View style={{ flex: 0.33, marginLeft: Matrics.hs10 }}>
-                                                        <BoxComponent width={(width - 70) / 3} height={Matrics.vs118} type={"Brown"} onPress={(type) => setUserData({ ...userData, complexion: type })} value={userData?.complexion} />
+                                                        <BoxComponent color={Colors.BROWNSKIN} width={(width - 70) / 3} height={Matrics.vs118} type={"brown"} onPress={(type) => setUserData({ ...userData, complexion: type })} value={userData?.complexion} />
 
                                                     </View>
 
@@ -276,11 +362,11 @@ const UserProfile = () => {
                                                 <View style={{ flexDirection: "row", marginVertical: Matrics.vs15 }}>
 
                                                     <View style={{ flex: 0.33, marginLeft: Matrics.hs10 }}>
-                                                        <BoxComponent width={(width - 70) / 3} height={Matrics.vs118} type={"Dark Brown"} onPress={(type) => setUserData({ ...userData, complexion: type })} value={userData?.complexion} />
+                                                        <BoxComponent color={Colors.DARKBROWNSKIN} width={(width - 70) / 3} height={Matrics.vs118} type={"dark brown"} onPress={(type) => setUserData({ ...userData, complexion: type })} value={userData?.complexion} />
 
                                                     </View>
                                                     <View style={{ flex: 0.33, marginLeft: Matrics.hs10 }}>
-                                                        <BoxComponent width={(width - 70) / 3} height={Matrics.vs118} type={"Black"} onPress={(type) => setUserData({ ...userData, complexion: type })} value={userData?.complexion} />
+                                                        <BoxComponent color={Colors.BLACKSKIN} width={(width - 70) / 3} height={Matrics.vs118} type={"black"} onPress={(type) => setUserData({ ...userData, complexion: type })} value={userData?.complexion} />
 
                                                     </View>
                                                     <View style={{ flex: 0.33 }}></View>
@@ -291,22 +377,22 @@ const UserProfile = () => {
 
 
                                         </View> : index === 4 ?
-                                            <View style={{ marginVertical: Matrics.vs30 }}>
+                                            <View style={{  }}>
                                                 <View>
                                                     <Text style={styles.bodyTypeTextStyle}>Select your hair length</Text>
                                                 </View>
                                                 <View style={{ flexDirection: "column" }}>
-                                                    <View style={{ flexDirection: "row", marginVertical: Matrics.vs15 }}>
-                                                        <View style={{ flex: 0.33 }}>
-                                                            <BoxComponent width={(width - 70) / 3} height={Matrics.vs118} type={"Long"} onPress={(type) => setUserData({ ...userData, hair_length: type })} value={userData?.hair_length} />
+                                                    <View style={{ flexDirection: "row", marginVertical: Matrics.vs15 ,justifyContent:"space-between"}}>
+                                                        <View style={{ flex: 0.33,marginHorizontal:Matrics.hs10 }}>
+                                                            <BoxComponent image={Images.longhair} width={(width - 135) / 3} height={Matrics.vs110} type={"long"} onPress={(type) => setUserData({ ...userData, hair_length: type })} value={userData?.hair_length} />
 
                                                         </View>
-                                                        <View style={{ flex: 0.33, marginLeft: Matrics.hs10 }}>
-                                                            <BoxComponent width={(width - 70) / 3} height={Matrics.vs118} type={"Short"} onPress={(type) => setUserData({ ...userData, hair_length: type })} value={userData?.hair_length} />
+                                                        <View style={{ flex: 0.33,marginHorizontal:Matrics.vs10, }}>
+                                                            <BoxComponent image={Images.shorthair} width={(width - 135) / 3} height={Matrics.vs110} type={"short"} onPress={(type) => setUserData({ ...userData, hair_length: type })} value={userData?.hair_length} />
 
                                                         </View>
-                                                        <View style={{ flex: 0.33, marginLeft: Matrics.hs10 }}>
-                                                            <BoxComponent width={(width - 70) / 3} height={Matrics.vs118} type={"Medium"} onPress={(type) => setUserData({ ...userData, hair_length: type })} value={userData?.hair_length} />
+                                                        <View style={{ flex: 0.33,marginHorizontal:Matrics.vs10 }}>
+                                                            <BoxComponent image={Images.mediumhair} width={(width - 135) / 3} height={Matrics.vs110} type={"medium"} onPress={(type) => setUserData({ ...userData, hair_length: type })} value={userData?.hair_length} />
 
                                                         </View>
 
@@ -319,11 +405,11 @@ const UserProfile = () => {
                                                         <Text style={styles.bodyTypeTextStyle}>Enter your height</Text>
                                                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: Matrics.vs10 }}>
                                                             <View style={{ flex: 0.48 }}>
-                                                                <DropdownComponent items={hightFeet} setValue={(value) => setUserData({ ...userData, height: [value, userData?.height && userData?.height[1]] })} value={userData?.height && userData?.height[0]} />
+                                                                <DropdownComponent backgroundColor={Colors.WHITE} borderWidth={1} items={hightFeet} setValue={(value) => setUserData({ ...userData, height: [value, userData?.height && userData?.height[1]] })} value={userData?.height && userData?.height[0]?.toString()} />
 
                                                             </View>
                                                             <View style={{ flex: 0.48 }}>
-                                                                <DropdownComponent items={hightInch} setValue={(value) => setUserData({ ...userData, height: [userData?.height && userData?.height[0], value] })} value={userData?.height && userData?.height[1]} />
+                                                                <DropdownComponent backgroundColor={Colors.WHITE} borderWidth={1} items={hightInch} setValue={(value) => setUserData({ ...userData, height: [userData?.height && userData?.height[0], value] })} value={userData?.height && userData?.height[1]?.toString()} />
 
                                                             </View>
                                                         </View>
@@ -335,11 +421,11 @@ const UserProfile = () => {
                                                         <Text style={styles.bodyTypeTextStyle}>Select your bust size</Text>
                                                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: Matrics.vs10 }}>
                                                             <View style={{ flex: 0.48 }}>
-                                                                <DropdownComponent items={bustSizeInches} setValue={(value) => setUserData({ ...userData, bust_size: [value, userData?.bust_size && userData?.bust_size[1]] })} value={userData?.bust_size && userData?.bust_size[0]} />
+                                                                <DropdownComponent backgroundColor={Colors.WHITE} borderWidth={1} items={bustSizeInches} setValue={(value) => setUserData({ ...userData, bust_size: [value, userData?.bust_size && userData?.bust_size[1]] })} value={userData?.bust_size && userData?.bust_size[0]?.toString()} />
 
                                                             </View>
                                                             <View style={{ flex: 0.48 }}>
-                                                                <DropdownComponent items={bustSizeAlpha} setValue={(value) => setUserData({ ...userData, bust_size: [userData?.bust_size && userData?.bust_size[0], value] })} value={userData?.bust_size && userData?.bust_size[1]} />
+                                                                <DropdownComponent backgroundColor={Colors.WHITE} borderWidth={1} items={bustSizeAlpha} setValue={(value) => setUserData({ ...userData, bust_size: [userData?.bust_size && userData?.bust_size[0], value] })} value={userData?.bust_size && userData?.bust_size[1]} />
 
                                                             </View>
                                                         </View>
@@ -350,7 +436,7 @@ const UserProfile = () => {
                                                     <View>
                                                         <Text style={styles.bodyTypeTextStyle}>Select your waist size</Text>
                                                         <View style={{ marginTop: Matrics.vs10 }}>
-                                                            <DropdownComponent items={waistSizes} setValue={(value) => setUserData({ ...userData, waist_size: value })} value={userData?.waist_size} />
+                                                            <DropdownComponent backgroundColor={Colors.WHITE} borderWidth={1} items={waistSizes} setValue={(value) => setUserData({ ...userData, waist_size: value })} value={userData?.waist_size?.toString()} />
 
                                                         </View>
                                                     </View>
@@ -360,7 +446,7 @@ const UserProfile = () => {
                                                     <View>
                                                         <Text style={styles.bodyTypeTextStyle}>Select your hip size</Text>
                                                         <View style={{ marginTop: Matrics.vs10 }}>
-                                                            <DropdownComponent items={hipSizes} setValue={(value) => setUserData({ ...userData, hip_size: value })} value={userData?.hip_size} />
+                                                            <DropdownComponent backgroundColor={Colors.WHITE} borderWidth={1} items={hipSizes} setValue={(value) => setUserData({ ...userData, hip_size: value })} value={userData?.hip_size?.toString()} />
 
                                                         </View>
                                                     </View>
@@ -421,24 +507,44 @@ const UserProfile = () => {
                 </ScrollView>
                 <View style={{ marginHorizontal: Matrics.hs20, paddingVertical: Matrics.vs15 }}>
                     {index === 0 ? <View style={{ alignItems: "center", justifyContent: "center" }}>
-                        <ButtonComponent text="Next" onPress={() => setIndex(1)} />
+                        <CommonButton viewStyle={{ width: "50%" }} text="Next" onPress={() => setIndex(1)} />
                     </View> : index === 1 ?
                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                            <ButtonComponent text="Back" onPress={() => setIndex(0)} />
-                            <ButtonComponent text="Next" onPress={() => setIndex(2)} />
+                            <View style={{flex:0.47}}>
+                            <CommonButton text="Back" onPress={() => setIndex(0)} />
+                                </View>
+                                <View style={{flex:0.47}}>
+                            <CommonButton text="Next" viewStyle={{backgroundColor:Colors.BLUE}} textStyle={{color:Colors.WHITE}} onPress={() => setIndex(2)} />
+                                    </View>
                         </View> : index === 2 ?
                             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                <ButtonComponent text="Back" onPress={() => setIndex(1)} />
-                                <ButtonComponent text="Next" onPress={() => setIndex(3)} />
+                            <View style={{flex:0.47}}>
+
+                                <CommonButton text="Back" onPress={() => setIndex(1)} />
+                                </View>
+                                <View style={{flex:0.47}}>
+                                <CommonButton text="Next"  viewStyle={{backgroundColor:Colors.BLUE}} textStyle={{color:Colors.WHITE}} onPress={() => setIndex(3)} />
+                                </View>
+
                             </View> : index === 3 ? <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                <ButtonComponent text="Back" onPress={() => setIndex(2)} />
-                                <ButtonComponent text="Next" onPress={() => setIndex(4)} />
+                            <View style={{flex:0.47}}>
+                                <CommonButton text="Back" onPress={() => setIndex(2)} />
+                                </View>
+                                <View style={{flex:0.47}}>
+                                <CommonButton text="Next" viewStyle={{backgroundColor:Colors.BLUE}} textStyle={{color:Colors.WHITE}} onPress={() => setIndex(4)} />
+                                </View>
+
                             </View> : index === 4 ? <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                <ButtonComponent text="Back" onPress={() => setIndex(3)} />
-                                <ButtonComponent text="Next" onPress={() => setIndex(5)} />
+                            <View style={{flex:0.47}}>
+                                <CommonButton text="Back" onPress={() => setIndex(3)} />
+                                </View>
+                                <View style={{flex:0.47}}>
+                                <CommonButton text="Next" viewStyle={{backgroundColor:Colors.BLUE}} textStyle={{color:Colors.WHITE}} onPress={() =>onProfileUpdate()} />
+                                </View>
+
                             </View> : index === 5 ?
                                 <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                    <ButtonComponent text="Edit Profile" />
+                                    <CommonButton text="Edit Profile" />
                                 </View> : null
 
 
@@ -452,7 +558,7 @@ const UserProfile = () => {
 export default UserProfile
 
 const styles = StyleSheet.create({
-    bodyTypeTextStyle: { fontFamily: getRubikFont("Regular"), fontSize: Matrics.ms20, color: Colors.DARKGRAY },
+    bodyTypeTextStyle: { fontFamily: getRubikFont("Regular"), fontSize: Matrics.ms18, color: Colors.LIGHTBLACK },
     mainView: { height: Matrics.vs50, justifyContent: "center", alignItems: "flex-end", marginRight: Matrics.vs20 }
 
 })

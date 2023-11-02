@@ -1,6 +1,6 @@
-import { Alert, Dimensions, FlatList, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { Colors, Matrics } from '../../theme'
+import { Alert, Dimensions, FlatList, Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
+import { Colors, Images, Matrics } from '../../theme'
 import TextInputComponent from '../../core-component/atom/TextInputComponent'
 import TextComponent from '../../core-component/atom/TextComponent'
 import { IS_ANDROID, getRubikFont } from '../../core-utils/utils'
@@ -15,26 +15,27 @@ import messaging from '@react-native-firebase/messaging';
 import PushNotification from "react-native-push-notification";
 import PushNotificationIOS from '@react-native-community/push-notification-ios'
 import requestCameraAndAudioPermission from '../../core-component/atom/Permission'
-
+import UserParamContext from '../../context/setUserContext'
+import Toast from 'react-native-simple-toast';
 const data = [
     {
-        image: "",
+        image: Images.CreateUniquelooks,
         title: "Create Unique Looks"
     },
     {
-        image: "",
+        image: Images.Customdesign,
         title: "Refresh Wardrobe"
     },
     {
-        image: "",
+        image: Images.Refreshwardrobe,
         title: "Reuse/ Mix & Match"
     },
     {
-        image: "",
+        image: Images.ReuseMixnmatch,
         title: "Shopping Assistance"
     },
     {
-        image: "",
+        image: Images.shoppingassistance,
         title: "Create Unique Looks"
     },
 ]
@@ -48,10 +49,8 @@ const Home = () => {
     const [filter, setFilter] = useState()
     const navigation = useNavigation()
     const insets = useSafeAreaInsets();
-    console.log("🚀 ~ file: index.jsx:45 ~ Home ~ insets:", insets)
+    const { setUser: setUserData } = useContext(UserParamContext)
     const { width: _width, height: _height } = Dimensions.get('window');
-    console.log("🚀 ~ file: index.jsx:44 ~ Home ~ _height:", _height)
-    console.log("🚀 ~ file: index.jsx:44 ~ Home ~ _width:", _width)
 
 
     PushNotification.configure({
@@ -61,8 +60,11 @@ const Home = () => {
         },
 
         // (required) Called when a remote is received or opened, or local notification is opened
-        onNotification: function (notification) {
-            console.log("NOTIFICATION:", notification);
+        onNotification: function (notification,sd) {
+            console.log("NOTIFICATION:", notification,sd);
+            if(notification?.userInteraction){
+                navigation.navigate("VideoCall",{item:{_id:notification?.data?.channelId}})
+            }
             // PushNotification.localNotification({
             //     channelId: notification?.channelId,
             //     smallIcon: "",
@@ -114,6 +116,11 @@ const Home = () => {
 
 
     useEffect(() => {
+        // Toast.show('This is a styled toast on iOS.', Toast.SHORT, {
+        //     backgroundColor: "black",
+        //     fontFamily:getRubikFont("Regular"),
+        //     fontSize:Matrics.ms18
+        //   });
         getToken()
         if (Platform.OS === 'android') {
             // Request required permissions from Android
@@ -135,17 +142,14 @@ const Home = () => {
             .catch(err => console.log('*-* registrer error ', err));
 
         await messaging().getAPNSToken().then(data => {
-            console.log("🚀 ~ file: RegisterPage.jsx:47 ~ messaging ~ data:", data)
             messaging().setAPNSToken(data || "385757dhnfudhf8487398890", "unknown")
 
         })
         messaging().getToken().then(async device_id => {
             console.log("🚀 ~ file: signinScreen.js:49 ~ messaging ~ device_id:", device_id)
         }).catch(err => console.log("🚀 ~ file: signinScreen.js ~ line 58 ~ useEffect ~ err", err))
-        if (token) {
 
             createNotificationListeners(); //add this line
-        }
 
     }
 
@@ -156,9 +160,7 @@ const Home = () => {
             .hasPermission()
             .then(data => { });
         let enabled = await messaging().hasPermission();
-        console.log("🚀 ~ file: RegisterPage.jsx:176 ~ createNotificationListeners ~ enabled:", enabled)
         PushNotification.popInitialNotification(not => {
-            console.log("🚀 ~ file: RegisterPage.jsx:92 ~ RegisterPage ~ not:", not)
 
         })
 
@@ -181,11 +183,7 @@ const Home = () => {
                 // }
             });
         messaging().onMessage(async noti => {
-            console.log("🚀 ~ file: initialScreen.js:148 ~ messaging ~ noti:", noti)
             // Alert.alert(noti?.notification?.title)
-            const callUUID = uuidv4(); // Generate a unique ID for the call
-            console.log("🚀 ~ file: IncominCall.jsx:40 ~ IncominCall ~ callUUID:", callUUID)
-            const handle = 'recipient_username'; // The recipient's username or phone number
             // RNCallKeep.answerIncomingCall(callUUID)
             // PushNotification.localNotification({
             //     channelId: noti?.data?.android_channel_id,
@@ -198,12 +196,13 @@ const Home = () => {
             // });
             // RNCallKeep.displayIncomingCall(callUUID, handle, 'Incoming Call', 'default', true);
             PushNotification.localNotification({
-                channelId: noti?.notification?.android?.channelId,
+                channelId: noti?.notification?.android?.channelId||"test-1",
                 smallIcon: '',
                 soundName: noti?.data?.sound,
                 title: noti?.notification?.title,
                 message: noti?.notification?.body,
                 invokeApp: true, // (required)
+                userInfo:noti?.data
             });
         });
         messaging()
@@ -225,6 +224,7 @@ const Home = () => {
         if (token) {
             setToken(token)
             const user = JSON.parse(await AsyncStorage.getItem("user"))
+            setUserData(user)
             setUser(user)
             // navigation.navigate("Home")
         }
@@ -260,15 +260,15 @@ const Home = () => {
             <SafeAreaView initialMetrics={initialWindowMetrics} style={{ flex: 1 }} >
                 <View style={{ marginHorizontal: Matrics.ms20, flex: 1 }}>
                     <View >
-                        <TextInputComponent placeholder={"Search for designers, stylists or trends"} onChangeText={(text) => onSearch(text)} value={search} />
+                        <TextInputComponent placeholder={"Search for designers, stylists or trends"} onChangeText={(text) => setFilter({...filter,search:text})} value={search} />
                         <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10}>{"How can we assist you today?"}</TextComponent>
                         <View style={{ flexDirection: "row" }}>
                             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                                 {data ?
                                     data?.map(item =>
-                                        <Pressable onPress={() => setFilter(item?.title)} style={{ marginRight: Matrics.vs15, width: Matrics.vs100, justifyContent: "center", marginTop: Matrics.vs10 }}>
-
-                                            <ImagePlaceHolderComponent size={Matrics.ms90} borderRadius={Matrics.ms45} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => { }} image={`${IMAGE_URL}${item?.image}`} borderColor={filter === item?.title ? Colors.MEDIUMRED : Colors.MEDIUMREDOPACITY} backgroundColor={Colors.MEDIUMREDOPACITY} />
+                                        <Pressable onPress={() => setFilter({...filter,assist:item?.title})} style={{ marginRight: Matrics.vs15, width: Matrics.vs100, justifyContent: "center", marginTop: Matrics.vs10 }}>
+                                            <Image source={item?.image} style={{width:Matrics.ms90,height:Matrics.ms90,borderRadius:Matrics.ms45,borderWidth:filter?.assist === item?.title ?2:1,borderColor: Colors.MEDIUMRED,resizeMode:"contain",marginLeft:Matrics.vs10}}/>
+                                            {/* <ImagePlaceHolderComponent size={Matrics.ms90} borderRadius={Matrics.ms45} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => { }} image={item?.image} borderColor={filter === item?.title ? Colors.MEDIUMRED : Colors.MEDIUMREDOPACITY}  /> */}
                                             <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} textAlign="center">{item?.title}</TextComponent>
 
                                         </Pressable>
@@ -284,8 +284,8 @@ const Home = () => {
 
                             <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10}>{"Popular on StyleCrew"}</TextComponent>
                         </View>
-                        <View style={{ height: "54%", justifyContent: "center" }}>
-                            <UsedataComponent slice={2} userId={user?.id} search={search} filter={filter} />
+                        <View style={{ height: "58%", justifyContent: "center" }}>
+                            <UsedataComponent slice={2} userId={user?.id}  userFilter={filter} />
 
                         </View>
                         <Pressable style={{ alignItems: "center" }} onPress={() => navigation.navigate("AllUsers", { users })}>

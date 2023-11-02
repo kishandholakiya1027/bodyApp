@@ -36,6 +36,16 @@
 				<string>com.googleusercontent.apps.106151688664-01cr7qsahcdnjqv2jrfqe2up9ncuf5lc</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.avatarbody.app</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>app</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
@@ -43,7 +53,6 @@
 	<string>707302934586805</string>
 	<key>FacebookClientToken</key>
 	<string>7b091e8be945207cd43291ae0eb12950</string>
-	<!-- <string>12f4168287035402e9efb8bf4e29c31f</string> -->
 	<key>FacebookDisplayName</key>
 	<string>avatar</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>

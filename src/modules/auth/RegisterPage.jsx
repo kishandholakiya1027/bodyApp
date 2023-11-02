@@ -1,4 +1,4 @@
-import { Alert, Button, Image, KeyboardAvoidingView, PermissionsAndroid, Platform, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native'
+import { Alert, Button, Image, KeyboardAvoidingView, PermissionsAndroid, Platform, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { IS_ANDROID, getRobotoFont, getRubikFont } from '../../core-utils/utils'
 import { Colors, Images, Matrics } from '../../theme'
@@ -33,7 +33,6 @@ const RegisterPage = () => {
     const navigation = useNavigation()
 
     const data = useNotification()
-    console.log("🚀 ~ file: RegisterPage.jsx:35 ~ RegisterPage ~ data:", data)
 
     const roleArray = [
         { label: "Designer", value: false },
@@ -93,12 +92,14 @@ const RegisterPage = () => {
 
     return (
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={IS_ANDROID ? '' : 'padding'} enabled>
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView style={{ flex: 1, backgroundColor: Colors.WHITE }}>
                 <StatusBar barStyle="dark-content" backgroundColor="transparent" />
-                <View style={{ height: "100%", backgroundColor: Colors.WHITE }}>
                     <View style={{ borderBottomWidth: 0.5 }}>
                         <Header text={"Create Your Account"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} />
                     </View>
+                <ScrollView showsVerticalScrollIndicator={false}>
+
+                <View style={{ height: "100%", }}>
                     <View style={{ marginVertical: Matrics.vs20 }}>
 
                         {/* <TextComponent fontFamily={getRobotoFont("Medium")} size={Matrics.ms23} color={Colors.DARKGRAY}  >Login to explore!</TextComponent> */}
@@ -145,7 +146,7 @@ const RegisterPage = () => {
 
                                     </Pressable>
                                 </View>
-                                <SocialMediaComponent />
+                                <SocialMediaComponent role={role} checkRole={true}/>
                             </View>
 
 
@@ -153,6 +154,7 @@ const RegisterPage = () => {
                     </View>
 
                 </View>
+                </ScrollView>
             </SafeAreaView>
         </KeyboardAvoidingView>
     )

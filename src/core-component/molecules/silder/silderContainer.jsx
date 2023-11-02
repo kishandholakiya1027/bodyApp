@@ -10,8 +10,6 @@ export const SliderContainer = (props) => {
 
   // sliderValue props
   const { sliderValue, trackMarks, setSlider, setFilter } = props;
-  console.log("🚀 ~ file: silderContainer.jsx:12 ~ SliderContainer ~ sliderValue:", sliderValue)
-  console.log("🚀 ~ file: silderContainer.jsx:12 ~ SliderContainer ~ trackMarks:", trackMarks)
 
   let renderTrackMarkComponent;
 

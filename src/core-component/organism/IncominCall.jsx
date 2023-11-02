@@ -72,7 +72,6 @@ export default class IncominCall extends Component {
     //     RNCallKeep.removeEventListener('endCall', this.onEndCall);
     // }
     didReceiveStartCallAction = (data) => {
-        console.log("🚀 ~ file: IncominCall.jsx:71 ~ IncominCall ~ data:", data)
         let { handle, callUUID, name } = data;
         RNCallKeep.displayIncomingCall(callUUID, handle, 'Incoming Call', 'default', true);
 
@@ -81,7 +80,6 @@ export default class IncominCall extends Component {
     };
 
     onAnswerCallAction = (data) => {
-        console.log("🚀 ~ file: IncominCall.jsx:78 ~ IncominCall ~ data:", data)
         let { callUUID } = data;
         RNCallKeep.endCall(callUUID);
         this.props.navigation.navigate("Home")

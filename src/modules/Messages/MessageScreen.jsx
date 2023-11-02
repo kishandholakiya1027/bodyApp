@@ -1,5 +1,5 @@
 import { FlatList, KeyboardAvoidingView, StatusBar, StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Colors, Matrics } from '../../theme'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IS_ANDROID, getRubikFont } from '../../core-utils/utils';
@@ -13,25 +13,38 @@ import moment from 'moment';
 import CommonButton from '../../core-component/molecules/CommonButton';
 import TextInputComponent from '../../core-component/atom/TextInputComponent';
 import { convertToformData } from '../../core-utils/dataConverter';
+import UserParamContext from '../../context/setUserContext';
 
-const MessageScreen = () => {
+const MessageScreen = (props) => {
+    const {receiverId} = props?.route?.params
     const insets = useSafeAreaInsets();
     const navigation = useNavigation()
     const [messages, setMessages] = useState()
     const [message, setMessage] = useState()
     const [image, setImage] = useState()
     const msgRef = useRef()
-    let userId = "6538adcb01fd15b33929cb85"
+    const {user} = useContext(UserParamContext)
+
+    let userId = user?.id||user?._id
+    console.log("🚀 ~ file: MessageScreen.jsx:29 ~ MessageScreen ~ userId:", userId)
     console.log("🚀 ~ file: MessageScreen.jsx:15 ~ MessageScreen ~ messages:", messages)
     useEffect(() => {
         getMessages()
     }, [])
 
     const getMessages = async () => {
-        await axios.get(`${API_URL}message/get_message`).then(({ data }) => {
+        await axios.post(`${API_URL}message/get_message_user`,{
+            "senderId": user?.id||user?._id,
+            "receiverId": receiverId
+        }).then(({ data }) => {
+            console.log("🚀 ~ file: MessageScreen.jsx:39 ~ getMessages ~ data:", data)
             if (data?.status === 200) {
-                setMessages(data?.querys)
-                msgRef?.current?.scrollToEnd()
+                setMessages(data?.data)
+                setTimeout(() => {
+                    msgRef?.current?.scrollToEnd()
+
+                },700);
+                // msgRef?.current?.scrollToEnd()
             }
             console.log("🚀 ~ file: MessageScreen.jsx:22 ~ awaitaxios.get ~ data:", data)
 
@@ -40,12 +53,12 @@ const MessageScreen = () => {
 
     const onSubmit = async () => {
         let body = {
-            loginUserId: "6538adcb01fd15b33929cb85",
-            designerId: "652f5bd81ae2a5563bd5a78c",
+            senderId: user?.id||user?._id,
+            receiverId: receiverId,
             description: message
         }
         if (image) {
-            body.image = image
+            body.images = image
         }
         let data = convertToformData(body)
         await axios.post(`${API_URL}message/add_message`, data, {
@@ -54,12 +67,10 @@ const MessageScreen = () => {
             }
         }).then(({ data }) => {
             if (data?.status === 200) {
-                getMessages()
+                setImage()
                 setMessage()
-                setTimeout(() => {
-                    msgRef?.current?.scrollToEnd()
-
-                }, 700);
+                getMessages()
+             
             }
         }).catch(err => {
             console.log("🚀 ~ file: MessageScreen.jsx:66 ~ onSubmit ~ err:", err)
@@ -73,25 +84,25 @@ const MessageScreen = () => {
             <SafeAreaView style={{ flex: 1, paddingBottom: insets?.bottom ? 0 : 20 }} contentContainerStyle={{ flexGrow: 1 }}>
                 <View style={{ flex: 1 }}>
                     <View style={{ borderBottomWidth: 0.5, borderColor: Colors.LIGHTGRAY }}>
-                        <Header text={"Prerna Kanaujia"} text1={"Messages"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => navigation.goBack()} />
+                        <Header text={messages?.receiver?.username||""} text1={"Messages"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => navigation.goBack()} />
 
                     </View>
                     <View style={{ marginHorizontal: Matrics.hs15, flex: 1 }}>
                         <FlatList
                             ref={msgRef}
-                            data={messages}
+                            data={messages?.messages}
                             renderItem={({ item }) => {
                                 return (
                                     <View>
                                         <View style={{
-                                            alignItems: item?.loginUserId === userId ? "flex-end" : "flex-start",
+                                            alignItems: item?.senderId === userId ? "flex-end" : "flex-start",
                                             marginTop: Matrics.vs25,
 
                                         }}>
                                             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms14} color={Colors.LIGHTGRAY} marginTop={Matrics.vs0} paddingHorizontal={20}>{moment(item?.createdAt).format("MMM DD,LT")}</TextComponent>
 
                                             <View style={{
-                                                backgroundColor: item?.loginUserId === userId ? Colors.BLUE : Colors.WHITE, paddingHorizontal: Matrics.hs20, paddingVertical: Matrics.vs22, borderRadius: Matrics.ms10, shadowColor: "#52006A",
+                                                backgroundColor: item?.senderId === userId ? Colors.BLUE : Colors.WHITE, paddingHorizontal: Matrics.hs20, paddingVertical: Matrics.vs22, borderRadius: Matrics.ms10, shadowColor: "#52006A",
                                                 shadowOffset: { width: -1, height: 1 },
                                                 shadowOpacity: 0.2,
                                                 shadowRadius: 3,
@@ -99,7 +110,7 @@ const MessageScreen = () => {
                                                 width: "80%",
                                                 margin: Matrics.ms10,
                                             }}>
-                                                <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={item?.loginUserId === userId ? Colors.WHITE : Colors.LIGHTBLACK} marginTop={Matrics.vs0} paddingHorizontal={0}>{item?.description}</TextComponent>
+                                                <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={item?.senderId === userId ? Colors.WHITE : Colors.LIGHTBLACK} marginTop={Matrics.vs0} paddingHorizontal={0}>{item?.description}</TextComponent>
                                                 <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
                                                     {item?.images?.map(img => {
                                                         return (

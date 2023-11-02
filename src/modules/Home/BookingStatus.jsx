@@ -1,5 +1,5 @@
-import { KeyboardAvoidingView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
+import { Alert, KeyboardAvoidingView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import CommonButton from '../../core-component/molecules/CommonButton'
 import TextComponent from '../../core-component/atom/TextComponent'
 import { IS_ANDROID, getRubikFont } from '../../core-utils/utils'
@@ -9,8 +9,12 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import TextInputComponent from '../../core-component/atom/TextInputComponent'
 import DropdownComponent from '../../core-component/atom/DropdownComponent'
 import { useNavigation } from '@react-navigation/native'
+import RequirementComponent from '../../core-component/organism/RequirementComponent'
+import axios from 'axios'
+import { API_URL } from '../../../config'
 
-const BookingStatus = () => {
+const BookingStatus = (props) => {
+    const {booking} = props?.route?.params
     const insets = useSafeAreaInsets();
     const [status, setStatus] = useState(false)
     const [requirementData, setRequirementData] = useState({})
@@ -20,6 +24,40 @@ const BookingStatus = () => {
         { label: "Bachelor of Engineering", value: "bachelor of engineering" },
         { label: "Bachelor of Computer and Science ", value: "bachelor of computer and science " },
     ]
+
+    useEffect(() => {
+    if(booking)
+        setStatus(true)
+    }, [booking])
+    
+
+const addRequirement = async()=>{
+    data= {
+        ...requirementData,
+        "userId":booking?.userId,
+        "appointmentId":booking?._id,
+        "designerId":booking?.designerId,
+
+    }
+    delete data["new"]
+    let body = convertToformData(data)
+  await axios.post(`${API_URL}requirement/add_requirement`,body,{
+        headers:{
+            "Content-Type":"multipart/form-data"
+        }
+    } ).then(({data}) => {
+        if(data?.status === 200){
+            Alert.alert("Requirement submitted successfully!")
+            navigation.navigate("Home")
+        }else{
+
+        }
+        
+    }).catch(err => {
+     
+    })
+}
+
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.WHITE, }} behavior={IS_ANDROID ? '' : 'padding'} enabled>
             <StatusBar barStyle="dark-content" backgroundColor="white" />
@@ -37,19 +75,19 @@ const BookingStatus = () => {
 
                             </View>
 
-                            <View style={{ paddingTop: Matrics.vs30, borderColor: Colors.MEDIUMGRAY, borderBottomWidth: 0 }}>
+                          {status?  <View style={{ paddingTop: Matrics.vs30, borderColor: Colors.MEDIUMGRAY, borderBottomWidth: 0 }}>
                                 <TextComponent numberOfLines={5} fontFamily={getRubikFont()} size={Matrics.ms20} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} paddingHorizontal={Matrics.vs0}>{"Submit Your Requirement"}</TextComponent>
                                 <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} paddingHorizontal={Matrics.vs0}>{"Please fill the below form and share your requirement with us. This will help us serve you better."}</TextComponent>
                                 <RequirementComponent requirementData={requirementData} setRequirementData={setRequirementData} data={qualifications} />
 
-                            </View>
+                            </View>:null}
                         </View>
 
                     </ScrollView>
-                    <View style={{ justifyContent: "flex-end", alignItems: "flex-end", marginHorizontal: Matrics.hs20 }}>
+                    {status? <View style={{ justifyContent: "flex-end", alignItems: "flex-end", marginHorizontal: Matrics.hs20 }}>
 
-                        <CommonButton text="Submit Requirement" onPress={() => { }} />
-                    </View>
+                        <CommonButton text="Submit Requirement" onPress={() => addRequirement()} />
+                    </View>:null}
                 </View>
             </SafeAreaView>
         </KeyboardAvoidingView>
