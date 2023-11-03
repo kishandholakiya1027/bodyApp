@@ -12,6 +12,7 @@ import SocialMediaComponent from '../../core-component/organism/Social-MediaComp
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import UserParamContext from '../../context/setUserContext'
 import messaging from '@react-native-firebase/messaging';
+import CommonButton from '../../core-component/molecules/CommonButton'
 
 // import auth from '@react-native-firebase/auth';
 
@@ -104,10 +105,11 @@ const LoginPage = () => {
                             <TextInputComponent placeholder={"Password"} onChangeText={(text) => setPassword(text)} secureTextEntry={true} error={error?.password} />
                             <View style={{ justifyContent: "center", alignItems: "center" }}>
                                 {/* <ButtonComponent text={"Sign In"} /> */}
-                                <View style={{ marginBottom: Matrics.vs20 }}>
-                                    <Pressable style={styles.buttonView} onPress={onSubmit}>
+                                <View style={{ marginBottom: Matrics.vs20,width:"43%" }}>
+                                    {/* <Pressable style={styles.buttonView} onPress={onSubmit}>
                                         <Text style={styles.textStyle}>{"Login"}</Text>
-                                    </Pressable>
+                                    </Pressable> */}
+                                    <CommonButton text="Login" onPress={onSubmit} enabled={email&& password}/>
 
                                 </View>
                                 <SocialMediaComponent role={null} checkRole={false}/>
@@ -133,7 +135,3 @@ const LoginPage = () => {
 
 export default LoginPage
 
-const styles = StyleSheet.create({
-    textStyle: { color: Colors.BLUE, fontFamily: getRubikFont("Medium"), fontSize: Matrics.ms18, },
-    buttonView: { marginTop: Matrics.vs10, borderWidth: 1, borderColor: Colors.BLUE, paddingHorizontal: Matrics.hs30, height: Matrics.vs50, alignItems: "center", justifyContent: "center", flexDirection: "row" },
-})

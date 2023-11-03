@@ -68,7 +68,7 @@ const SlotScreen = () => {
 
                                     <View style={{ flexDirection: "row", alignItems: "center", paddingBottom: Matrics.vs20, justifyContent: "flex-start", marginTop: Matrics.vs10 }}>
                                         {
-                                            new Array(7).fill(0)?.map((user, index) => {
+                                            new Array(3).fill(0)?.map((user, index) => {
                                                 let currentday = moment().add(`${index}`, 'days')
                                                 return (
                                                     <Pressable onPress={() => setDay(currentday)} style={{ paddingHorizontal: Matrics.hs20, paddingVertical: Matrics.vs15, backgroundColor: currentday?.format("DDMMMMYYYY") === day?.format("DDMMMMYYYY") ? Colors.MEDIUMREDOPACITY : Colors.BACKGROUNDGRAY, marginRight: Matrics.vs10, marginVertical: Matrics.vs5, borderRadius: Matrics.ms25, justifyContent: "center" }}>

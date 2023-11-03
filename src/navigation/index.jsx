@@ -67,6 +67,11 @@ const drawerLoginConstant = [
         component: MyProfile
     },
     {
+        route: "MyProfile",
+        name: "Saved Profiles",
+        component: MyProfile
+    },
+    {
         route: "ReportIssue",
         name: "Report an Issue",
         component: ReportIssue
@@ -111,16 +116,19 @@ const drawerLogoutConstant = [
     // },
 ]
 function CustomDrawerContent(props) {
+    const { user ,setUser} = useContext(UserParamContext)
+    const [open, setOpen] = useState()
     const logOut = () => {
-        AsyncStorage.multiRemove(["token"])
+        AsyncStorage.multiRemove(["token","user"])
+        setUser()
         navigation.reset({
             index: 0,
             routes: [{ name: 'Home' }]
         })
+        setOpen(false)
     }
     const navigation = useNavigation()
-    const [open, setOpen] = useState()
-    const { user } = useContext(UserParamContext)
+    console.log("🚀 ~ file: index.jsx:122 ~ CustomDrawerContent ~ navigation:", navigation)
 
     const onNavigation = (route) => {
         props.navigation?.closeDrawer()
@@ -197,7 +205,7 @@ function CustomDrawerContent(props) {
 
                     </Pressable>
                     <Pressable onPress={() => onNavigation("RegisterPage")}>
-                        {user ? <TextComponent fontFamily={getRubikFont()} size={Matrics.ms18} textDecorationLine='underline' color={Colors.BLUE} paddingHorizontal={0} marginTop={Matrics.vs15} >{`/ Sign-up`}</TextComponent> : null}
+                        {!user ? <TextComponent fontFamily={getRubikFont()} size={Matrics.ms18} textDecorationLine='underline' color={Colors.BLUE} paddingHorizontal={0} marginTop={Matrics.vs15} >{`/ Sign-up`}</TextComponent> : null}
 
                     </Pressable>
 

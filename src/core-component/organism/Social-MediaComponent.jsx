@@ -14,6 +14,7 @@ import InstagramLogin from 'react-native-instagram-login';
 
 
 import { AccessToken, LoginButton, LoginManager, Settings } from 'react-native-fbsdk-next';
+import CommonButton from '../molecules/CommonButton'
 
 // Setting the facebook app id using setAppID
 // Remember to set CFBundleURLSchemes in Info.plist on iOS if needed
@@ -28,7 +29,7 @@ GoogleSignin.configure({
     // iosClientId: '106151688664-ndprsrur540i58p72p0s16k06uroukmu.apps.googleusercontent.com', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
 });
 
-const SocialMediaComponent = ({role,checkRole}) => {
+const SocialMediaComponent = ({role,checkRole,width}) => {
     const navigation = useNavigation()
     const { user, setUser } = useContext(UserParamContext)
     const insRef = useRef();
@@ -49,16 +50,17 @@ if(userRole === "s" &&checkRole){
 
     let userInfo = await GoogleSignin.signIn();
 
-    const data = await axios.post(`${API_URL}auth/verify`, { token: userInfo?.idToken })
+    const data = await axios.post(`${API_URL}auth/verify`, { token: userInfo?.idToken,role:role||false })
     if (data?.data?.status === 200) {
         Alert.alert(data?.data?.msg)
         await AsyncStorage.setItem("token", data?.data?.data?.token)
         setUser(data?.data?.data)
         await AsyncStorage.setItem("user", JSON.stringify(data?.data?.data))
         navigation.navigate("Home")
-
+        
     } else {
-        Alert.alert(data?.msg)
+        console.log("🚀 ~ file: Social-MediaComponent.jsx:55 ~ signInWithGoogle ~ data:", data)
+        Alert.alert(data?.msg||data?.error)
     }
     // navigation.navigate("UserProfile")
     // Handle user info or navigate to the next screen.
@@ -176,9 +178,14 @@ if(userRole === "s" &&checkRole){
             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK}  >Or</TextComponent>
             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs15}>Sign in using</TextComponent>
             <View style={{ marginTop: Matrics.vs20 }}>
-                <Pressable style={styles.buttonView} onPress={signInWithGoogle}>
-                    <Text style={styles.textStyle}>{"  Google  "}</Text>
-                </Pressable>
+            <View style={{ width:width||"43%" }}>
+                                    {/* <Pressable style={styles.buttonView} onPress={onSubmit}>
+                                        <Text style={styles.textStyle}>{"Login"}</Text>
+                                    </Pressable> */}
+                                    <CommonButton text=" Google" onPress={signInWithGoogle} />
+
+                                </View>
+               
 
             </View>
             {/* <LoginButton
@@ -199,9 +206,14 @@ if(userRole === "s" &&checkRole){
                 }
                 onLogoutFinished={() => console.log("logout.")} /> */}
             <View style={{ marginTop: Matrics.vs10 }}>
-                <Pressable style={styles.buttonView} onPress={() => handleFBLogin()}>
-                    <Text style={styles.textStyle}>{"Facebook"}</Text>
-                </Pressable>
+            <View style={{ width:width||"43%" }}>
+                                    {/* <Pressable style={styles.buttonView} onPress={onSubmit}>
+                                        <Text style={styles.textStyle}>{"Login"}</Text>
+                                    </Pressable> */}
+                                    <CommonButton text="Facebook" onPress={handleFBLogin} />
+
+                                </View>
+             
 
             </View>
             <InstagramLogin
@@ -214,9 +226,14 @@ if(userRole === "s" &&checkRole){
                 onLoginFailure={(data) => console.log(data)}
             />
             <View style={{ marginTop: Matrics.vs10 }}>
-                <Pressable style={styles.buttonView} onPress={() => insRef.current.show()}>
-                    <Text style={styles.textStyle}>{"Instagram"}</Text>
-                </Pressable>
+            <View style={{ width:width||"43%" }}>
+                                    {/* <Pressable style={styles.buttonView} onPress={onSubmit}>
+                                        <Text style={styles.textStyle}>{"Login"}</Text>
+                                    </Pressable> */}
+                                    <CommonButton text="Instagram"  onPress={() => insRef.current.show()} />
+
+                                </View>
+                
 
             </View>
 

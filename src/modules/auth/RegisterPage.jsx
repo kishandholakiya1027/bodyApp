@@ -21,6 +21,7 @@ import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import useNotification from '../../core-component/organism/notification'
 import DropdownComponent from '../../core-component/atom/DropdownComponent'
+import CommonButton from '../../core-component/molecules/CommonButton'
 const engine = createAgoraRtcEngine();
 
 const RegisterPage = () => {
@@ -95,7 +96,7 @@ const RegisterPage = () => {
             <SafeAreaView style={{ flex: 1, backgroundColor: Colors.WHITE }}>
                 <StatusBar barStyle="dark-content" backgroundColor="transparent" />
                     <View style={{ borderBottomWidth: 0.5 }}>
-                        <Header text={"Create Your Account"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} />
+                        <Header text={"Create Your Account"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={()=>navigation.goBack()} />
                     </View>
                 <ScrollView showsVerticalScrollIndicator={false}>
 
@@ -123,10 +124,10 @@ const RegisterPage = () => {
                             }} secureTextEntry={true} error={error?.confPass || error?.pass} />
                             <View style={{ justifyContent: "center", alignItems: "center" }}>
                                 {/* <ButtonComponent text={"Sign In"} /> */}
-                                <View>
-                                    <Pressable style={styles.buttonView} onPress={onSubmit}>
-                                        <Text style={styles.textStyle}>{"Create Account"}</Text>
-                                    </Pressable>
+                                <View style={{width:"60%"}}>
+                                <CommonButton text="Create Account"  onPress={onSubmit} enabled={email && confPass && password &&(role === true || role === false)}/>
+
+                                    
 
                                 </View>
                                 {/* <View>
@@ -146,7 +147,7 @@ const RegisterPage = () => {
 
                                     </Pressable>
                                 </View>
-                                <SocialMediaComponent role={role} checkRole={true}/>
+                                <SocialMediaComponent role={role} checkRole={true} width={"60%"}/>
                             </View>
 
 

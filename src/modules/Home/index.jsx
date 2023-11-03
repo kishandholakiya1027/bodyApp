@@ -263,7 +263,7 @@ const Home = () => {
                         <TextInputComponent placeholder={"Search for designers, stylists or trends"} onChangeText={(text) => setFilter({...filter,search:text})} value={search} />
                         <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10}>{"How can we assist you today?"}</TextComponent>
                         <View style={{ flexDirection: "row" }}>
-                            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                            <ScrollView horizontal={true} >
                                 {data ?
                                     data?.map(item =>
                                         <Pressable onPress={() => {setFilter({...filter,assist:item?.title})

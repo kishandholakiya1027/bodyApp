@@ -153,8 +153,10 @@ const MyBooking = () => {
             body:"Incoming Call",
             channelId:  `${item?._id}`
         }).then(data => {
-     navigation.navigate("VideoCall",{item,user})
             
+            navigation.navigate("VideoCall",{item,user})
+        }).catch(err=>{
+
         })
     };
 
