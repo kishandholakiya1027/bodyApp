@@ -8,6 +8,7 @@ import TextComponent from '../../core-component/atom/TextComponent'
 import moment from 'moment'
 import { useNavigation } from '@react-navigation/native'
 import BookingContext from '../../context/BookingContext'
+import CommonButton from '../../core-component/molecules/CommonButton'
 
 const SlotScreen = () => {
     const [day, setDay] = useState()
@@ -103,9 +104,9 @@ const SlotScreen = () => {
                         <View style={{ marginHorizontal: Matrics.hs20 }}>
                             {(!day || !time) && error ? <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.MEDIUMRED} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs0}>{"Please select the date and time from the available slots."}</TextComponent> : null}
                             <View style={{}}>
-                                <Pressable style={[styles.buttonView, { paddingHorizontal: Matrics.hs10 }]} onPress={() => onSubmit()}>
-                                    <Text style={styles.textStyle}>{"Book Consultation"}</Text>
-                                </Pressable>
+                        <CommonButton text="Book Consultation" onPress={() => onSubmit()} viewStyle={time && day ? {backgroundColor:Colors.BLUE}:{}} textStyle={time && day ? {color:Colors.WHITE}:{}}/>
+
+                         
 
                             </View>
                         </View>

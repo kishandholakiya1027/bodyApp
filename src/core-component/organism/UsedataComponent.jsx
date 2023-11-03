@@ -4,7 +4,7 @@ import { Colors, Images, Matrics } from '../../theme'
 import { API_URL, IMAGE_URL } from '../../../config'
 import ImagePlaceHolderComponent from '../atom/imagePlaceHolderComponent'
 import TextComponent from '../atom/TextComponent'
-import { getRubikFont } from '../../core-utils/utils'
+import { IS_ANDROID, getRubikFont } from '../../core-utils/utils'
 import { AirbnbRating, Rating } from 'react-native-ratings'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
@@ -17,6 +17,7 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
     const [loginUser, setLoginUser] = useState()
     const [likedUser, setLikedUsers] = useState([])
     const [users, setUsers] = useState([])
+    console.log("🚀 ~ file: UsedataComponent.jsx:20 ~ UsedataComponent ~ users:", users)
     const [allUsers, setAllUsers] = useState([])
     const [loader, setLoader] = useState(false)
     const navigation = useNavigation()
@@ -24,7 +25,14 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
     const { setBooking } = useContext(BookingContext)
 
 
-  
+    useFocusEffect(useCallback(
+        () => {
+            getData()
+
+        },
+        [],
+    )
+    )
 
     useEffect(() => {
         onFilter()
@@ -46,7 +54,11 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
                 }
             }).then(({ data }) => {
                 if (data?.status === 200) {
-                    setUsers(data?.data)
+                    console.log("🚀 ~ file: UsedataComponent.jsx:50 ~ onFilter ~ data:", data)
+                    setTimeout(() => {
+                        
+                        setUsers(data?.data)
+                    }, 1000);
 
                 } else {
                     Alert.alert("something went wrong")
@@ -60,27 +72,22 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
             })
         }
         else {
-            setUsers(sort !== 0 || !sort || !filter || !search ? allUsers : users)
+            setUsers( !userFilter ? allUsers : users)
+            console.log("🚀 ~ file: UsedataComponent.jsx:66 ~ onFilter ~ allUsers:", allUsers)
             setLoader(false)
 
         }
     }
    
 
-    useFocusEffect(useCallback(
-        () => {
-            getData()
-
-        },
-        [],
-    )
-    )
+ 
     const getData = async () => {
+        if (!userFilter)
+            getUser()
         const user = JSON.parse(await AsyncStorage.getItem("user"))
         if (user)
             setLoginUser(user)
-        if (!userFilter)
-            getUser()
+        console.log("🚀 ~ file: UsedataComponent.jsx:86 ~ getData ~ userFilter:", userFilter)
         await axios.get(`${API_URL}like/get_like_login_user/${user?.id}`).then(({ data }) => {
             setLikedUsers(data?.likes?.map(user => user?.designerId))
         }).catch(err => {
@@ -94,7 +101,9 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
 
         await axios.get(`${API_URL}designer/get_designer_rating`).then(({ data }) => {
             setLoader(false)
-            setUsers(data?.data)
+            console.log("🚀 ~ file: UsedataComponent.jsx:100 ~ awaitaxios.get ~ data:", data)
+            console.log("🚀 ~ file: UsedataComponent.jsx:102 ~ awaitaxios.get ~ userFilter:", userFilter)
+            !userFilter ? setUsers(data?.data) :null
             setAllUsers(data?.data)
         }).catch(err => {
             setLoader(false)
@@ -115,7 +124,7 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
         }).then(({ data }) => {
             if (data?.status === 200) {
                 setLikedUsers([...likedUser || [], id])
-                Alert.alert("User liked ")
+                Alert.alert("Profile saved")
 
 
             }
@@ -137,7 +146,7 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
             },
         }).then(({ data }) => {
             if (data?.status === 200) {
-                Alert.alert("Removed liked ")
+                Alert.alert("Profile unsaved")
                 setLikedUsers([...likedUser?.filter(user => user !== id)])
 
             }
@@ -248,7 +257,7 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
                                         <View style={{ flex: 0.48, alignItems: "center", marginRight: Matrics.hs10 }}>
 
                                             <View style={{ marginTop: Matrics.vs10 }}>
-                                                <Pressable style={[styles.buttonView, { paddingHorizontal: Matrics.hs10, width: "100%" }]} onPress={() => {
+                                                <Pressable style={[styles.buttonView, { paddingHorizontal: Matrics.hs3, width: "100%" }]} onPress={() => {
                                                     {
                                                         !user?.id ? Alert.alert("Please sign in to explore!",
                                                             '', [
@@ -265,7 +274,7 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
                                         </View>
                                         <View style={{ flex: 0.52, }}>
                                             <View style={{ marginTop: Matrics.vs10 }}>
-                                                <Pressable style={[styles.buttonView, { paddingHorizontal: Matrics.hs5 }]} onPress={() => {
+                                                <Pressable style={[styles.buttonView, { paddingHorizontal: Matrics.hs3 }]} onPress={() => {
                                                     setBooking(item)
                                                     {
                                                         !user?.id ? Alert.alert("Please sign in to explore!",
@@ -304,6 +313,6 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
 export default UsedataComponent
 
 const styles = StyleSheet.create({
-    textStyle: { color: Colors.BLUE, fontFamily: getRubikFont("Medium"), fontSize: Matrics.ms18, textAlign: "center", width: "100%" },
-    buttonView: { marginTop: Matrics.vs10, borderWidth: 1, borderColor: Colors.BLUE, paddingHorizontal: Matrics.hs20, minheight: Matrics.vs50, alignItems: "center", justifyContent: "center", flexDirection: "row" },
+    textStyle: { color: Colors.BLUE, fontFamily: getRubikFont("Medium"), fontSize:IS_ANDROID? Matrics.ms16: Matrics.ms17, textAlign: "center", width: "100%" },
+    buttonView: { marginTop: Matrics.vs10, borderWidth: 1, borderColor: Colors.BLUE, paddingHorizontal: Matrics.hs20, minHeight: Matrics.vs50, alignItems: "center", justifyContent: "center", flexDirection: "row" },
 })

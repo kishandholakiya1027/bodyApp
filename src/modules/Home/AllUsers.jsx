@@ -1,5 +1,5 @@
 import { Button, Image, KeyboardAvoidingView, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Header from '../../core-component/atom/header'
 import { Colors, Images, Matrics, height } from '../../theme'
 import { IS_ANDROID, getRubikFont } from '../../core-utils/utils'
@@ -16,6 +16,7 @@ import { Slider } from '@miblanchard/react-native-slider'
 import SliderComponent from '../../core-component/molecules/SliderComponent'
 import axios from 'axios'
 import { API_URL } from '../../../config'
+import UserParamContext from '../../context/setUserContext'
 
 
 
@@ -76,8 +77,7 @@ function CheckBoxComponent({ open, setOpen, filter, setFilter, data, title, comp
 
 const AllUsers = (props) => {
     // const navigation = useNavigation()
-
-    const [user, setUser] = useState([])
+const homeFilter = props?.route?.params?.homeFilter
     const [search, setSearch] = useState()
     const [filterModal, setFilterModal] = useState(false)
     const [sortModal, setSortModal] = useState(false)
@@ -87,20 +87,21 @@ const AllUsers = (props) => {
     const [openFees, setOpenFees] = useState(true)
     const [filter, setFilter] = useState({})
     const [sort, setSort] = useState()
+    const {user} = useContext(UserParamContext)
     const [submitSort, setSubmitSort] = useState()
     const [submitFilter, setSubmitFilter] = useState(false)
 
     const navigation = useNavigation()
-    const getUsers = async () => {
-        const user = JSON.parse(await AsyncStorage.getItem("user"))
-        setUser(user)
 
 
-
-    }
+  
     useEffect(() => {
-        getUsers()
-    }, [])
+        if(homeFilter){
+            setSubmitFilter(true)
+            setFilter(homeFilter)
+
+        }
+    }, [homeFilter])
     // useEffect(() => {
     //     if (submitFilter) {
     //         setTimeout(() => {
@@ -206,7 +207,7 @@ const AllUsers = (props) => {
                                 </View>
                             </View>
                             <View style={{ height: "75%" }}>
-                                <UsedataComponent users={props?.route?.params?.users} userId={user?.id} search={search} userFilter={Object.keys(filter)?.length && submitFilter ? filter : ""} setSubmitFilter={setSubmitFilter} sort={sort} />
+                                <UsedataComponent userId={user?.id} search={search} userFilter={Object.keys(filter)?.length && submitFilter ? filter : ""} setSubmitFilter={setSubmitFilter} sort={sort} />
 
                             </View>
                         </View>

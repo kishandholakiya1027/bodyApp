@@ -394,7 +394,7 @@ const editRequirement =async (status)=>{
                                 <RequirementComponent requirementData={requirementData} setRequirementData={setRequirementData} data={[]} images={[]} />
                                 <View style={{ paddingBottom: Matrics.vs10 }}>
 
-                                    <CommonButton text="Submit Requirement" viewStyle={requirementData?._id ? {backgroundColor:Colors.BLUE}:{}} textStyle={requirementData?._id ? {color:Colors.WHITE}:{}} onPress={() => addRequirement()} />
+                                    <CommonButton text="Submit Requirement"  onPress={() => addRequirement()} enabled={requirementData?._id||Object.keys(requirementData).length === 5} />
                                 </View>
                             </View>
                         </View>
@@ -426,7 +426,7 @@ const editRequirement =async (status)=>{
                                 <View style={{ alignItems: "center", marginBottom: Matrics.vs10 }}>
                                     <View style={{ width: "70%" }}>
 
-                                        <CommonButton text={"Cancel Booking"} onPress={() => editRequirement("cancle")} />
+                                        <CommonButton text={"Cancel Booking"} onPress={() => editRequirement("cancle")} enabled={reason}/>
                                     </View>
                                 </View>
                             </View>

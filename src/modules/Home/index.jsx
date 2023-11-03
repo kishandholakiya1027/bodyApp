@@ -36,7 +36,7 @@ const data = [
     },
     {
         image: Images.shoppingassistance,
-        title: "Create Unique Looks"
+        title: "Custom Designs"
     },
 ]
 
@@ -266,8 +266,10 @@ const Home = () => {
                             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                                 {data ?
                                     data?.map(item =>
-                                        <Pressable onPress={() => setFilter({...filter,assist:item?.title})} style={{ marginRight: Matrics.vs15, width: Matrics.vs100, justifyContent: "center", marginTop: Matrics.vs10 }}>
-                                            <Image source={item?.image} style={{width:Matrics.ms90,height:Matrics.ms90,borderRadius:Matrics.ms45,borderWidth:filter?.assist === item?.title ?2:1,borderColor: Colors.MEDIUMRED,resizeMode:"contain",marginLeft:Matrics.vs10}}/>
+                                        <Pressable onPress={() => {setFilter({...filter,assist:item?.title})
+                                        navigation.navigate("AllUsers", {homeFilter: {assist:filter?.assist} })
+                                        }} style={{ marginRight: Matrics.vs15, width: Matrics.vs85, justifyContent: "center", marginTop: Matrics.vs10 }}>
+                                            <Image source={item?.image} style={{width:Matrics.ms80,height:Matrics.ms80,borderRadius:Matrics.ms2,borderWidth:filter?.assist === item?.title ?2:1,borderColor: Colors.MEDIUMRED,resizeMode:"contain",marginLeft:Matrics.vs10}}/>
                                             {/* <ImagePlaceHolderComponent size={Matrics.ms90} borderRadius={Matrics.ms45} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => { }} image={item?.image} borderColor={filter === item?.title ? Colors.MEDIUMRED : Colors.MEDIUMREDOPACITY}  /> */}
                                             <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} textAlign="center">{item?.title}</TextComponent>
 

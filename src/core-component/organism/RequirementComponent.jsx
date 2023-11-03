@@ -12,8 +12,27 @@ import ImageSelectorComponent from '../atom/ImageSelectorComponent';
 const RequirementComponent = ({ data, requirementData, setRequirementData, images }) => {
     const [visible, setVisible] = useState(false)
 
-const purposeOfConsultation = [
-{label:"Advice",value:"Advice"}    
+const purposeOfConsultation  = [
+    {
+        label: "Create Unique Looks",
+        value: "Create Unique Looks"
+    },
+    {
+        label: "Refresh Wardrobe",
+        value: "Refresh Wardrobe"
+    },
+    {
+        label: "Reuse/ Mix & Match",
+        value: "Reuse/ Mix & Match"
+    },
+    {
+        label: "Shopping Assistance",
+        value: "Shopping Assistance"
+    },
+    {
+        label: "Custom Designs",
+        value: "Custom Designs"
+    },
 ]
 const style = [
     {label:"Traditional",value:"Traditional"}    

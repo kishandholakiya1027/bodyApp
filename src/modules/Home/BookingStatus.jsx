@@ -15,7 +15,7 @@ import { API_URL } from '../../../config'
 import { convertToformData } from '../../core-utils/dataConverter'
 
 const BookingStatus = (props) => {
-    const {booking} = props?.route?.params
+    const booking = props?.route?.params?.booking
     const insets = useSafeAreaInsets();
     const [status, setStatus] = useState(false)
     const [requirementData, setRequirementData] = useState({})
@@ -87,7 +87,7 @@ const addRequirement = async()=>{
                     </ScrollView>
                     {status? <View style={{ justifyContent: "flex-end", alignItems: "flex-end", marginHorizontal: Matrics.hs20 }}>
 
-                        <CommonButton text="Submit Requirement" onPress={() => addRequirement()} />
+                        <CommonButton text="Submit Requirement" onPress={() => addRequirement()} viewStyle={Object.keys(requirementData)?.length === 5 ? {backgroundColor:Colors.BLUE}:{}} textStyle={Object.keys(requirementData)?.length === 5 ? {color:Colors.WHITE}:{}}/>
                     </View>:null}
                 </View>
             </SafeAreaView>

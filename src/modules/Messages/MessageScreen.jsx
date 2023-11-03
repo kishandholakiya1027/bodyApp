@@ -141,7 +141,7 @@ const MessageScreen = (props) => {
 
                             </View>
                         </View>
-                        <CommonButton text={"Send Message"} onPress={() => onSubmit()} />
+                        <CommonButton text={"Send Message"} onPress={() => onSubmit()} enabled={message}/>
 
                     </View>
                 </View>

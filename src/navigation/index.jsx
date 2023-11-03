@@ -115,7 +115,7 @@ function CustomDrawerContent(props) {
         AsyncStorage.multiRemove(["token"])
         navigation.reset({
             index: 0,
-            routes: [{ name: 'RegisterPage' }]
+            routes: [{ name: 'Home' }]
         })
     }
     const navigation = useNavigation()
@@ -221,7 +221,7 @@ function AppHeader(params) {
                 </Pressable>
                 <View style={{ flex: 0.65, flexDirection: "row" }}>
                     <Text style={{ fontFamily: getRubikFont("regular"), fontSize: Matrics.ms25, color: Colors.LIGHTBLACK }}>The</Text>
-                    <Text style={{ fontFamily: getRubikFont("regular"), fontSize: Matrics.ms25, color: Colors.BLUE }}>StyleCrews</Text>
+                    <Text style={{ fontFamily: getRubikFont("regular"), fontSize: Matrics.ms25, color: Colors.BLUE }}>StyleCrew</Text>
                 </View>
             </View>
 
