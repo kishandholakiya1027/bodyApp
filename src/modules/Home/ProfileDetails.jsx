@@ -49,6 +49,7 @@ const ProfileDetails = (props) => {
 
     const getUserData = async () => {
             let url = "designer/get_designer/" 
+            console.log("🚀 ~ file: ProfileDetails.jsx:54 ~ awaitaxios.get ~ `${API_URL}${url}${designerId}`:", `${API_URL}${url}${designerId}`)
             await axios.get(`${API_URL}${url}${designerId}`).then(async ({ data }) => {
                 console.log("🚀 ~ file: ProfileDetails.jsx:33 ~ awaitaxios.get ~ data:", data)
                 setImage(data?.data?.profile_img)
@@ -120,7 +121,7 @@ const ProfileDetails = (props) => {
             <SafeAreaView style={{ flex: 1 }}>
                 <StatusBar barStyle="dark-content" backgroundColor="transparent" />
                 <View style={{ borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY }}>
-                    <Header text={""} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => navigation.navigate("Home")}
+                    <Header text={""} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => navigation.goBack("Home")}
                     rightImage1={<Pressable onPress={()=>like ?removeLike() : addLike()}><Image source={!like ? Images.saveprofile:Images.heart} style={{ width: Matrics.ms25, height: Matrics.ms25,  }}/></Pressable>}
                     rightImage2={<Pressable><Image source={Images.share} style={{ width: Matrics.ms25, height: Matrics.ms25,marginLeft:Matrics.vs5  }}/></Pressable>}
                     />

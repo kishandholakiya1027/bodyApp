@@ -29,6 +29,7 @@ import ListMessages from '../modules/Messages/ListMessages'
 import MessageScreen from '../modules/Messages/MessageScreen'
 import CheckoutScreen from '../core-component/organism/CheckoutComponent'
 import ProfileDetails from '../modules/Home/ProfileDetails'
+import ProfileList from '../modules/saved-profiles/ProfileList'
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator()
 
@@ -67,9 +68,9 @@ const drawerLoginConstant = [
         component: MyProfile
     },
     {
-        route: "MyProfile",
+        route: "ProfileList",
         name: "Saved Profiles",
-        component: MyProfile
+        component: ProfileList
     },
     {
         route: "ReportIssue",
@@ -293,6 +294,7 @@ const Index = () => {
                             <Stack.Screen name='ListMessages' component={ListMessages} />
                             <Stack.Screen name='MessageScreen' component={MessageScreen} />
                             <Stack.Screen name='CheckoutScreen' component={CheckoutScreen} />
+                            <Stack.Screen name='ProfileList' component={ProfileList} />
                             <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
                         </Stack.Navigator>
                     </BookingContext.Provider>

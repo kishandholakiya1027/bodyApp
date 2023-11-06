@@ -14,9 +14,10 @@ const SlotScreen = () => {
     const [day, setDay] = useState()
     const [time, setTime] = useState()
     const [error, setError] = useState(false)
+    const [noslot, setNoSlot] = useState(false)
+    console.log("🚀 ~ file: SlotScreen.jsx:18 ~ SlotScreen ~ noslot:", noslot)
     const navigation = useNavigation()
     const { setBooking, booking } = useContext(BookingContext)
-    console.log("🚀 ~ file: SlotScreen.jsx:12 ~ SlotScreen ~ day:", day)
     const timeArray = [
         { label: "10:00 AM", value: "10:00 AM" },
         { label: "10:30 AM", value: "10:30 AM" },
@@ -46,6 +47,7 @@ const SlotScreen = () => {
             navigation.navigate("CompleteBooking")
         }
     }
+    console.log("🚀 ~ file: SlotScreen.jsx:77 ~ newArray ~ parseInt(moment(day).add", parseInt(moment(day).add("3","hours").format("hmm")))
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.WHITE, }} behavior={IS_ANDROID ? '' : 'padding'} enabled>
             <StatusBar barStyle="dark-content" backgroundColor="white" />
@@ -70,8 +72,11 @@ const SlotScreen = () => {
                                         {
                                             new Array(3).fill(0)?.map((user, index) => {
                                                 let currentday = moment().add(`${index}`, 'days')
+                                                let currentdays = moment().add(`${index}`, 'days').format("hmm")
                                                 return (
-                                                    <Pressable onPress={() => setDay(currentday)} style={{ paddingHorizontal: Matrics.hs20, paddingVertical: Matrics.vs15, backgroundColor: currentday?.format("DDMMMMYYYY") === day?.format("DDMMMMYYYY") ? Colors.MEDIUMREDOPACITY : Colors.BACKGROUNDGRAY, marginRight: Matrics.vs10, marginVertical: Matrics.vs5, borderRadius: Matrics.ms25, justifyContent: "center" }}>
+                                                    <Pressable onPress={() =>{
+                                                        setNoSlot(currentdays > 600||index === 0 ? true:false )
+                                                        setDay(currentday)}} style={{ paddingHorizontal: Matrics.hs20, paddingVertical: Matrics.vs15, backgroundColor: currentday?.format("DDMMMMYYYY") === day?.format("DDMMMMYYYY") ? Colors.MEDIUMREDOPACITY : Colors.BACKGROUNDGRAY, marginRight: Matrics.vs10, marginVertical: Matrics.vs5, borderRadius: Matrics.ms25, justifyContent: "center" }}>
                                                         <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={currentday?.format("DDMMMMYYYY") === day?.format("DDMMMMYYYY") ? Colors.MEDIUMRED : Colors.LIGHTGRAY} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs0}>{`${currentday?.calendar()?.split(" ")[0]} , ${currentday?.format("Do MMMM")}`}</TextComponent>
 
                                                     </Pressable>
@@ -85,21 +90,27 @@ const SlotScreen = () => {
                         </View>
                         <View style={{ marginVertical: Matrics.vs25, height: (!day || !time) && error ? "43 %" : "49%" }}>
                             <TextComponent numberOfLines={5} fontFamily={getRubikFont()} size={Matrics.ms20} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs20}>{"Pick a slot:"}</TextComponent>
-                            <ScrollView showsVerticalScrollIndicator={false}>
+                          {!noslot?  <ScrollView showsVerticalScrollIndicator={false}>
 
                                 <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", paddingBottom: Matrics.vs20, justifyContent: "flex-start", marginTop: Matrics.vs10, marginLeft: Matrics.hs20 }}>
                                     {
                                         timeArray?.map((tm, index) => {
+                                           let times =  day?.format("DDMMMMYYYY") === moment().format("DDMMMMYYYY") ? moment().add("3","hours").format("hmm") :"000"
+                                            console.log("🚀 ~ file: SlotScreen.jsx:94 ~ timeArray?.map ~ times:", times)
                                             return (
-                                                <Pressable onPress={() => setTime(tm?.value)} style={{ minWidth: Matrics.hs105, paddingHorizontal: Matrics.hs16, paddingVertical: Matrics.vs12, backgroundColor: time === tm?.value ? Colors.MEDIUMREDOPACITY : Colors.BACKGROUNDGRAY, marginRight: Matrics.vs10, marginVertical: Matrics.vs7, borderRadius: Matrics.ms25, justifyContent: "center" }}>
+                                               parseInt(tm?.label?.split(" ")[0]?.replace(":","")?.slice(1)) >= parseInt(times) ?   <Pressable onPress={() => setTime(tm?.value)} style={{ minWidth: Matrics.hs105, paddingHorizontal: Matrics.hs16, paddingVertical: Matrics.vs12, backgroundColor: time === tm?.value ? Colors.MEDIUMREDOPACITY : Colors.BACKGROUNDGRAY, marginRight: Matrics.vs10, marginVertical: Matrics.vs7, borderRadius: Matrics.ms25, justifyContent: "center" }}>
+                                                    {/* <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={time === tm?.value ? Colors.MEDIUMRED : Colors.LIGHTGRAY} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs0}>{  moment().add("3","hour").format("LT") tm?.label}</TextComponent> */}
                                                     <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={time === tm?.value ? Colors.MEDIUMRED : Colors.LIGHTGRAY} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs0}>{tm?.label}</TextComponent>
 
-                                                </Pressable>
+                                                </Pressable>:null
                                             )
                                         })
                                     }
                                 </View>
-                            </ScrollView>
+                            </ScrollView>:null}
+                               {noslot ? <View style={{ flex: 1, justifyContent: "center", alignItems: "center", }}>
+                                    <Text style={{ fontFamily: getRubikFont("Regular"), fontSize: Matrics.ms18, color: Colors.DARKGRAY }}>No slots.</Text>
+                                </View>:null}
                         </View>
                         <View style={{ marginHorizontal: Matrics.hs20 }}>
                             {(!day || !time) && error ? <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.MEDIUMRED} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs0}>{"Please select the date and time from the available slots."}</TextComponent> : null}

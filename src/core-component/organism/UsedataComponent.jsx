@@ -12,8 +12,13 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import UserParamContext from '../../context/setUserContext'
 import Loader from '../atom/Loader'
 import BookingContext from '../../context/BookingContext';
+import UserProfileComponent from './UserProfileComponent'
 
-const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmitFilter=()=>{}, sort }) => {
+
+
+
+
+const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmitFilter = () => { }, sort }) => {
     const [loginUser, setLoginUser] = useState()
     const [likedUser, setLikedUsers] = useState([])
     const [users, setUsers] = useState([])
@@ -56,7 +61,7 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
                 if (data?.status === 200) {
                     console.log("🚀 ~ file: UsedataComponent.jsx:50 ~ onFilter ~ data:", data)
                     setTimeout(() => {
-                        
+
                         setUsers(data?.data)
                     }, 1000);
 
@@ -72,22 +77,21 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
             })
         }
         else {
-            setUsers( !userFilter ? allUsers : users)
+            setUsers(!userFilter ? allUsers : users)
             console.log("🚀 ~ file: UsedataComponent.jsx:66 ~ onFilter ~ allUsers:", allUsers)
             setLoader(false)
 
         }
     }
-   
 
- 
+
+
     const getData = async () => {
         if (!userFilter)
             getUser()
         const user = JSON.parse(await AsyncStorage.getItem("user"))
         if (user)
             setLoginUser(user)
-        console.log("🚀 ~ file: UsedataComponent.jsx:86 ~ getData ~ userFilter:", userFilter)
         await axios.get(`${API_URL}like/get_like_login_user/${user?.id}`).then(({ data }) => {
             setLikedUsers(data?.likes?.map(user => user?.designerId))
         }).catch(err => {
@@ -103,7 +107,7 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
             setLoader(false)
             console.log("🚀 ~ file: UsedataComponent.jsx:100 ~ awaitaxios.get ~ data:", data)
             console.log("🚀 ~ file: UsedataComponent.jsx:102 ~ awaitaxios.get ~ userFilter:", userFilter)
-            !userFilter ? setUsers(data?.data) :null
+            !userFilter ? setUsers(data?.data) : null
             setAllUsers(data?.data)
         }).catch(err => {
             setLoader(false)
@@ -112,85 +116,7 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
         })
     }
 
-    const addLike = async (id, userId) => {
-        let body = {
-            "designerId": id,
-            "loginUserId": user?.id
-        }
-        await axios.post(`${API_URL}like/add_like`, body, {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        }).then(({ data }) => {
-            if (data?.status === 200) {
-                setLikedUsers([...likedUser || [], id])
-                Alert.alert("Profile saved")
 
-
-            }
-        }).catch(err => {
-            console.log("🚀 ~ file: UsedataComponent.jsx:107 ~ addLike ~ err:", err)
-
-
-        })
-    }
-    const removeLike = async (id, userId) => {
-
-        let body = {
-            "designerId": id,
-            "loginUserId": user?.id
-        }
-        await axios.post(`${API_URL}like/remove_like`, body, {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        }).then(({ data }) => {
-            if (data?.status === 200) {
-                Alert.alert("Profile unsaved")
-                setLikedUsers([...likedUser?.filter(user => user !== id)])
-
-            }
-        }).catch(err => {
-
-
-        })
-    }
-    const addRating = async (rating, id, userId) => {
-        let body = {
-            "designerId": id,
-            "loginUserId": user?.id,
-            rating,
-            desc: "rate"
-        }
-        await axios.post(`${API_URL}review/add_review`, body, {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        }).then(({ data }) => {
-            getUser()
-        }).catch(err => {
-
-
-        })
-    }
-    const removeRating = async (rating, id, userId) => {
-        let body = {
-            "designerId": id,
-            "loginUserId": user?.id,
-            rating,
-            desc: "rate"
-        }
-        await axios.post(`${API_URL}review/remove_review`, body, {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        }).then(({ data }) => {
-            getUser()
-        }).catch(err => {
-
-
-        })
-    }
 
 
     return (
@@ -206,66 +132,20 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
                         renderItem={({ item }) => {
                             return (
                                 userId !== item?._id ? <View style={{ marginTop: Matrics.vs10, paddingBottom: Matrics.vs20, flex: 1 }}>
-                                    <Pressable style={{ flexDirection: "row" }} onPress={()=>navigation.navigate("ProfileDetails",{designerId:item?.id||item?._id,likedUser})}>
-                                        <View style={{ flex: 0.48, alignItems: "center", marginRight: Matrics.hs10 }}>
-                                            <ImagePlaceHolderComponent size={Matrics.ms150} borderRadius={Matrics.ms75} padding={Matrics.hs10} marginVertical={Matrics.vs10} image={item?.profile_img ? `${IMAGE_URL}${item?.profile_img}` : ""} borderColor={Colors.MEDIUMREDOPACITY} backgroundColor={item?.profile_img ? "none" : Colors.MEDIUMREDOPACITY} disabled={true} />
-                                            <View style={{ position: "absolute", top: 5, left: -2 }}>
-                                                <Pressable style={{ padding: 5, zIndex: 99999 }} hitSlop={60} onPress={() => likedUser?.includes(item?._id) ? removeLike(item?._id, userId) : addLike(item?._id, userId)}>
-                                                    <Image source={ !likedUser?.includes(item?._id) ? Images.saveprofile:Images.heart} width={Matrics.ms15} height={Matrics.ms15} style={{ width: Matrics.ms15, height: Matrics.ms15,  }} />
-                                                    {/* <Rating
-                                                type='heart'
-                                                ratingCount={1}
-                                                imageSize={15}
-                                                showRating={false}
-                                                jumpValue={1}
-                                                minValue={0}
-                                                style={{ zIndex: 1 }}
-                                                startingValue={likedUser?.includes(item?._id) ? 1 : 0}
-    
-                                            /> */}
-
-                                                </Pressable>
-
-                                            </View>
-
-                                        </View>
-                                        <View style={{ flex: 0.53, }}>
-                                            <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms20} color={Colors.BLUE} marginTop={Matrics.vs15}>{item?.username}</TextComponent>
-                                            <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs5}>{item?.profession}</TextComponent>
-                                            <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs5}>{`${item?.yearExperience || 0} Years of Experience`}</TextComponent>
-                                            <View style={{ flexDirection: "row", justifyContent: "flex-start", alignItems: "center", flexWrap: "wrap", marginTop: Matrics.vs10 }}>
-                                                <AirbnbRating
-                                                    count={4}
-                                                    defaultRating={item?.reviewCount}
-                                                    size={14}
-                                                    selectedColor={Colors.MEDIUMRED}
-                                                    showRating={false}
-                                                    // isDisabled={true}
-                                                    onFinishRating={(rate) => item?.reviewCount >= rate ? removeRating(rate, item?._id) : addRating(rate, item?._id)}
-                                                    starContainerStyle={{ paddingTop: Matrics.vs0, marginHorizontal: Matrics.hs2 }}
-                                                />
-
-                                                <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms15} color={Colors.MEDIUMRED} marginTop={Matrics.vs10} textDecorationLine='underline'>{"(20) Reviews"}</TextComponent>
-
-                                            </View>
-                                            <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTGRAY} marginTop={Matrics.vs10}>{"Consultation fees: "}</TextComponent>
-                                            <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0}>{`INR ${item?.consultationCharge || 0}/30 min session`}</TextComponent>
-
-                                        </View>
-                                    </Pressable>
+                                    <UserProfileComponent item={item} userId={userId} />
                                     <View style={{ flexDirection: "row" }}>
                                         <View style={{ flex: 0.48, alignItems: "center", marginRight: Matrics.hs10 }}>
 
                                             <View style={{ marginTop: Matrics.vs10 }}>
                                                 <Pressable style={[styles.buttonView, { paddingHorizontal: Matrics.hs3, width: "100%" }]} onPress={() => {
                                                     {
-                                                        !user?.id ? Alert.alert("Please sign in to explore!",
+                                                        !(user?.id ||user?._id) ? Alert.alert("Please sign in to explore!",
                                                             '', [
 
                                                             { text: 'OK', onPress: () => navigation.navigate("LoginPage") },
                                                         ]) : null
                                                     }
-                                                    user?.id ? navigation.navigate("LeaveMessage",{item}) : ""
+                                                    (user?.id ||user?._id) ? navigation.navigate("LeaveMessage", { item }) : ""
                                                 }}>
                                                     <Text style={styles.textStyle}>{"Leave a Message"}</Text>
                                                 </Pressable>
@@ -277,13 +157,13 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
                                                 <Pressable style={[styles.buttonView, { paddingHorizontal: Matrics.hs3 }]} onPress={() => {
                                                     setBooking(item)
                                                     {
-                                                        !user?.id ? Alert.alert("Please sign in to explore!",
+                                                        !(user?.id ||user?._id) ? Alert.alert("Please sign in to explore!",
                                                             '', [
 
                                                             { text: 'OK', onPress: () => navigation.navigate("LoginPage") },
                                                         ]) : null
                                                     }
-                                                    user?.id ? navigation.navigate("SlotScreen") : ""
+                                                    (user?.id ||user?._id) ? navigation.navigate("SlotScreen") : ""
                                                 }}>
                                                     <Text style={styles.textStyle}>{"Book Consultation"}</Text>
                                                 </Pressable>
@@ -313,6 +193,6 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
 export default UsedataComponent
 
 const styles = StyleSheet.create({
-    textStyle: { color: Colors.BLUE, fontFamily: getRubikFont("Medium"), fontSize:IS_ANDROID? Matrics.ms16: Matrics.ms17, textAlign: "center", width: "100%" },
+    textStyle: { color: Colors.BLUE, fontFamily: getRubikFont("Medium"), fontSize: IS_ANDROID ? Matrics.ms16 : Matrics.ms17, textAlign: "center", width: "100%" },
     buttonView: { marginTop: Matrics.vs10, borderWidth: 1, borderColor: Colors.BLUE, paddingHorizontal: Matrics.hs20, minHeight: Matrics.vs50, alignItems: "center", justifyContent: "center", flexDirection: "row" },
 })
