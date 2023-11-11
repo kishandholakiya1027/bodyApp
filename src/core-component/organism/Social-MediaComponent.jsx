@@ -38,10 +38,7 @@ const SocialMediaComponent = ({role,checkRole,width}) => {
         try {
             let userRole = role ?? "s"
             console.log("🚀 ~ file: Social-MediaComponent.jsx:39 ~ signInWithGoogle ~ userRole:", userRole)
-if(userRole === "s" &&checkRole){
-    Alert.alert("Please select role")
 
-}else{
     const isSignedIn = await GoogleSignin.isSignedIn();
     if (isSignedIn) {
         await GoogleSignin.signOut()
@@ -64,7 +61,6 @@ if(userRole === "s" &&checkRole){
     }
     // navigation.navigate("UserProfile")
     // Handle user info or navigate to the next screen.
-}
 } catch (error) {
     console.error('Google Sign-In Error:', error);
 }
