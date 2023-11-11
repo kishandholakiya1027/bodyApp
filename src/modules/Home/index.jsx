@@ -258,20 +258,21 @@ const Home = () => {
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.WHITE, }} behavior={IS_ANDROID ? '' : 'padding'} enabled>
             <SafeAreaView initialMetrics={initialWindowMetrics} style={{ flex: 1 }} >
+            <ScrollView showsVerticalScrollIndicator={false} >
                 <View style={{ marginHorizontal: Matrics.ms20, flex: 1 }}>
                     <View >
                         <TextInputComponent placeholder={"Search for designers, stylists or trends"} onChangeText={(text) => setFilter({...filter,search:text})} value={search} />
                         <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10}>{"How can we assist you today?"}</TextComponent>
-                        <View style={{ flexDirection: "row" }}>
+                        <View style={{ flexDirection: "row", }}>
                             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
                                 {data ?
                                     data?.map(item =>
                                         <Pressable onPress={() => {setFilter({...filter,assist:item?.title})
                                         navigation.navigate("AllUsers", {homeFilter: {assist:filter?.assist} })
-                                        }} style={{ marginRight: Matrics.vs15, width: Matrics.vs85, justifyContent: "center", marginTop: Matrics.vs10 }}>
+                                        }} style={{ marginRight: Matrics.vs15, width: Matrics.vs85, justifyContent: "flex-start", marginTop: Matrics.vs10, }}>
                                             <Image source={item?.image} style={{width:Matrics.ms80,height:Matrics.ms80,borderRadius:Matrics.ms2,borderWidth:filter?.assist === item?.title ?2:1,borderColor: Colors.MEDIUMRED,resizeMode:"contain",marginLeft:Matrics.vs10}}/>
                                             {/* <ImagePlaceHolderComponent size={Matrics.ms90} borderRadius={Matrics.ms45} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => { }} image={item?.image} borderColor={filter === item?.title ? Colors.MEDIUMRED : Colors.MEDIUMREDOPACITY}  /> */}
-                                            <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} textAlign="center">{item?.title}</TextComponent>
+                                            <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} textAlign="center" numberOfLines={3}>{item?.title}</TextComponent>
 
                                         </Pressable>
 
@@ -286,17 +287,20 @@ const Home = () => {
 
                             <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10}>{"Popular on StyleCrew"}</TextComponent>
                         </View>
-                        <View style={{ height: "58%", justifyContent: "center" }}>
+                        <View style={{  justifyContent: "center" }}>
                             <UsedataComponent slice={2} userId={user?.id}  userFilter={filter} />
 
                         </View>
+
+                    </View>
+                </View>
+
+            </ScrollView>
                         <Pressable style={{ alignItems: "center" }} onPress={() => navigation.navigate("AllUsers", { users })}>
                             <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms18} color={Colors.BLUE} marginTop={Matrics.vs10} textDecorationLine='underline'>{"View all"}</TextComponent>
 
                         </Pressable>
 
-                    </View>
-                </View>
 
             </SafeAreaView>
         </KeyboardAvoidingView>

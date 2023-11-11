@@ -63,15 +63,16 @@ const drawerLoginConstant = [
         ]
     },
     {
-        route: "MyProfile",
-        name: "Notifications",
-        component: MyProfile
-    },
-    {
         route: "ProfileList",
         name: "Saved Profiles",
         component: ProfileList
     },
+    {
+        route: "MyProfile",
+        name: "Notifications",
+        component: MyProfile
+    },
+   
     {
         route: "ReportIssue",
         name: "Report an Issue",
@@ -131,9 +132,9 @@ function CustomDrawerContent(props) {
     const navigation = useNavigation()
     console.log("🚀 ~ file: index.jsx:122 ~ CustomDrawerContent ~ navigation:", navigation)
 
-    const onNavigation = (route) => {
+    const onNavigation = (route,params) => {
         props.navigation?.closeDrawer()
-        navigation.navigate(route)
+        navigation.navigate(route,params)
     }
     const drawer = user?.id || user?._id ? drawerLoginConstant : drawerLogoutConstant
     return (
@@ -142,7 +143,7 @@ function CustomDrawerContent(props) {
                 <View style={{ borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY, paddingBottom: Matrics.vs15, marginRight: Matrics.vs20 }}>
                     <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                         <View>
-                            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms25} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0}>{`Hello, ${user?.username || "user"}`}</TextComponent>
+                            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms25} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0}>{`Hello, ${user?.username || user?.role ? "designer":"user"}`}</TextComponent>
                             {user?.role ? <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.BLUE} marginTop={Matrics.vs0}>{`StyleCrew Member`}</TextComponent> : null}
 
                         </View>
@@ -198,21 +199,21 @@ function CustomDrawerContent(props) {
                 </View>
 
             </View>
-            <View style={{ flex: 1, justifyContent: "flex-end", paddingVertical: Matrics.vs35, borderTopWidth: 1.2, borderColor: Colors.LIGHTERGRAY, marginHorizontal: Matrics.vs20 }}>
+          {!user?  <View style={{ flex: 1, justifyContent: "flex-end", paddingVertical: Matrics.vs35, borderTopWidth: 1.2, borderColor: Colors.LIGHTERGRAY, marginHorizontal: Matrics.vs20 }}>
                 <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} paddingHorizontal={0} marginTop={Matrics.vs0}>{`For StyleCrew members:`}</TextComponent>
                 <View style={{ flexDirection: "row" }}>
                     <Pressable onPress={() => onNavigation("LoginPage")}>
-                        <TextComponent fontFamily={getRubikFont()} size={Matrics.ms18} textDecorationLine='underline' color={Colors.BLUE} paddingHorizontal={0} marginTop={Matrics.vs15} >{`Sign-in`}</TextComponent>
+                        {!user ? <TextComponent fontFamily={getRubikFont()} size={Matrics.ms18} textDecorationLine='underline' color={Colors.BLUE} paddingHorizontal={0} marginTop={Matrics.vs15} >{`Sign-in`}</TextComponent>:null}
 
                     </Pressable>
-                    <Pressable onPress={() => onNavigation("RegisterPage")}>
+                    <Pressable onPress={() => onNavigation("RegisterPage",true)}>
                         {!user ? <TextComponent fontFamily={getRubikFont()} size={Matrics.ms18} textDecorationLine='underline' color={Colors.BLUE} paddingHorizontal={0} marginTop={Matrics.vs15} >{`/ Sign-up`}</TextComponent> : null}
 
                     </Pressable>
 
                 </View>
 
-            </View>
+            </View>:null}
             {/* <DrawerItemList {...props} />
             <DrawerItem label="Help" onPress={() => alert('Link to help')} /> */}
 

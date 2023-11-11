@@ -90,6 +90,7 @@ const homeFilter = props?.route?.params?.homeFilter
     const {user} = useContext(UserParamContext)
     const [submitSort, setSubmitSort] = useState()
     const [submitFilter, setSubmitFilter] = useState(false)
+    const [count, setCount] = useState(0)
 
     const navigation = useNavigation()
 
@@ -176,10 +177,11 @@ const homeFilter = props?.route?.params?.homeFilter
                     <View style={{}}>
 
                         <View style={{ borderBottomWidth: 0.5, borderColor: Colors.LIGHTGRAY }}>
-                            <Header text={"Popular on StyleCrew (100)"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => navigation.navigate("Home")} />
+                            <Header text={`Popular on StyleCrew (${count})`} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => navigation.navigate("Home")} />
 
                         </View>
-                        <View style={{ margin: Matrics.ms20, paddinBottom: Matrics.vs50 }}>
+                        <ScrollView showsVerticalScrollIndicator={false}>
+                        <View style={{ margin: Matrics.ms20, paddingBottom:30 }}>
                             <TextInputComponent placeholder={"Search for designers, stylists or trends"} onChangeText={(text) =>{ 
                                 setTimeout(() => {
                                     
@@ -206,11 +208,13 @@ const homeFilter = props?.route?.params?.homeFilter
 
                                 </View>
                             </View>
-                            <View style={{ height: "75%" }}>
-                                <UsedataComponent userId={user?.id} search={search} userFilter={Object.keys(filter)?.length && submitFilter ? filter : ""} setSubmitFilter={setSubmitFilter} sort={sort} />
+                            <View style={{ }}>
+                                <UsedataComponent userId={user?.id} search={search} userFilter={Object.keys(filter)?.length && submitFilter ? filter : ""} setSubmitFilter={setSubmitFilter} sort={sort} setCount={setCount}/>
 
                             </View>
                         </View>
+
+                        </ScrollView>
 
                     </View>
                 </SafeAreaView>

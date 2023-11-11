@@ -18,7 +18,7 @@ import UserProfileComponent from './UserProfileComponent'
 
 
 
-const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmitFilter = () => { }, sort }) => {
+const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmitFilter = () => { }, sort,setCount=()=>{} }) => {
     const [loginUser, setLoginUser] = useState()
     const [likedUser, setLikedUsers] = useState([])
     const [users, setUsers] = useState([])
@@ -42,6 +42,12 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
     useEffect(() => {
         onFilter()
     }, [userFilter])
+
+
+    useEffect(() => {
+       if(users?.length)
+        setCount(users?.length)
+    }, [users])
 
 
 
@@ -117,13 +123,13 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
     }
 
 
-
+let data = users.filter(user => user?._id !== userId)?.slice(0, slice)
 
     return (
         <>
             <View style={{ flex: 1, }}>
-                {loader ? <Loader /> :
-                    <FlatList
+                {loader ? <Loader /> : <>
+                    {/* <FlatList
                         // data={[]}
                         contentContainerStyle={{ flexGrow: 1, height: "auto" }}
                         data={users.filter(user => user?._id !== userId)?.slice(0, slice)}
@@ -184,7 +190,58 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
                                 </View>
                             )
                         }}
-                    />}
+                    />} */}
+                    {data?.length ? data?.map(item=>{
+                        return  (
+                            userId !== item?._id ? <View style={{ marginTop: Matrics.vs10, paddingBottom: Matrics.vs20, flex: 1 }}>
+                                <UserProfileComponent item={item} userId={userId} />
+                                <View style={{ flexDirection: "row" }}>
+                                    <View style={{ flex: 0.48, alignItems: "center", marginRight: Matrics.hs10 }}>
+
+                                        <View style={{ marginTop: Matrics.vs10 }}>
+                                            <Pressable style={[styles.buttonView, { paddingHorizontal: Matrics.hs3, width: "100%" }]} onPress={() => {
+                                                {
+                                                    !(user?.id ||user?._id) ? Alert.alert("Please sign in to explore!",
+                                                        '', [
+
+                                                        { text: 'OK', onPress: () => navigation.navigate("LoginPage") },
+                                                    ]) : null
+                                                }
+                                                (user?.id ||user?._id) ? navigation.navigate("LeaveMessage", { item }) : ""
+                                            }}>
+                                                <Text style={styles.textStyle}>{"Leave a Message"}</Text>
+                                            </Pressable>
+
+                                        </View>
+                                    </View>
+                                    <View style={{ flex: 0.52, }}>
+                                        <View style={{ marginTop: Matrics.vs10 }}>
+                                            <Pressable style={[styles.buttonView, { paddingHorizontal: Matrics.hs3 }]} onPress={() => {
+                                                setBooking(item)
+                                                {
+                                                    !(user?.id ||user?._id) ? Alert.alert("Please sign in to explore!",
+                                                        '', [
+
+                                                        { text: 'OK', onPress: () => navigation.navigate("LoginPage") },
+                                                    ]) : null
+                                                }
+                                                (user?.id ||user?._id) ? navigation.navigate("SlotScreen") : ""
+                                            }}>
+                                                <Text style={styles.textStyle}>{"Book Consultation"}</Text>
+                                            </Pressable>
+
+                                        </View>
+
+                                    </View>
+                                </View>
+
+                            </View> : null
+
+                        )
+                    }): <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                    <Text style={{ fontFamily: getRubikFont("Regular"), fontSize: Matrics.ms18, color: Colors.DARKGRAY }}>No users.</Text>
+                </View>}
+                </>}
             </View>
         </>
     )

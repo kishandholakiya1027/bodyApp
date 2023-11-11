@@ -24,11 +24,12 @@ import DropdownComponent from '../../core-component/atom/DropdownComponent'
 import CommonButton from '../../core-component/molecules/CommonButton'
 const engine = createAgoraRtcEngine();
 
-const RegisterPage = () => {
+const RegisterPage = (props) => {
+    const role = props?.route?.params
     const [email, setEmail] = useState()
     const [password, setPassword] = useState()
     const [confPass, setConfPass] = useState()
-    const [role, setRole] = useState()
+    // const [role, setRole] = useState()
     const [error, setError] = useState()
     const { setUser, user } = useContext(UserParamContext)
     const navigation = useNavigation()
@@ -67,7 +68,7 @@ const RegisterPage = () => {
                 "cpassword": confPass,
                 "role": role
             }
-            await axios.post(`http://10.0.2.2:5203/api/register`, body, {
+            await axios.post(`${API_URL}auth/register`, body, {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json'
@@ -110,10 +111,10 @@ const RegisterPage = () => {
                                 setEmail(text)
                                 setError({ ...error, email: false })
                             }} error={error?.email} />
-                            <View style={{ marginBottom: Matrics.vs15 }}>
+                            {/* <View style={{ marginBottom: Matrics.vs15 }}>
                                 <DropdownComponent items={roleArray} setValue={(value) => setRole(value)} value={role} backgroundColor={Colors.WHITE} borderWidth={1} placeholder={"Role"} />
 
-                            </View>
+                            </View> */}
                             <TextInputComponent placeholder={"Password"} onChangeText={(text) => {
                                 setPassword(text)
                                 setError({ ...error, password: false })
