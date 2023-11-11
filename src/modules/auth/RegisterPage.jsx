@@ -66,7 +66,7 @@ const RegisterPage = (props) => {
                 "email": email?.toString(),
                 "password": password,
                 "cpassword": confPass,
-                "role": role
+                "role": role || false
             }
             await axios.post(`${API_URL}auth/register`, body, {
                 headers: {
