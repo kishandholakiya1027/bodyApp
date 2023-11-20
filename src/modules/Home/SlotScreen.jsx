@@ -1,5 +1,5 @@
 import { KeyboardAvoidingView, Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Colors, Matrics } from '../../theme'
 import { IS_ANDROID, getRubikFont } from '../../core-utils/utils'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -11,13 +11,20 @@ import BookingContext from '../../context/BookingContext'
 import CommonButton from '../../core-component/molecules/CommonButton'
 
 const SlotScreen = () => {
-    const [day, setDay] = useState()
+    const [day, setDay] = useState(moment())
     const [time, setTime] = useState()
     const [error, setError] = useState(false)
-    const [noslot, setNoSlot] = useState(false)
+    const [noslot, setNoSlot] = useState()
     console.log("🚀 ~ file: SlotScreen.jsx:18 ~ SlotScreen ~ noslot:", noslot)
     const navigation = useNavigation()
     const { setBooking, booking } = useContext(BookingContext)
+    
+    useEffect(() => {
+        setNoSlot(moment().format('a') === "pm" ? parseInt(moment().format("hmm"))+300 > 600 ? true:false:false)
+        console.log("🚀 ~ file: SlotScreen.jsx:18 ~ SlotScreen ~ moment().for):",typeof parseInt(moment().format("hmm")),moment().format("hmm") ,typeof 600)
+    console.log("🚀 ~ file: SlotScreen.jsx:25 ~ useEffect ~ parseInt(moment().fo) > 600 ? true:false:", parseInt(moment().format("hmm")) > 600 ? true:false)
+    }, [])
+    
     const timeArray = [
         { label: "10:00 AM", value: "10:00 AM" },
         { label: "10:30 AM", value: "10:30 AM" },
@@ -75,7 +82,7 @@ const SlotScreen = () => {
                                                 let currentdays = moment().add(`${index}`, 'days').format("hmm")
                                                 return (
                                                     <Pressable onPress={() =>{
-                                                        setNoSlot(currentdays > 600||index === 0 ? true:false )
+                                                        setNoSlot(currentdays > 600 && index === 0 ? true:false )
                                                         setDay(currentday)}} style={{ paddingHorizontal: Matrics.hs20, paddingVertical: Matrics.vs15, backgroundColor: currentday?.format("DDMMMMYYYY") === day?.format("DDMMMMYYYY") ? Colors.MEDIUMREDOPACITY : Colors.BACKGROUNDGRAY, marginRight: Matrics.vs10, marginVertical: Matrics.vs5, borderRadius: Matrics.ms25, justifyContent: "center" }}>
                                                         <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={currentday?.format("DDMMMMYYYY") === day?.format("DDMMMMYYYY") ? Colors.MEDIUMRED : Colors.LIGHTGRAY} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs0}>{`${currentday?.calendar()?.split(" ")[0]} , ${currentday?.format("Do MMMM")}`}</TextComponent>
 
@@ -88,7 +95,7 @@ const SlotScreen = () => {
                             </View>
 
                         </View>
-                        <View style={{ marginVertical: Matrics.vs25, height: (!day || !time) && error ? "43 %" : "49%" }}>
+                        <View style={{ marginVertical: Matrics.vs25, height: (!day || !time) && error ? "43%" : "49%" }}>
                             <TextComponent numberOfLines={5} fontFamily={getRubikFont()} size={Matrics.ms20} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs20}>{"Pick a slot:"}</TextComponent>
                           {!noslot?  <ScrollView showsVerticalScrollIndicator={false}>
 

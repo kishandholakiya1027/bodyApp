@@ -1,4 +1,6 @@
 import { Platform } from "react-native";
+import Toast from "react-native-simple-toast"
+import { Colors, Matrics } from "../theme";
 
 export const getRobotoFont = (variant = 'Regular') => {
   return `Roboto-${variant}`;
@@ -17,3 +19,12 @@ export const removeDotExceptOne = (str) => {
     return b + c?.replace(/\./g, '');
   })?.replace(/[,-\s]/g, "")
 }
+
+ export const showToast = (msg)=>{
+
+   Toast.show(msg, Toast.SHORT, {
+     backgroundColor: Colors.LIGHTBLACK,
+     fontFamily:getRubikFont("Regular"),
+     fontSize:Matrics.ms18,
+   });
+ }

@@ -21,11 +21,9 @@ const CompleteProfile = () => {
     const [userData, setUserData] = useState({})
     const [open, setOpen] = useState(false)
     const [date, setDate] = useState()
-    console.log("🚀 ~ file: completeProfile.jsx:24 ~ CompleteProfile ~ date:", date)
     const [openDate, setOpenDate] = useState(false)
     const [secondDate, setSecondDate] = useState()
     const [openExpertise, setOpenExpertise] = useState(false)
-    console.log("🚀 ~ file: completeProfile.jsx:23 ~ CompleteProfile ~ date:", date)
 
     console.log("🚀 ~ file: completeProfile.jsx:20 ~ CompleteProfile ~ userData:", userData)
     const [showlink, setShowLink] = useState(false)
@@ -82,8 +80,11 @@ const CompleteProfile = () => {
     ]
 
     const onSubmit = async () => {
-        let user = { ...userData, time: [`${moment(date).format("HH:mm")} - ${moment(secondDate).format("HH:mm")} `] }
+        let user = { ...userData, }
         user = { ...user, expertise: Array.isArray(user?.expertise) ? user?.expertise : user?.expertise?.split(",") }
+        if(date){
+            user = {...user, time: [`${moment(date).format("HH:mm")} - ${moment(secondDate).format("HH:mm")} `] }
+        }
         if (user?.socialChanels) {
             user.socialChanels = user?.socialChanels?.map(channel => channel ? channel : 0)
         }
@@ -183,7 +184,7 @@ const CompleteProfile = () => {
 
                                 </View>
                                 <View style={{}}>
-                                    {userData?.portfolio ?
+                                    {userData?.portfolio?.length ?
                                         <View style={{}}>
                                             <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
                                                 {/* <ImagePlaceHolderComponent size={Matrics.ms80} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => setUserData({ ...userData, portfolio: image })} image={`${IMAGE_URL}${""}`} borderColor={Colors.BLUE} />
@@ -191,7 +192,7 @@ const CompleteProfile = () => {
                                                 <ImagePlaceHolderComponent size={Matrics.ms80} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => setUserData({ ...userData, portfolio: image })} image={`${IMAGE_URL}${""}`} borderColor={Colors.BLUE} />
                                                 <ImagePlaceHolderComponent size={Matrics.ms80} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => setUserData({ ...userData, portfolio: image })} image={`${IMAGE_URL}${""}`} borderColor={Colors.BLUE} /> */}
 
-                                                {userData?.portfolio ?
+                                                {userData?.portfolio?.length ?
                                                     userData?.portfolio?.map(item =>
                                                         <View style={{ marginRight: Matrics.vs15 }}>
                                                             <ImagePlaceHolderComponent size={Matrics.ms80} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => setUserData({ ...userData, portfolio: image })} image={item?.uri || `${IMAGE_URL}${item}`} borderColor={Colors.BLUE} />
@@ -215,7 +216,7 @@ const CompleteProfile = () => {
 
                                             </View>
                                             <View style={{ flex: 0.23 }}>
-                                                <ImagePlaceHolderComponent multiple={true} size={Matrics.ms80} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs25} setImage={(image) => setUserData({ ...userData, portfolio: image })} image={`${IMAGE_URL}${userData?.portfolio}`} borderColor={Colors.BLUE} />
+                                                <ImagePlaceHolderComponent plus multiple={true} size={Matrics.ms80} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs25} setImage={(image) => setUserData({ ...userData, portfolio: image })} image={`${IMAGE_URL}${userData?.portfolio}`} borderColor={Colors.BLUE} />
 
                                                 {/* <View style={{ width: Matrics.ms80, height: Matrics.ms80, borderWidth: 1, borderColor: Colors.BLUE }}></View> */}
                                             </View>

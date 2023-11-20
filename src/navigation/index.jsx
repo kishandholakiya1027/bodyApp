@@ -65,7 +65,8 @@ const drawerLoginConstant = [
     {
         route: "ProfileList",
         name: "Saved Profiles",
-        component: ProfileList
+        component: ProfileList,
+        designer:true
     },
     {
         route: "MyProfile",
@@ -158,6 +159,7 @@ function CustomDrawerContent(props) {
                 <View style={{ marginTop: Matrics.vs20 }}>
                     {
                         drawer?.map(item => {
+                            let showProfile = item?.designer ? !user?.role ? true:false:true
                             if (item?.children) {
                                 return (
                                     <View>
@@ -189,7 +191,7 @@ function CustomDrawerContent(props) {
 
                                 return (
 
-                                    <DrawerItem labelStyle={{ color: Colors.LIGHTBLACK, fontFamily: getRubikFont(), fontSize: Matrics.hs18 }} label={item?.name} onPress={() => onNavigation(item?.route)} />
+                                    showProfile? <DrawerItem labelStyle={{ color: Colors.LIGHTBLACK, fontFamily: getRubikFont(), fontSize: Matrics.hs18 }} label={item?.name} onPress={() => onNavigation(item?.route)} />:null
 
                                 )
                             }

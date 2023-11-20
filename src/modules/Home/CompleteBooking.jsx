@@ -94,6 +94,7 @@ const CompleteBooking = () => {
         //     console.error(error);
         // }
     };
+    
     const initializePaymentSheet = async () => {
         const clientSecret = "pi_3O6u7mSFiZpukCb11tj9D4GI_secret_G54BHQy6PnmcW4KrGbACI6qVi"
         if (clientSecret) {
@@ -111,6 +112,7 @@ const CompleteBooking = () => {
             }
         }
     };
+
     const openPaymentSheet = async () => {
         const { error } = await presentPaymentSheet({ clientSecret });
         if (error) {

@@ -28,6 +28,7 @@ const MyBooking = () => {
     const [reason, setReason] = useState()
     const [image, setImage] = useState([])
     const [booking, setBooking] = useState([])
+    console.log("🚀 ~ file: MyBooking.jsx:31 ~ MyBooking ~ booking:", booking)
     const navigation = useNavigation()
     const { user } = useContext(UserParamContext)
     const [requirementData, setRequirementData] = useState({})
@@ -245,7 +246,7 @@ const editRequirement =async (status)=>{
                                             <View style={{ flexDirection: "row", alignItems: "center", }}>
                                                 <View style={{ flex: 0.50 }}>
                                                     <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTGRAY} marginTop={Matrics.vs5} paddingHorizontal={Matrics.vs0}>{"Booking ID:"}</TextComponent>
-                                                    <TextComponent numberOfLines={5} fontFamily={getRubikFont()} size={Matrics.ms18} color={Colors.BLUE} marginTop={Matrics.vs5} paddingHorizontal={Matrics.vs0}>{"#123456"}</TextComponent>
+                                                    <TextComponent numberOfLines={5} fontFamily={getRubikFont()} size={Matrics.ms18} color={Colors.BLUE} marginTop={Matrics.vs5} paddingHorizontal={Matrics.vs0}>{`#${item?._id?.slice(-6)}`}</TextComponent>
 
                                                 </View>
                                                 <View style={{ flex: 0.50, alignItems: "flex-end", justifyContent: "center", }}>

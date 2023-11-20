@@ -14,6 +14,7 @@ import CommonButton from '../../core-component/molecules/CommonButton'
 
 const MyProfile = () => {
     const [userData, setUserData] = useState()
+    console.log("🚀 ~ file: MyProfile.jsx:17 ~ MyProfile ~ userData:", userData)
     const [profileData, setProfileData] = useState()
     const [image, setImage] = useState()
     console.log("🚀 ~ file: MyProfile.jsx:17 ~ MyProfile ~ image:", image)
@@ -131,7 +132,7 @@ const MyProfile = () => {
                             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.CRAYON} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{"Consultation Fees"}</TextComponent>
                             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{`INR ${userData?.consultationCharge || 0}/ 30 min session`}</TextComponent>
                             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.CRAYON} marginTop={Matrics.vs25} paddingHorizontal={Matrics.hs5}>{"Availability"}</TextComponent>
-                            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{`${userData?.availability ? userData?.availability[0] : ""} - ${userData?.availability ? userData?.availability[userData?.availability?.length - 1] : ""}`}</TextComponent>
+                            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{`${userData?.availability ? userData?.availability[0]||"" : ""} - ${userData?.availability ? userData?.availability[userData?.availability?.length - 1]||"" : ""}`}</TextComponent>
                             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{`${userData?.time && userData?.time[0] || ""}`}</TextComponent>
 
                         </View>

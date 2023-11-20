@@ -67,7 +67,7 @@ const LoginPage = () => {
             }).then(async ({ data }) => {
                 if (data?.status === 200) {
 
-                    Alert.alert(data?.msg)
+                    // Alert.alert(data?.msg)
                     await AsyncStorage.setItem("token", data?.data?.token)
                     setUser(data?.data)
                     await AsyncStorage.setItem("user", JSON.stringify(data?.data))

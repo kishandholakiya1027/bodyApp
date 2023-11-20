@@ -49,7 +49,6 @@ const SocialMediaComponent = ({role,checkRole,width}) => {
 
     const data = await axios.post(`${API_URL}auth/verify`, { token: userInfo?.idToken,role:role||false })
     if (data?.data?.status === 200) {
-        Alert.alert(data?.data?.msg)
         await AsyncStorage.setItem("token", data?.data?.data?.token)
         setUser(data?.data?.data)
         await AsyncStorage.setItem("user", JSON.stringify(data?.data?.data))
@@ -89,7 +88,6 @@ const SocialMediaComponent = ({role,checkRole,width}) => {
                     AccessToken.getCurrentAccessToken().then(async data => {
                   await axios.post(`${API_URL}auth/verify-facebook`, { token: data?.accessToken,role:role||false  }).then(async({data})=>{
                       if (data?.status === 200) {
-                          Alert.alert(data?.msg)
                           console.log("🚀 ~ file: Social-MediaComponent.jsx:87 ~ awaitaxios.post ~ data:", data,data?.status)
                           await AsyncStorage.setItem("token", data?.data?.token)
                           await AsyncStorage.setItem("user", JSON.stringify(data?.data))
@@ -136,7 +134,6 @@ const SocialMediaComponent = ({role,checkRole,width}) => {
               
                   await axios.post(`${API_URL}auth/verify-instagram`, { token,role:role||false }).then(async({data})=>{
                       if (data?.status === 200) {
-                          Alert.alert(data?.msg)
                           console.log("🚀 ~ file: Social-MediaComponent.jsx:87 ~ awaitaxios.post ~ data:", data,data?.status)
                           await AsyncStorage.setItem("token", data?.data?.token)
                           await AsyncStorage.setItem("user", JSON.stringify(data?.data))
