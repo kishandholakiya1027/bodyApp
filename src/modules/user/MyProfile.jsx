@@ -11,6 +11,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import axios from 'axios'
 import UserParamContext from '../../context/setUserContext'
 import CommonButton from '../../core-component/molecules/CommonButton'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const MyProfile = () => {
     const [userData, setUserData] = useState()
@@ -18,6 +19,7 @@ const MyProfile = () => {
     const [image, setImage] = useState()
     const navigation = useNavigation()
     const { user } = useContext(UserParamContext)
+    const insets = useSafeAreaInsets();
 
     // useEffect(() => {
     //     getUserData()
@@ -81,7 +83,7 @@ const MyProfile = () => {
             <SafeAreaView style={{ flex: 1 }}>
                 <StatusBar barStyle="dark-content" backgroundColor="transparent" />
                 <View style={{ borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY }}>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", height: Matrics.vs55, marginRight: Matrics.vs20 }}>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", height: Matrics.ms55, marginRight: Matrics.vs20 }}>
                         <TextComponent fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0}>{"My Profile"}</TextComponent>
 
                         <Pressable onPress={() => navigation.navigate("Home")}>
@@ -230,7 +232,7 @@ const MyProfile = () => {
                         }
                     </View>
                 </ScrollView>
-                <View style={{alignItems:"center"}}>
+                <View style={{alignItems:"center",paddingBottom:insets?.bottom ? 0:Matrics.ms20}}>
                     <View style={{width:"50%"}}>
                     <CommonButton text={"Edit Profile"} onPress={()=> navigation.navigate(user?.role ?"OnBoarding":"UserProfile")} viewStyle={{backgroundColor:Colors.BLUE}} textStyle={{color:Colors.WHITE}}/>
 

@@ -1,4 +1,4 @@
-import { Alert, Dimensions, FlatList, Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Alert, Dimensions, FlatList, Image, KeyboardAvoidingView, Platform, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { Colors, Images, Matrics } from '../../theme'
 import TextInputComponent from '../../core-component/atom/TextInputComponent'
@@ -10,7 +10,7 @@ import axios from 'axios'
 import UsedataComponent from '../../core-component/organism/UsedataComponent'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { SafeAreaView, initialWindowMetrics, useSafeAreaInsets } from 'react-native-safe-area-context'
+import {initialWindowMetrics, useSafeAreaInsets } from 'react-native-safe-area-context'
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from "react-native-push-notification";
 import PushNotificationIOS from '@react-native-community/push-notification-ios'
@@ -264,9 +264,9 @@ const Home = () => {
 
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.WHITE, }} behavior={IS_ANDROID ? '' : 'padding'} enabled>
-            <SafeAreaView initialMetrics={initialWindowMetrics} style={{ flex: 1 }} >
+            <SafeAreaView style={{ flex: 1 }} >
                 <ScrollView showsVerticalScrollIndicator={false} >
-                    <View style={{ marginHorizontal: Matrics.ms20, flex: 1 }}>
+                    <View style={{ marginHorizontal: Matrics.ms20, flex: 1,marginTop:Matrics.vs30 }}>
                         <View >
                             <TextInputComponent placeholder={"Search for designers, stylists or trends"} onChangeText={(text) => setFilter({ ...filter, search: text })} value={search} />
                             <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10}>{"How can we assist you today?"}</TextComponent>
@@ -277,7 +277,7 @@ const Home = () => {
                                             <Pressable onPress={() => {
                                                 setFilter({ ...filter, assist: item?.title })
                                                 navigation.navigate("AllUsers", { homeFilter: { assist: filter?.assist } })
-                                            }} style={{ marginRight: Matrics.vs15, width: Matrics.vs85, justifyContent: "flex-start", marginTop: Matrics.vs10, }}>
+                                            }} style={{ marginRight: Matrics.vs15, width: insets?.bottom ? Matrics.vs85:Matrics.vs100, justifyContent: "flex-start", marginTop: Matrics.vs10, }}>
                                                 <Image source={item?.image} style={{ width: Matrics.ms80, height: Matrics.ms80, borderRadius: Matrics.ms2, borderWidth: filter?.assist === item?.title ? 2 : 1, borderColor: Colors.MEDIUMRED, resizeMode: "contain", marginLeft: Matrics.vs10 }} />
                                                 {/* <ImagePlaceHolderComponent size={Matrics.ms90} borderRadius={Matrics.ms45} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => { }} image={item?.image} borderColor={filter === item?.title ? Colors.MEDIUMRED : Colors.MEDIUMREDOPACITY}  /> */}
                                                 <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} textAlign="center" numberOfLines={3}>{item?.title}</TextComponent>

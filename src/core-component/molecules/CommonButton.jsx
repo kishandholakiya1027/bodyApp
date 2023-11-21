@@ -18,5 +18,5 @@ export default CommonButton
 
 const styles = StyleSheet.create({
     textStyle: { color: Colors.BLUE, width: "100%", fontFamily: getRubikFont("Medium"), fontSize: Matrics.ms18, textAlign: "center" },
-    buttonView: { marginTop: Matrics.vs10, borderWidth: 1, borderColor: Colors.BLUE, paddingHorizontal: Matrics.hs20,paddingVertical:Matrics.vs5, minHeight: Matrics.vs50, alignItems: "center", justifyContent: "center", flexDirection: "row", width: "100%" },
+    buttonView: { marginTop: Matrics.vs10, borderWidth: 1, borderColor: Colors.BLUE, paddingHorizontal: Matrics.hs20,paddingVertical:Matrics.vs5, minHeight: Matrics.ms50, alignItems: "center", justifyContent: "center", flexDirection: "row", width: "100%" },
 })

@@ -218,7 +218,7 @@ const editRequirement =async (status)=>{
                     <View style={{ flex: 1 }}>
                         <ScrollView showsVerticalScrollIndicator={false} horizontal={true}>
 
-                            <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", paddingTop: Matrics.vs20, justifyContent: "flex-start", marginTop: Matrics.vs10, marginLeft: Matrics.hs20 }}>
+                            <View style={{ flexDirection: "row",  alignItems: "center", paddingTop: Matrics.vs20, justifyContent: "flex-start", marginTop: Matrics.vs10, marginLeft: Matrics.hs20 }}>
                                 {
                                     statusArray?.map((item, index) => {
                                         return (
@@ -381,10 +381,10 @@ const editRequirement =async (status)=>{
                     <View style={{ flex: 1, justifyContent: "flex-end" }}>
                         <View style={{ backgroundColor: Colors.WHITE, height: "auto", paddingBottom: Matrics.vs30, }}>
                             <View style={{}}>
-                                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", height: Matrics.vs55, marginRight: Matrics.vs20, marginBottom: Matrics.vs10 }}>
+                                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", height: Matrics.ms65, marginRight: Matrics.vs20, marginBottom: Matrics.vs10 }}>
                                     <TextComponent fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} >{requirementData?._id ? "Modify Requirement": "Add Requirement"}</TextComponent>
 
-                                    <Pressable onPress={() => setVisible(false)}>
+                                    <Pressable onPress={() => setVisible(false)} style={{}}>
                                         <Image source={Images.close} style={{ width: Matrics.ms18, height: Matrics.ms18, tintColor: Colors.LIGHTBLACK }} />
                                     </Pressable>
                                 </View>
@@ -410,9 +410,9 @@ const editRequirement =async (status)=>{
                     setVisible={() => setCancelModal(false)}
                 >
                     <View style={{ flex: 1, justifyContent: "flex-end" }}>
-                        <View style={{ backgroundColor: Colors.WHITE, height: "auto", paddingBottom: Matrics.vs15, }}>
+                        <View style={{ backgroundColor: Colors.WHITE, height: "auto", paddingBottom: Matrics.vs10, }}>
                             <View style={{}}>
-                                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", height: Matrics.vs55, marginRight: Matrics.vs20, marginBottom: Matrics.vs10 }}>
+                                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", height: Matrics.ms65, marginRight: Matrics.vs20, marginBottom: Matrics.vs10 }}>
                                     <TextComponent fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} >{"Reason for Cancellation"}</TextComponent>
 
                                     <Pressable onPress={() => setCancelModal(false)}>
@@ -422,9 +422,9 @@ const editRequirement =async (status)=>{
                                 {/* <Header text={"Complete Profile"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => index == 1 ? setIndex(0) : logOut()} /> */}
 
                             </View>
-                            <View style={{ padding: Matrics.hs20 }}>
+                            <View style={{ padding: Matrics.hs20,paddingTop:0 }}>
 
-                                <TextInputComponent placeholder={"Add a brief about your requirement"} onChangeText={text => setReason(text)} value={reason} height={Matrics.vs100} multiline />
+                                <TextInputComponent placeholder={"Add a brief about your requirement"} onChangeText={text => setReason(text)} value={reason} height={Matrics.ms100} multiline />
                                 <View style={{ alignItems: "center", marginBottom: Matrics.vs10 }}>
                                     <View style={{ width: "70%" }}>
 

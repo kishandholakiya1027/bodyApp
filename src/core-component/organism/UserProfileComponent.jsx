@@ -132,7 +132,7 @@ export default function UserProfileComponent({ item, refetch }) {
                 <Pressable style={{
                     padding: 5,
                     zIndex: 99999
-                }} hitSlop={60} onPress={() => likedUser?.includes(item?.designerId?._id || item?.id || item?._id) ? removeLike(item?.designerId?._id || item?.id || item?._id) : addLike(item?.designerId?._id || item?.id || item?._id)}>
+                }} onPress={() => likedUser?.includes(item?.designerId?._id || item?.id || item?._id) ? removeLike(item?.designerId?._id || item?.id || item?._id) : addLike(item?.designerId?._id || item?.id || item?._id)}>
                     <Image source={!likedUser?.includes(item?.designerId?._id || item?.id || item?._id) ? Images.saveprofile : Images.heart} width={Matrics.ms15} height={Matrics.ms15} style={{
                         width: Matrics.ms15,
                         height: Matrics.ms15

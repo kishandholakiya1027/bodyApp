@@ -39,10 +39,11 @@ const ReportIssue = () => {
 
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.WHITE, }} behavior={IS_ANDROID ? '' : 'padding'} enabled>
-            <SafeAreaView style={{ flex: 1, paddingBottom: insets?.bottom ? insets?.bottom + 20 : 20 }}>
                 <StatusBar barStyle="dark-content" backgroundColor="transparent" />
+            <SafeAreaView style={{ flex: 1, paddingBottom: insets?.bottom ? 0 : 20 }}>
+                <View style={{flex:1}}>
                 <View style={{ borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY, }}>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", height: Matrics.vs55, marginRight: Matrics.vs20 }}>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", height: Matrics.ms55, marginRight: Matrics.vs20 }}>
                         <TextComponent fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} >{"Report an Issue"}</TextComponent>
 
                         <Pressable onPress={() => navigation.navigate("Home")}>
@@ -59,8 +60,10 @@ const ReportIssue = () => {
                     </View>
 
                 </View>
+
+                </View>
                 <View>
-                    <View style={{ flex: 1, justifyContent: "flex-end", marginHorizontal: Matrics.hs20 }}>
+                    <View style={{  justifyContent: "flex-end", marginHorizontal: Matrics.hs20 }}>
                         <CommonButton text={"Report an issue"} onPress={() => onSubmit()} enabled={issue} />
                     </View>
                 </View>

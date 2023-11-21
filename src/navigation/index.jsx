@@ -140,16 +140,16 @@ function CustomDrawerContent(props) {
     const drawer = user?.id || user?._id ? drawerLoginConstant : drawerLogoutConstant
     return (
         <DrawerContentScrollView {...props}>
-            <View style={{ flex: 1, height: height - 200 }}>
+            <View style={{ flex: 1, height: !user ? height - 200:height }}>
                 <View style={{ borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY, paddingBottom: Matrics.vs15, marginRight: Matrics.vs20 }}>
                     <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                        <View>
+                        <View style={{flex:0.9}}>
                             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms25} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0}>{`Hello, ${ user?.role ? user?.username ||"designer":user?.username ||"user"}`}</TextComponent>
                             {user?.role ? <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.BLUE} marginTop={Matrics.vs0}>{`StyleCrew Member`}</TextComponent> : null}
 
                         </View>
 
-                        <Pressable onPress={() => props.navigation?.closeDrawer()}>
+                        <Pressable style={{flex:0.1}} onPress={() => props.navigation?.closeDrawer()}>
                             <Image source={Images.close} style={{ width: Matrics.ms18, height: Matrics.ms18, tintColor: Colors.LIGHTBLACK, resizeMode: "contain" }} />
                         </Pressable>
                     </View>
@@ -163,7 +163,7 @@ function CustomDrawerContent(props) {
                             if (item?.children) {
                                 return (
                                     <View>
-                                        <Pressable onPress={() => setOpen(!open)} style={{ height: 53, marginRight: Matrics.vs20, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                                        <Pressable onPress={() => setOpen(!open)} style={{  marginRight: Matrics.vs20, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                                             <DrawerItem label={item?.name} style={{ flex: 0.95 }} onPress={() => setOpen(!open)} labelStyle={{ color: Colors.LIGHTBLACK, fontFamily: getRubikFont(), fontSize: Matrics.hs18 }} />
                                             <Image source={Images.downArrow} style={{
                                                 width: Matrics.ms22,
@@ -191,7 +191,7 @@ function CustomDrawerContent(props) {
 
                                 return (
 
-                                    showProfile? <DrawerItem labelStyle={{ color: Colors.LIGHTBLACK, fontFamily: getRubikFont(), fontSize: Matrics.hs18 }} label={item?.name} onPress={() => onNavigation(item?.route)} />:null
+                                    showProfile? <DrawerItem labelStyle={{ color: Colors.LIGHTBLACK, fontFamily: getRubikFont(), fontSize: Matrics.hs18, }} label={item?.name} onPress={() => onNavigation(item?.route)} />:null
 
                                 )
                             }

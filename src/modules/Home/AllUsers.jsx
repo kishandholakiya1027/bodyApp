@@ -17,6 +17,7 @@ import SliderComponent from '../../core-component/molecules/SliderComponent'
 import axios from 'axios'
 import { API_URL } from '../../../config'
 import UserParamContext from '../../context/setUserContext'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 
 
@@ -91,6 +92,7 @@ const homeFilter = props?.route?.params?.homeFilter
     const [submitSort, setSubmitSort] = useState()
     const [submitFilter, setSubmitFilter] = useState(false)
     const [count, setCount] = useState(0)
+    const insets = useSafeAreaInsets();
 
     const navigation = useNavigation()
 
@@ -224,7 +226,7 @@ const homeFilter = props?.route?.params?.homeFilter
                     <SafeAreaView style={{ flex: 1, }} >
                         <View style={{ backgroundColor: Colors.WHITE, height: height - 40, paddingBottom: Matrics.vs15 }}>
                             <View style={{ borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY, paddingVertical: Matrics.vs5 }}>
-                                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", height: Matrics.vs50, marginRight: Matrics.vs20 }}>
+                                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", height: Matrics.ms50, marginRight: Matrics.vs20 }}>
                                     <TextComponent fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0}>{"Filter Profiles"}</TextComponent>
 
                                     <Pressable onPress={() => setFilterModal(false)}>
@@ -283,8 +285,8 @@ const homeFilter = props?.route?.params?.homeFilter
                     setVisible={() => setSortModal(false)}
                 >
                     <View style={{ flex: 1, justifyContent: "flex-end" }}>
-                        <View style={{ backgroundColor: Colors.WHITE, height: height / 2.8, paddingBottom: Matrics.vs15, paddingRight: Matrics.vs20 }}>
-                            <View style={{ borderBottomWidth: 0, borderColor: Colors.LIGHTERGRAY, paddingTop: Matrics.vs20, height: Matrics.vs50 }}>
+                        <View style={{ backgroundColor: Colors.WHITE, height: insets?.bottom ? height / 2.9:height / 2.5, paddingBottom: Matrics.vs15, paddingRight: Matrics.vs20 }}>
+                            <View style={{ borderBottomWidth: 0, borderColor: Colors.LIGHTERGRAY, paddingTop: Matrics.vs20, height: Matrics.ms50 }}>
                                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                                     <TextComponent fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0}>{"Sort Profiles"}</TextComponent>
 
