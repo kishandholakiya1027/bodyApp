@@ -14,12 +14,10 @@ const ProfileList = () => {
   const navigation = useNavigation()
   const [loader, setLoader] = useState(false)
   const [likedUser, setLikedUsers] = useState([])
-  console.log("🚀 ~ file: ProfileList.jsx:17 ~ ProfileList ~ likedUser:", likedUser)
   const { user } = useContext(UserParamContext)
 
   const getLikedUsers = async () => {
     await axios.get(`${API_URL}like/get_like_login_user/${user?.id || user?._id}`).then(({ data }) => {
-      console.log("🚀 ~ file: ProfileList.jsx:24 ~ awaitaxios.get ~ data:", data)
       if (data?.status === 200)
         setLikedUsers(data?.likes)
       else {

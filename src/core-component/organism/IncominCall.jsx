@@ -104,7 +104,6 @@ export default class IncominCall extends Component {
 
     // Currently iOS only
     onIncomingCallDisplayed = (data) => {
-        console.log("🚀 ~ file: IncominCall.jsx:99 ~ IncominCall ~ data:", data)
         let { error } = data;
 
         // You will get this event after RNCallKeep finishes showing incoming call UI
@@ -117,13 +116,11 @@ export default class IncominCall extends Component {
     };
 
     onToggleHold = (data) => {
-        console.log("🚀 ~ file: IncominCall.jsx:112 ~ IncominCall ~ data:", data)
         let { hold, callUUID } = data;
         // Called when the system or user holds a call
     };
 
     onDTMFAction = (data) => {
-        console.log("🚀 ~ file: IncominCall.jsx:118 ~ IncominCall ~ data:", data)
         let { digits, callUUID } = data;
         // Called when the system or user performs a DTMF action
     };
@@ -140,7 +137,6 @@ export default class IncominCall extends Component {
     }
 
     onEndCall = (callUUID) => {
-        console.log("🚀 ~ file: IncominCall.jsx:70 ~ IncominCall ~ callUUID:", callUUID)
         // Handle the call ended event here
         console.log(`Call ended: ${callUUID}`);
     }
@@ -148,7 +144,6 @@ export default class IncominCall extends Component {
     startCall = () => {
         // Start an outgoing call
         const callUUID = uuidv4(); // Generate a unique ID for the call
-        console.log("🚀 ~ file: IncominCall.jsx:40 ~ IncominCall ~ callUUID:", callUUID)
         const handle = 'recipient_username'; // The recipient's username or phone number
         // RNCallKeep.answerIncomingCall(callUUID)
 

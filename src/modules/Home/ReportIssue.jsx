@@ -23,7 +23,6 @@ const ReportIssue = () => {
             "userId": user?._id || user?.id,
             "msg": issue
         }
-        console.log("🚀 ~ file: ReportIssue.jsx:22 ~ onSubmit ~ body:", body)
         await axios.post(`${API_URL}issue/add_issue`,body).then(({data}) => {
             if(data?.status === 200){
                 setIssue()

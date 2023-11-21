@@ -22,21 +22,10 @@ const { width, height } = Dimensions.get('window');
 
 const UserProfile = () => {
     const [index, setIndex] = useState(0)
-    const [height, setHeight] = useState({})
-    // const [heightFeetOpen, setHeightFeetOpen] = useState({})
-    // const [heightInchOpen, setHeightInchOpen] = useState({})
-    const [bustSize, setBustSize] = useState({})
-    // const [bustSizeOpen, setbustSizeOpen] = useState({})
-    // const [bustSizOpen, setbustSizOpen] = useState({})
-    const [waistSize, setWaistSize] = useState()
-    // const [waistSizeOpen, setWaistSizeOpen] = useState()
-    const [hipSize, setHipSize] = useState()
     const [userData, setUserData] = useState({})
     const navigation = useNavigation()
-    const { user } = useContext(UserParamContext)
+    const { user,setUser } = useContext(UserParamContext)
 
-    console.log("🚀 ~ file: UserProfile.jsx:27 ~ UserProfile ~ userData:", userData)
-    // const [hipSizeOpen, setHipSizeOpen] = useState()
     useFocusEffect(
         useCallback(() => {
             getUserData()
@@ -47,9 +36,7 @@ const UserProfile = () => {
     const getUserData = async () => {
         if (user) {
             let url =  "user/get_user/"
-            console.log("🚀 ~ file: MyProfile.jsx:32 ~ getUserData ~ url:", url)
             await axios.get(`${API_URL}${url}${user?.id || user?._id}`).then(async ({ data }) => {
-                console.log("🚀 ~ file: MyProfile.jsx:33 ~ awaitaxios.get ~ data:", data)
                 if (data?.status === 200) {
                  
                  
@@ -169,18 +156,19 @@ const UserProfile = () => {
         delete usr["_id"]
         delete usr["__v"]
         // if(usr)
-        let body = convertToformData(usr)
         if(!usr?.new){
             delete usr["profile_img"]
         }
+        usr.complete = true
+        let body = convertToformData(usr)
         await axios.put(`${API_URL}user/edit_user/${userData?.id || userData?._id}`, body, {
             headers: {
                 "Content-Type": "multipart/form-data"
             }
         }).then(async ({ data }) => {
             if (data?.status === 200) {
-
-                await AsyncStorage.setItem("user", JSON.stringify({ ...user, id: userData?.id, role: user?.role }))
+                setUser({ ...user, id: userData?.id||userData?._id, role: user?.role ,complete:true})
+                await AsyncStorage.setItem("user", JSON.stringify({ ...user, id: userData?.id, role: user?.role ,complete:true}))
                 setTimeout(() => {
                     navigation.navigate("MyProfile")
 

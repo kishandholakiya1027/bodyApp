@@ -28,7 +28,6 @@ const MyBooking = () => {
     const [reason, setReason] = useState()
     const [image, setImage] = useState([])
     const [booking, setBooking] = useState([])
-    console.log("🚀 ~ file: MyBooking.jsx:31 ~ MyBooking ~ booking:", booking)
     const navigation = useNavigation()
     const { user } = useContext(UserParamContext)
     const [requirementData, setRequirementData] = useState({})

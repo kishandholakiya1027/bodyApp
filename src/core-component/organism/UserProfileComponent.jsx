@@ -12,9 +12,7 @@ import { AirbnbRating } from "react-native-ratings"
 
 export default function UserProfileComponent({ item, refetch }) {
     const { user } = useContext(UserParamContext)
-    console.log("🚀 ~ file: UserProfileComponent.jsx:15 ~ UserProfileComponent ~ user:", user)
     const [likedUser, setLikedUsers] = useState([])
-    console.log("🚀 ~ file: UserProfileComponent.jsx:16 ~ UserProfileComponent ~ likedUser:", likedUser)
     const navigation = useNavigation()
 
     useEffect(() => {

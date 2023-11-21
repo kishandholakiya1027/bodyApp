@@ -30,6 +30,7 @@ import MessageScreen from '../modules/Messages/MessageScreen'
 import CheckoutScreen from '../core-component/organism/CheckoutComponent'
 import ProfileDetails from '../modules/Home/ProfileDetails'
 import ProfileList from '../modules/saved-profiles/ProfileList'
+import ListNotification from '../modules/Notifications/ListNotification'
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator()
 
@@ -69,9 +70,9 @@ const drawerLoginConstant = [
         designer:true
     },
     {
-        route: "MyProfile",
+        route: "ListNotification",
         name: "Notifications",
-        component: MyProfile
+        component: ListNotification
     },
    
     {
@@ -131,7 +132,6 @@ function CustomDrawerContent(props) {
         setOpen(false)
     }
     const navigation = useNavigation()
-    console.log("🚀 ~ file: index.jsx:122 ~ CustomDrawerContent ~ navigation:", navigation)
 
     const onNavigation = (route,params) => {
         props.navigation?.closeDrawer()
@@ -144,7 +144,7 @@ function CustomDrawerContent(props) {
                 <View style={{ borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY, paddingBottom: Matrics.vs15, marginRight: Matrics.vs20 }}>
                     <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                         <View>
-                            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms25} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0}>{`Hello, ${user?.username || user?.role ? "designer":"user"}`}</TextComponent>
+                            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms25} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0}>{`Hello, ${ user?.role ? user?.username ||"designer":user?.username ||"user"}`}</TextComponent>
                             {user?.role ? <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.BLUE} marginTop={Matrics.vs0}>{`StyleCrew Member`}</TextComponent> : null}
 
                         </View>
@@ -243,6 +243,8 @@ function AppHeader(params) {
 }
 
 function DrawerComponent() {
+    const { user } = useContext(UserParamContext)
+
     return (<Drawer.Navigator initialRouteName="HomeScreen" drawerContent={(props) => <CustomDrawerContent {...props} />} screenOptions={{
         drawerStyle: {
             backgroundColor: Colors.WHITE,
@@ -255,7 +257,7 @@ function DrawerComponent() {
         header: ({ navigation, route, options }) => {
             // const title = getHeaderTitle(options, route.name);
             return (
-                <AppHeader />
+                (user?.complete||!user) ?  <AppHeader />:null
             );
         },
     }}>
@@ -299,6 +301,7 @@ const Index = () => {
                             <Stack.Screen name='CheckoutScreen' component={CheckoutScreen} />
                             <Stack.Screen name='ProfileList' component={ProfileList} />
                             <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
+                            <Stack.Screen name='ListNotification' component={ListNotification} />
                         </Stack.Navigator>
                     </BookingContext.Provider>
                 </UserParamContext.Provider>

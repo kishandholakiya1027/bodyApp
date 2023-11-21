@@ -22,7 +22,6 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
     const [loginUser, setLoginUser] = useState()
     const [likedUser, setLikedUsers] = useState([])
     const [users, setUsers] = useState([])
-    console.log("🚀 ~ file: UsedataComponent.jsx:20 ~ UsedataComponent ~ users:", users)
     const [allUsers, setAllUsers] = useState([])
     const [loader, setLoader] = useState(false)
     const navigation = useNavigation()
@@ -65,7 +64,6 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
                 }
             }).then(({ data }) => {
                 if (data?.status === 200) {
-                    console.log("🚀 ~ file: UsedataComponent.jsx:50 ~ onFilter ~ data:", data)
                     setTimeout(() => {
 
                         setUsers(data?.data)
@@ -84,7 +82,6 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
         }
         else {
             setUsers(!userFilter ? allUsers : users)
-            console.log("🚀 ~ file: UsedataComponent.jsx:66 ~ onFilter ~ allUsers:", allUsers)
             setLoader(false)
 
         }
@@ -111,8 +108,6 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
 
         await axios.get(`${API_URL}designer/get_designer_rating`).then(({ data }) => {
             setLoader(false)
-            console.log("🚀 ~ file: UsedataComponent.jsx:100 ~ awaitaxios.get ~ data:", data)
-            console.log("🚀 ~ file: UsedataComponent.jsx:102 ~ awaitaxios.get ~ userFilter:", userFilter)
             !userFilter ? setUsers(data?.data) : null
             setAllUsers(data?.data)
         }).catch(err => {

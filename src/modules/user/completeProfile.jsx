@@ -25,11 +25,9 @@ const CompleteProfile = () => {
     const [secondDate, setSecondDate] = useState()
     const [openExpertise, setOpenExpertise] = useState(false)
 
-    console.log("🚀 ~ file: completeProfile.jsx:20 ~ CompleteProfile ~ userData:", userData)
     const [showlink, setShowLink] = useState(false)
     const [expertise, setExpertise] = useState()
-    const { user } = useContext(UserParamContext)
-    console.log("🚀 ~ file: completeProfile.jsx:22 ~ CompleteProfile ~ user:", user)
+    const { user,setUser } = useContext(UserParamContext)
 
     const navigation = useNavigation()
     useEffect(() => {
@@ -46,7 +44,9 @@ const CompleteProfile = () => {
                     setSecondDate(data?.data?.time ? moment(data?.data?.time[0]?.split("-")[1], "HH:mm")._d : "")
                     // setDate(data?.data?.time[0]?.split("-")[1])
                     setIndex(0)
-                    await AsyncStorage.setItem("user", JSON.stringify({ ...data?.data, role: user?.role }))
+                setUser({ ...data?.data, role: user?.role,complete:true })
+
+                    await AsyncStorage.setItem("user", JSON.stringify({ ...data?.data, role: user?.role,complete:true }))
                 } else {
                     Alert.alert(data?.msg)
                 }
@@ -90,7 +90,7 @@ const CompleteProfile = () => {
         }
         delete user["id"]
         delete user["_id"]
-        console.log("🚀 ~ file: completeProfile.jsx:92 ~ onSubmit ~ user:", user)
+        user.complete = true
         let body = convertToformData(user)
         await axios.put(`${API_URL}designer/edit_designer/${userData?.id || userData?._id}`, body, {
             headers: {

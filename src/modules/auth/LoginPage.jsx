@@ -39,14 +39,14 @@ const LoginPage = () => {
         messaging().getToken().then(async device_id => {
             setDeviceToken(device_id)
         }).catch(err => console.log("🚀 ~ file: signinScreen.js ~ line 58 ~ useEffect ~ err", err))
-       
+
 
     }
 
     useEffect(() => {
-     messageSetup()
+        messageSetup()
     }, [])
-    
+
     const onSubmit = async () => {
         if (!email) {
             setError({ email: "Email is required" })
@@ -58,7 +58,7 @@ const LoginPage = () => {
             let body = {
                 "email": email,
                 "password": password,
-                fcm_token:deviceToken
+                fcm_token: deviceToken
             }
             await axios.post(`${API_URL}auth/login`, body, {
                 headers: {
@@ -71,14 +71,23 @@ const LoginPage = () => {
                     await AsyncStorage.setItem("token", data?.data?.token)
                     setUser(data?.data)
                     await AsyncStorage.setItem("user", JSON.stringify(data?.data))
-                    navigation.navigate("Home")
+                    if (data?.data?.complete)
+                        navigation.navigate("Home")
+                    else {
+                        if (data?.data?.role)
+                            navigation.navigate("OnBoarding")
+                        else {
+                            navigation.navigate("UserProfile")
+
+                        }
+
+                    }
 
                 } else {
                     Alert.alert(data?.msg)
                 }
 
             }).catch(err => {
-                console.log("🚀 ~ file: LoginPage.jsx:57 ~ onSubmit ~ err:", err)
                 Alert.alert(`${err?.message}`)
 
 
@@ -105,14 +114,14 @@ const LoginPage = () => {
                             <TextInputComponent placeholder={"Password"} onChangeText={(text) => setPassword(text)} secureTextEntry={true} error={error?.password} />
                             <View style={{ justifyContent: "center", alignItems: "center" }}>
                                 {/* <ButtonComponent text={"Sign In"} /> */}
-                                <View style={{ marginBottom: Matrics.vs20,width:"43%" }}>
+                                <View style={{ marginBottom: Matrics.vs20, width: "43%" }}>
                                     {/* <Pressable style={styles.buttonView} onPress={onSubmit}>
                                         <Text style={styles.textStyle}>{"Login"}</Text>
                                     </Pressable> */}
-                                    <CommonButton text="Login" onPress={onSubmit} enabled={email&& password}/>
+                                    <CommonButton text="Login" onPress={onSubmit} enabled={email && password} />
 
                                 </View>
-                                <SocialMediaComponent role={null} checkRole={false}/>
+                                <SocialMediaComponent role={null} checkRole={false} />
                                 {/* <View>
                                     <Pressable style={styles.buttonView} onPress={signInWithGoogle}>
                                         <Image source={Images.google} style={{ width: Matrics.ms30, height: Matrics.ms30, marginRight: Matrics.hs10 }} />

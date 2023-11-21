@@ -15,14 +15,11 @@ const SlotScreen = () => {
     const [time, setTime] = useState()
     const [error, setError] = useState(false)
     const [noslot, setNoSlot] = useState()
-    console.log("🚀 ~ file: SlotScreen.jsx:18 ~ SlotScreen ~ noslot:", noslot)
     const navigation = useNavigation()
     const { setBooking, booking } = useContext(BookingContext)
     
     useEffect(() => {
         setNoSlot(moment().format('a') === "pm" ? parseInt(moment().format("hmm"))+300 > 600 ? true:false:false)
-        console.log("🚀 ~ file: SlotScreen.jsx:18 ~ SlotScreen ~ moment().for):",typeof parseInt(moment().format("hmm")),moment().format("hmm") ,typeof 600)
-    console.log("🚀 ~ file: SlotScreen.jsx:25 ~ useEffect ~ parseInt(moment().fo) > 600 ? true:false:", parseInt(moment().format("hmm")) > 600 ? true:false)
     }, [])
     
     const timeArray = [
@@ -54,7 +51,6 @@ const SlotScreen = () => {
             navigation.navigate("CompleteBooking")
         }
     }
-    console.log("🚀 ~ file: SlotScreen.jsx:77 ~ newArray ~ parseInt(moment(day).add", parseInt(moment(day).add("3","hours").format("hmm")))
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.WHITE, }} behavior={IS_ANDROID ? '' : 'padding'} enabled>
             <StatusBar barStyle="dark-content" backgroundColor="white" />
@@ -103,7 +99,6 @@ const SlotScreen = () => {
                                     {
                                         timeArray?.map((tm, index) => {
                                            let times =  day?.format("DDMMMMYYYY") === moment().format("DDMMMMYYYY") ? moment().add("3","hours").format("hmm") :"000"
-                                            console.log("🚀 ~ file: SlotScreen.jsx:94 ~ timeArray?.map ~ times:", times)
                                             return (
                                                parseInt(tm?.label?.split(" ")[0]?.replace(":","")?.slice(1)) >= parseInt(times) ?   <Pressable onPress={() => setTime(tm?.value)} style={{ minWidth: Matrics.hs105, paddingHorizontal: Matrics.hs16, paddingVertical: Matrics.vs12, backgroundColor: time === tm?.value ? Colors.MEDIUMREDOPACITY : Colors.BACKGROUNDGRAY, marginRight: Matrics.vs10, marginVertical: Matrics.vs7, borderRadius: Matrics.ms25, justifyContent: "center" }}>
                                                     {/* <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={time === tm?.value ? Colors.MEDIUMRED : Colors.LIGHTGRAY} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs0}>{  moment().add("3","hour").format("LT") tm?.label}</TextComponent> */}

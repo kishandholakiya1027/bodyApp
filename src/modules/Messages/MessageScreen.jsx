@@ -26,8 +26,6 @@ const MessageScreen = (props) => {
     const {user} = useContext(UserParamContext)
 
     let userId = user?.id||user?._id
-    console.log("🚀 ~ file: MessageScreen.jsx:29 ~ MessageScreen ~ userId:", userId)
-    console.log("🚀 ~ file: MessageScreen.jsx:15 ~ MessageScreen ~ messages:", messages)
     useEffect(() => {
         getMessages()
     }, [])
@@ -45,8 +43,9 @@ const MessageScreen = (props) => {
                 },700);
                 // msgRef?.current?.scrollToEnd()
             }
-            console.log("🚀 ~ file: MessageScreen.jsx:22 ~ awaitaxios.get ~ data:", data)
 
+        }).catch(err=>{
+            
         })
     }
 

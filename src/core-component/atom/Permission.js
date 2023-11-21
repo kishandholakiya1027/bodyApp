@@ -21,7 +21,6 @@ export default async function requestCameraAndAudioPermission() {
       console.log('Permission denied');
     }
   } catch (err) {
-    console.log("🚀 ~ file: Permission.js:25 ~ requestCameraAndAudioPermission ~ err:", err)
     console.warn(err);
   }
 }

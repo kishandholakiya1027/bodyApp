@@ -5,9 +5,7 @@ import { getRobotoFont, getRubikFont } from '../../core-utils/utils'
 import ImageSelectorComponent from './ImageSelectorComponent'
 
 const ImagePlaceHolderComponent = ({ onPress, plus = false, size = Matrics.ms160, borderRadius = Matrics.ms120, padding = Matrics.hs50, marginVertical = Matrics.vs40, setImage, image, borderColor = Colors.LIGHTGRAY, multiple, backgroundColor = "none", disabled }) => {
-    console.log("🚀 ~ file: imagePlaceHolderComponent.jsx:8 ~ ImagePlaceHolderComponent ~ disabled:", disabled,size,onPress)
     const [visible, setVisible] = useState(false)
-    console.log("🚀 ~ file: imagePlaceHolderComponent.jsx:9 ~ ImagePlaceHolderComponent ~ visible:", visible)
     const [imageUrl, setImageUrl] = useState()
     return (
         <View style={[styles.mainViw, { marginVertical }]}>

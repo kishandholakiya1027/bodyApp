@@ -18,7 +18,6 @@ const ProfileDetails = (props) => {
     const {designerId,likedUser} = props.route?.params
     const [userData, setUserData] = useState()
     const [like, setLike] = useState(likedUser?.includes(userData?._id))
-    console.log("🚀 ~ file: ProfileDetails.jsx:19 ~ ProfileDetails ~ userData:", userData)
     const [image, setImage] = useState()
     const navigation = useNavigation()
     const { setBooking } = useContext(BookingContext)
@@ -49,9 +48,7 @@ const ProfileDetails = (props) => {
 
     const getUserData = async () => {
             let url = "designer/get_designer/" 
-            console.log("🚀 ~ file: ProfileDetails.jsx:54 ~ awaitaxios.get ~ `${API_URL}${url}${designerId}`:", `${API_URL}${url}${designerId}`)
             await axios.get(`${API_URL}${url}${designerId}`).then(async ({ data }) => {
-                console.log("🚀 ~ file: ProfileDetails.jsx:33 ~ awaitaxios.get ~ data:", data)
                 setImage(data?.data?.profile_img)
                 if (data?.status === 200) {
                     setUserData({ ...data?.data, availability: data?.data?.availability || [] })

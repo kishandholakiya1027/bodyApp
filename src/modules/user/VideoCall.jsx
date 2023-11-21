@@ -133,7 +133,6 @@ import { API_URL } from '../../../config';
 
 
 const VideoCall = (props) => {
-    console.log("🚀 ~ file: VideoCall.jsx:136 ~ VideoCall ~ props:", props)
     const {item,user} = props?.route?.params
     const [videoCall, setVideoCall] = useState(false);
     const [channelId, setChannelId] = useState(false);
@@ -148,7 +147,6 @@ const VideoCall = (props) => {
         channel:`test-${item?._id}`,
         rtcUid: 0
     };
-    console.log("🚀 ~ file: VideoCall.jsx:151 ~ VideoCall ~ connectionData:", connectionData)
     const events = [
         'tokenExpired',
         'remoteInvitationRefused',

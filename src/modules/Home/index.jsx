@@ -49,7 +49,7 @@ const Home = () => {
     const [filter, setFilter] = useState()
     const navigation = useNavigation()
     const insets = useSafeAreaInsets();
-    const { setUser: setUserData } = useContext(UserParamContext)
+    const { user: userData, setUser: setUserData } = useContext(UserParamContext)
     const { width: _width, height: _height } = Dimensions.get('window');
 
 
@@ -60,10 +60,10 @@ const Home = () => {
         },
 
         // (required) Called when a remote is received or opened, or local notification is opened
-        onNotification: function (notification,sd) {
-            console.log("NOTIFICATION:", notification,sd);
-            if(notification?.userInteraction){
-                navigation.navigate("VideoCall",{item:{_id:notification?.data?.channelId}})
+        onNotification: function (notification, sd) {
+            console.log("NOTIFICATION:", notification, sd);
+            if (notification?.userInteraction) {
+                navigation.navigate("VideoCall", { item: { _id: notification?.data?.channelId } })
             }
             // PushNotification.localNotification({
             //     channelId: notification?.channelId,
@@ -145,11 +145,9 @@ const Home = () => {
             messaging().setAPNSToken(data || "385757dhnfudhf8487398890", "unknown")
 
         })
-        messaging().getToken().then(async device_id => {
-            console.log("🚀 ~ file: signinScreen.js:49 ~ messaging ~ device_id:", device_id)
-        }).catch(err => console.log("🚀 ~ file: signinScreen.js ~ line 58 ~ useEffect ~ err", err))
+      
 
-            createNotificationListeners(); //add this line
+        createNotificationListeners(); //add this line
 
     }
 
@@ -175,7 +173,6 @@ const Home = () => {
         messaging()
             .getInitialNotification(async msg => { })
             .then(remoteMessage => {
-                console.log("🚀 ~ file: initialScreen.js:130 ~ createNotificationListeners ~ remoteMessage:", remoteMessage)
                 // if (remoteMessage && token) {
                 //   navigation.navigate('LeadScreen', {
                 //     id: remoteMessage?.data?.inquiryId,
@@ -196,23 +193,21 @@ const Home = () => {
             // });
             // RNCallKeep.displayIncomingCall(callUUID, handle, 'Incoming Call', 'default', true);
             PushNotification.localNotification({
-                channelId: noti?.notification?.android?.channelId||"test-1",
+                channelId: noti?.notification?.android?.channelId || "test-1",
                 smallIcon: '',
                 soundName: noti?.data?.sound,
                 title: noti?.notification?.title,
                 message: noti?.notification?.body,
                 invokeApp: true, // (required)
-                userInfo:noti?.data
+                userInfo: noti?.data
             });
         });
         messaging()
             .onNotificationOpenedApp(async msg => {
-                console.log("🚀 ~ file: RegisterPage.jsx:105 ~ createNotificationListeners ~ msg:", msg)
 
             })
 
         messaging().setBackgroundMessageHandler(async msg => {
-            console.log("🚀 ~ file: RegisterPage.jsx:110 ~ messaging ~ msg:", msg)
 
         })
 
@@ -224,6 +219,18 @@ const Home = () => {
         if (token) {
             setToken(token)
             const user = JSON.parse(await AsyncStorage.getItem("user"))
+            if (user?.complete)
+                navigation.navigate("Home")
+            else {
+                if (user?.role)
+                
+                    navigation.navigate("OnBoarding")
+                else {
+                    navigation.navigate("UserProfile")
+
+                }
+
+            }
             setUserData(user)
             setUser(user)
             // navigation.navigate("Home")
@@ -258,48 +265,49 @@ const Home = () => {
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.WHITE, }} behavior={IS_ANDROID ? '' : 'padding'} enabled>
             <SafeAreaView initialMetrics={initialWindowMetrics} style={{ flex: 1 }} >
-            <ScrollView showsVerticalScrollIndicator={false} >
-                <View style={{ marginHorizontal: Matrics.ms20, flex: 1 }}>
-                    <View >
-                        <TextInputComponent placeholder={"Search for designers, stylists or trends"} onChangeText={(text) => setFilter({...filter,search:text})} value={search} />
-                        <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10}>{"How can we assist you today?"}</TextComponent>
-                        <View style={{ flexDirection: "row", }}>
-                            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
-                                {data ?
-                                    data?.map(item =>
-                                        <Pressable onPress={() => {setFilter({...filter,assist:item?.title})
-                                        navigation.navigate("AllUsers", {homeFilter: {assist:filter?.assist} })
-                                        }} style={{ marginRight: Matrics.vs15, width: Matrics.vs85, justifyContent: "flex-start", marginTop: Matrics.vs10, }}>
-                                            <Image source={item?.image} style={{width:Matrics.ms80,height:Matrics.ms80,borderRadius:Matrics.ms2,borderWidth:filter?.assist === item?.title ?2:1,borderColor: Colors.MEDIUMRED,resizeMode:"contain",marginLeft:Matrics.vs10}}/>
-                                            {/* <ImagePlaceHolderComponent size={Matrics.ms90} borderRadius={Matrics.ms45} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => { }} image={item?.image} borderColor={filter === item?.title ? Colors.MEDIUMRED : Colors.MEDIUMREDOPACITY}  /> */}
-                                            <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} textAlign="center" numberOfLines={3}>{item?.title}</TextComponent>
+                <ScrollView showsVerticalScrollIndicator={false} >
+                    <View style={{ marginHorizontal: Matrics.ms20, flex: 1 }}>
+                        <View >
+                            <TextInputComponent placeholder={"Search for designers, stylists or trends"} onChangeText={(text) => setFilter({ ...filter, search: text })} value={search} />
+                            <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10}>{"How can we assist you today?"}</TextComponent>
+                            <View style={{ flexDirection: "row", }}>
+                                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
+                                    {data ?
+                                        data?.map(item =>
+                                            <Pressable onPress={() => {
+                                                setFilter({ ...filter, assist: item?.title })
+                                                navigation.navigate("AllUsers", { homeFilter: { assist: filter?.assist } })
+                                            }} style={{ marginRight: Matrics.vs15, width: Matrics.vs85, justifyContent: "flex-start", marginTop: Matrics.vs10, }}>
+                                                <Image source={item?.image} style={{ width: Matrics.ms80, height: Matrics.ms80, borderRadius: Matrics.ms2, borderWidth: filter?.assist === item?.title ? 2 : 1, borderColor: Colors.MEDIUMRED, resizeMode: "contain", marginLeft: Matrics.vs10 }} />
+                                                {/* <ImagePlaceHolderComponent size={Matrics.ms90} borderRadius={Matrics.ms45} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => { }} image={item?.image} borderColor={filter === item?.title ? Colors.MEDIUMRED : Colors.MEDIUMREDOPACITY}  /> */}
+                                                <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} textAlign="center" numberOfLines={3}>{item?.title}</TextComponent>
 
-                                        </Pressable>
+                                            </Pressable>
 
-                                    ) : null}
+                                        ) : null}
 
-                            </ScrollView>
+                                </ScrollView>
+
+                            </View>
+                        </View>
+                        <View >
+                            <View style={{ marginVertical: Matrics.vs20 }}>
+
+                                <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10}>{"Popular on StyleCrew"}</TextComponent>
+                            </View>
+                            <View style={{ justifyContent: "center" }}>
+                                <UsedataComponent slice={2} userId={user?.id} userFilter={filter} />
+
+                            </View>
 
                         </View>
                     </View>
-                    <View >
-                        <View style={{ marginVertical: Matrics.vs20 }}>
 
-                            <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10}>{"Popular on StyleCrew"}</TextComponent>
-                        </View>
-                        <View style={{  justifyContent: "center" }}>
-                            <UsedataComponent slice={2} userId={user?.id}  userFilter={filter} />
+                </ScrollView>
+                <Pressable style={{ alignItems: "center" }} onPress={() => navigation.navigate("AllUsers", { users })}>
+                    <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms18} color={Colors.BLUE} marginTop={Matrics.vs10} textDecorationLine='underline'>{"View all"}</TextComponent>
 
-                        </View>
-
-                    </View>
-                </View>
-
-            </ScrollView>
-                        <Pressable style={{ alignItems: "center" }} onPress={() => navigation.navigate("AllUsers", { users })}>
-                            <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms18} color={Colors.BLUE} marginTop={Matrics.vs10} textDecorationLine='underline'>{"View all"}</TextComponent>
-
-                        </Pressable>
+                </Pressable>
 
 
             </SafeAreaView>

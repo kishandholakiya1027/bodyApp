@@ -37,7 +37,6 @@ const SocialMediaComponent = ({role,checkRole,width}) => {
     let signInWithGoogle = async () => {
         try {
             let userRole = role ?? "s"
-            console.log("🚀 ~ file: Social-MediaComponent.jsx:39 ~ signInWithGoogle ~ userRole:", userRole)
 
     const isSignedIn = await GoogleSignin.isSignedIn();
     if (isSignedIn) {
@@ -55,7 +54,6 @@ const SocialMediaComponent = ({role,checkRole,width}) => {
         navigation.navigate("Home")
         
     } else {
-        console.log("🚀 ~ file: Social-MediaComponent.jsx:55 ~ signInWithGoogle ~ data:", data)
         Alert.alert(data?.msg||data?.error)
     }
     // navigation.navigate("UserProfile")
@@ -88,7 +86,6 @@ const SocialMediaComponent = ({role,checkRole,width}) => {
                     AccessToken.getCurrentAccessToken().then(async data => {
                   await axios.post(`${API_URL}auth/verify-facebook`, { token: data?.accessToken,role:role||false  }).then(async({data})=>{
                       if (data?.status === 200) {
-                          console.log("🚀 ~ file: Social-MediaComponent.jsx:87 ~ awaitaxios.post ~ data:", data,data?.status)
                           await AsyncStorage.setItem("token", data?.data?.token)
                           await AsyncStorage.setItem("user", JSON.stringify(data?.data))
                         navigation.navigate("Home")
@@ -114,7 +111,6 @@ const SocialMediaComponent = ({role,checkRole,width}) => {
                         //     setLoader(false);
                         //     showToastMessage(err.message, 'error')
                         // });
-                        console.log("🚀 ~ file: Social-MediaComponent.jsx:101 ~ AccessToken.getCurrentAccessToken ~ data:", data)
                     });
                 }
             },
@@ -128,13 +124,11 @@ const SocialMediaComponent = ({role,checkRole,width}) => {
         );
     };
     const handleInstagramLogin = async (token) => {
-        console.log("🚀 ~ file: Social-MediaComponent.jsx:135 ~ handleInstagramLogin ~ token:", token)
         // setLoader(true);
        
               
                   await axios.post(`${API_URL}auth/verify-instagram`, { token,role:role||false }).then(async({data})=>{
                       if (data?.status === 200) {
-                          console.log("🚀 ~ file: Social-MediaComponent.jsx:87 ~ awaitaxios.post ~ data:", data,data?.status)
                           await AsyncStorage.setItem("token", data?.data?.token)
                           await AsyncStorage.setItem("user", JSON.stringify(data?.data))
                         navigation.navigate("Home")

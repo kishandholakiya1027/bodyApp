@@ -14,13 +14,10 @@ import CommonButton from '../../core-component/molecules/CommonButton'
 
 const MyProfile = () => {
     const [userData, setUserData] = useState()
-    console.log("🚀 ~ file: MyProfile.jsx:17 ~ MyProfile ~ userData:", userData)
     const [profileData, setProfileData] = useState()
     const [image, setImage] = useState()
-    console.log("🚀 ~ file: MyProfile.jsx:17 ~ MyProfile ~ image:", image)
     const navigation = useNavigation()
     const { user } = useContext(UserParamContext)
-    console.log("🚀 ~ file: MyProfile.jsx:18 ~ MyProfile ~ user:", user)
 
     // useEffect(() => {
     //     getUserData()
@@ -35,9 +32,7 @@ const MyProfile = () => {
     const getUserData = async () => {
         if (user) {
             let url = user?.role ? "designer/get_designer/" : "user/get_user/"
-            console.log("🚀 ~ file: MyProfile.jsx:32 ~ getUserData ~ url:", url)
             await axios.get(`${API_URL}${url}${user?.id || user?._id}`).then(async ({ data }) => {
-                console.log("🚀 ~ file: MyProfile.jsx:33 ~ awaitaxios.get ~ data:", data)
                 setImage(data?.data?.profile_img)
                 if (data?.status === 200) {
                 if(user?.role)
@@ -102,7 +97,7 @@ const MyProfile = () => {
 
                         <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginBottom: Matrics.vs15 }}>
                             <View>
-                                <ImagePlaceHolderComponent size={Matrics.ms160} borderRadius={Matrics.ms80} padding={Matrics.hs10} marginVertical={Matrics.vs25} setImage={(image) => setUserData({ ...userData, profile_img: image })} image={userData?.profile_img ? `${IMAGE_URL}${userData?.profile_img?.uri || userData?.profile_img}` : ""} />
+                                <ImagePlaceHolderComponent disabled={true} size={Matrics.ms160} borderRadius={Matrics.ms80} padding={Matrics.hs10} marginVertical={Matrics.vs25} setImage={(image) => setUserData({ ...userData, profile_img: image })} image={userData?.profile_img ? `${IMAGE_URL}${userData?.profile_img?.uri || userData?.profile_img}` : ""} />
 
                             </View>
                             <View style={{ flexWrap: "wrap", flex: 1 }}>
@@ -150,7 +145,7 @@ const MyProfile = () => {
                                     userData?.portfolio?.map(item =>
                                         <View style={{ marginRight: Matrics.vs15 }}>
 
-                                            <ImagePlaceHolderComponent size={Matrics.ms80} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => setUserData({ ...userData, portfolio: image })} image={`${IMAGE_URL}${item}`} borderColor={Colors.BLUE} />
+                                            <ImagePlaceHolderComponent disabled={true} size={Matrics.ms80} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => setUserData({ ...userData, portfolio: image })} image={`${IMAGE_URL}${item}`} borderColor={Colors.BLUE} />
                                         </View>
 
                                     ) : null}

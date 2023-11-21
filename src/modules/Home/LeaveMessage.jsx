@@ -16,7 +16,6 @@ import axios from 'axios'
 import Toast from "react-native-simple-toast"
 const LeaveMessage = (props) => {
     let {item} = props?.route?.params
-    console.log("🚀 ~ file: LeaveMessage.jsx:15 ~ LeaveMessage ~ item:", item)
     const [message, setMessage] = useState()
     const [image, setImage] = useState()
     const navigation = useNavigation()
@@ -28,7 +27,6 @@ const LeaveMessage = (props) => {
             receiverId: item?._id,
             description: message
         }
-        console.log("🚀 ~ file: LeaveMessage.jsx:31 ~ onSubmit ~ body:", body)
         if (image) {
             body.image = image
         }
@@ -38,7 +36,6 @@ const LeaveMessage = (props) => {
                 "Content-Type": "multipart/form-data"
             }
         }).then(({ data }) => {
-            console.log("🚀 ~ file: LeaveMessage.jsx:38 ~ onSubmit ~ data:", data)
             if (data?.status === 200) {
                 setMessage()
               Toast.show('Message Sent', Toast.SHORT, {

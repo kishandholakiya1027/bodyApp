@@ -37,13 +37,11 @@ const CompleteBooking = () => {
             "time": booking?.time,
             "date": moment(booking?.day).format("yyyy-MM-DD")
         }
-        console.log("🚀 ~ file: CompleteBooking.jsx:33 ~ addBoking ~ body:", body)
         await axios.post(`${API_URL}appointment/add_appointment`, body, {
             headers: {
                 'Content-Type': 'application/json'
             },
         }).then(({ data }) => {
-            console.log("🚀 ~ file: CompleteBooking.jsx:46 ~ addBooking ~ data:", data)
             if (data?.status === 200) {
                 navigation.navigate("BookingStatus", { status: true })
             }

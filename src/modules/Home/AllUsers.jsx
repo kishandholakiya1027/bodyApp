@@ -167,7 +167,6 @@ const homeFilter = props?.route?.params?.homeFilter
     //         })
     //     }, 2000);
     // }
-    console.log("🚀 ~ file: AllUsers.jsx:132 ~ AllUsers ~ height - 40:", height - 40)
 
     return (
         <View style={{ flex: 1 }}>

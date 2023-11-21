@@ -38,7 +38,6 @@ const ListMessages = () => {
     const getMessages = async () => {
         let url = "message/get_message_login_user/" 
         await axios.get(`${API_URL}${url}${user?.id||user?._id}`).then(async ({ data }) => {
-            console.log("🚀 ~ file: ProfileDetails.jsx:33 ~ awaitaxios.get ~ data:", data)
             if (data?.status === 200) {
               
             setMsgs(data?.data)
