@@ -7,6 +7,7 @@ import ImageSelectorComponent from './ImageSelectorComponent'
 const ImagePlaceHolderComponent = ({ onPress, plus = false, size = Matrics.ms160, borderRadius = Matrics.ms120, padding = Matrics.hs50, marginVertical = Matrics.vs40, setImage, image, borderColor = Colors.LIGHTGRAY, multiple, backgroundColor = "none", disabled }) => {
     const [visible, setVisible] = useState(false)
     const [imageUrl, setImageUrl] = useState()
+    console.log("🚀 ~ file: imagePlaceHolderComponent.jsx:8 ~ ImagePlaceHolderComponent ~ image:", image,imageUrl)
     return (
         <View style={[styles.mainViw, { marginVertical }]}>
             <Pressable hitSlop={30} onPress={() => onPress ? onPress() : setVisible(true)} disabled>

@@ -123,7 +123,7 @@ export default function UserProfileComponent({ item, refetch }) {
             alignItems: "center",
             marginRight: Matrics.hs10
         }}>
-            <ImagePlaceHolderComponent size={Matrics.ms150} borderRadius={Matrics.ms75} padding={Matrics.hs10} marginVertical={Matrics.vs10} image={(item?.designer?.profile_img|| item?.profile_img) ? `${IMAGE_URL}${item?.designer?.profile_img||item?.profile_img}` : ""} borderColor={Colors.MEDIUMREDOPACITY} backgroundColor={item?.profile_img ? "none" : Colors.MEDIUMREDOPACITY} disabled={true} />
+            <ImagePlaceHolderComponent disabled={true} size={Matrics.ms150} borderRadius={Matrics.ms75} padding={Matrics.hs10} marginVertical={Matrics.vs10} image={(item?.designer?.profile_img|| item?.profile_img) ? `${IMAGE_URL}${item?.designer?.profile_img||item?.profile_img}` : ""} borderColor={Colors.MEDIUMREDOPACITY} backgroundColor={item?.profile_img ? "none" : Colors.MEDIUMREDOPACITY} disabled={true} />
             <View style={{
                 position: "absolute",
                 top: 5,

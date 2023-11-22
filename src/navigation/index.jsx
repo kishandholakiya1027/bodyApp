@@ -280,7 +280,7 @@ const Index = () => {
             <NavigationContainer>
                 <UserParamContext.Provider value={{ user, setUser }}>
                     <BookingContext.Provider value={{ booking, setBooking }}>
-                        <Stack.Navigator headerMode="none" initialRouteName='Home' screenOptions={{ headerShown: false, cardStyle: { backgroundColor: 'transparent' } }}>
+                        <Stack.Navigator headerMode="none" initialRouteName='OnBoarding' screenOptions={{ headerShown: false, cardStyle: { backgroundColor: 'transparent' } }}>
                             <Stack.Screen name='RegisterPage' component={RegisterPage} />
                             <Stack.Screen name='UserProfile' component={UserProfile} />
                             <Stack.Screen name='OnBoarding' component={CompleteProfile} />

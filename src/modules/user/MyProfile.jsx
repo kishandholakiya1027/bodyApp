@@ -190,7 +190,7 @@ const MyProfile = () => {
                         </View>
                         </View>:
                           <View style={{marginTop:Matrics.vs20}}>
-                          <ImagePlaceHolderComponent size={Matrics.ms215} padding={Matrics.hs40} setImage={(image) => setImage( image )} image={image ? image?.uri || `${IMAGE_URL}${image}` : ""} marginVertical={Matrics.vs0}/>
+                          <ImagePlaceHolderComponent  disabled={true} size={Matrics.ms215} padding={Matrics.hs40} setImage={(image) => setImage( image )} image={image ? image?.uri || `${IMAGE_URL}${image}` : ""} marginVertical={Matrics.vs0}/>
                           <View style={{ flexDirection: "row", alignItems:"center",justifyContent:"center" }}>
 
                           <TextComponent fontFamily={getRubikFont()} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs13} paddingHorizontal={Matrics.hs5}>{userData?.username}</TextComponent>

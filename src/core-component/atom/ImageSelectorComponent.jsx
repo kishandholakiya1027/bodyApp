@@ -1,8 +1,9 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { PermissionsAndroid, Platform, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import Modal from './Modal'
 import { Colors } from '../../theme'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
+import { IS_ANDROID } from '../../core-utils/utils'
 
 const ImageSelectorComponent = ({ visible, onDecline, imgurl, imageName, multiple }) => {
     const onSetImage = (image, type) => {
@@ -17,6 +18,7 @@ const ImageSelectorComponent = ({ visible, onDecline, imgurl, imageName, multipl
         )
     }
     const onSetMultipleImage = (images, type) => {
+        console.log("🚀 ~ file: ImageSelectorComponent.jsx:21 ~ onSetMultipleImage ~ images:", images)
         return images.map(image => {
             return (
                 {
@@ -40,7 +42,13 @@ const ImageSelectorComponent = ({ visible, onDecline, imgurl, imageName, multipl
                 }
             );
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                launchCamera(Constant.cameraOption, (response) => {
+                launchCamera({
+                    mediaType: "photo",
+                    width: 300,
+                    height: 300,
+                    includeBase64: true,
+                    cropping: true
+                }, (response) => {
                     onDecline();
                     if (response.didCancel) {
                     } else if (response.error) {
@@ -56,14 +64,20 @@ const ImageSelectorComponent = ({ visible, onDecline, imgurl, imageName, multipl
                         //         //   base64Img(`data:${image};base64,${res}`); setNewUserImage(false);
                         //         // }).catch((err) => { });
                         //     })
-                        imgurl(image?.uri);
-                        imageName(onSetImage(image));
+                        multiple ? null :imgurl( response?.assets[0]?.uri);
+                        imageName(multiple ? onSetMultipleImage(response?.assets) : onSetImage(image));
                     }
                 });
             }
         } else {
 
-            launchCamera(Constant.cameraOption, (response) => {
+            launchCamera({
+                mediaType: "photo",
+                width: 300,
+                height: 300,
+                includeBase64: true,
+                cropping: true
+            }, (response) => {
                 onDecline()
                 if (response?.didCancel) {
                 } else if (response.error) {
@@ -79,9 +93,8 @@ const ImageSelectorComponent = ({ visible, onDecline, imgurl, imageName, multipl
                     //         //   base64Img(`data:${image};base64,${res}`); setNewUserImage(false);
                     //         // }).catch((err) => { });
                     //     })
-                    imgurl(response?.assets[0]?.uri);
-
-                    imageName(onSetImage(image));
+                    multiple ? null :imgurl( response?.assets[0]?.uri);
+                    imageName(multiple ? onSetMultipleImage(response?.assets) : onSetImage(image));
                 }
             });
         }
@@ -113,7 +126,7 @@ const ImageSelectorComponent = ({ visible, onDecline, imgurl, imageName, multipl
                 //     })
                 //     .catch(() => { });
 
-                imgurl(multiple ? response?.assets : response?.assets[0]?.uri);
+                multiple ? null :imgurl( response?.assets[0]?.uri);
                 imageName(multiple ? onSetMultipleImage(response?.assets) : onSetImage(image));
             }
         });

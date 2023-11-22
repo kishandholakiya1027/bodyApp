@@ -114,7 +114,7 @@ const MessageScreen = (props) => {
                                                         return (
                                                             <View style={{ marginRight: Matrics.hs15 }}>
 
-                                                                <ImagePlaceHolderComponent size={Matrics.ms80} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs15} setImage={(image) => setImage(image)} image={img?.uri || `${IMAGE_URL}${img}`} disabled={true} borderColor={Colors.WHITE} />
+                                                                <ImagePlaceHolderComponent  disabled={true} size={Matrics.ms80} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs15} setImage={(image) => setImage(image)} image={img?.uri || `${IMAGE_URL}${img}`} disabled={true} borderColor={Colors.WHITE} />
                                                             </View>
                                                         )
                                                     })}

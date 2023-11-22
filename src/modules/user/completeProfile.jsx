@@ -19,6 +19,7 @@ import moment from "moment"
 const CompleteProfile = () => {
     const [index, setIndex] = useState(0)
     const [userData, setUserData] = useState({})
+    console.log("🚀 ~ file: completeProfile.jsx:22 ~ CompleteProfile ~ userData:", userData)
     const [open, setOpen] = useState(false)
     const [date, setDate] = useState()
     const [openDate, setOpenDate] = useState(false)
@@ -27,7 +28,7 @@ const CompleteProfile = () => {
 
     const [showlink, setShowLink] = useState(false)
     const [expertise, setExpertise] = useState()
-    const { user,setUser } = useContext(UserParamContext)
+    const { user, setUser } = useContext(UserParamContext)
 
     const navigation = useNavigation()
     useEffect(() => {
@@ -44,9 +45,9 @@ const CompleteProfile = () => {
                     setSecondDate(data?.data?.time ? moment(data?.data?.time[0]?.split("-")[1], "HH:mm")._d : "")
                     // setDate(data?.data?.time[0]?.split("-")[1])
                     setIndex(0)
-                setUser({ ...data?.data, role: user?.role,complete:true })
+                    setUser({ ...data?.data, role: user?.role, complete: true })
 
-                    await AsyncStorage.setItem("user", JSON.stringify({ ...data?.data, role: user?.role,complete:true }))
+                    await AsyncStorage.setItem("user", JSON.stringify({ ...data?.data, role: user?.role, complete: true }))
                 } else {
                     Alert.alert(data?.msg)
                 }
@@ -82,8 +83,8 @@ const CompleteProfile = () => {
     const onSubmit = async () => {
         let user = { ...userData, }
         user = { ...user, expertise: Array.isArray(user?.expertise) ? user?.expertise : user?.expertise?.split(",") }
-        if(date){
-            user = {...user, time: [`${moment(date).format("HH:mm")} - ${moment(secondDate).format("HH:mm")} `] }
+        if (date) {
+            user = { ...user, time: [`${moment(date).format("HH:mm")} - ${moment(secondDate).format("HH:mm")} `] }
         }
         if (user?.socialChanels) {
             user.socialChanels = user?.socialChanels?.map(channel => channel ? channel : 0)
@@ -195,7 +196,7 @@ const CompleteProfile = () => {
                                                 {userData?.portfolio?.length ?
                                                     userData?.portfolio?.map(item =>
                                                         <View style={{ marginRight: Matrics.vs15 }}>
-                                                            <ImagePlaceHolderComponent size={Matrics.ms80} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => setUserData({ ...userData, portfolio: image })} image={item?.uri || `${IMAGE_URL}${item}`} borderColor={Colors.BLUE} />
+                                                            <ImagePlaceHolderComponent disabled={true} size={Matrics.ms80} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => setUserData({ ...userData, portfolio: image })} image={item?.uri || `${IMAGE_URL}${item?.uri || item}`} borderColor={Colors.BLUE} />
                                                         </View>
 
 
@@ -216,7 +217,7 @@ const CompleteProfile = () => {
 
                                             </View>
                                             <View style={{ flex: 0.23 }}>
-                                                <ImagePlaceHolderComponent plus multiple={true} size={Matrics.ms80} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs25} setImage={(image) => setUserData({ ...userData, portfolio: image })} image={`${IMAGE_URL}${userData?.portfolio}`} borderColor={Colors.BLUE} />
+                                                <ImagePlaceHolderComponent plus multiple={true} size={Matrics.ms80} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs25} setImage={(image) => setUserData({ ...userData, portfolio: image })} image={`${IMAGE_URL}`} borderColor={Colors.BLUE} />
 
                                                 {/* <View style={{ width: Matrics.ms80, height: Matrics.ms80, borderWidth: 1, borderColor: Colors.BLUE }}></View> */}
                                             </View>
@@ -246,18 +247,19 @@ const CompleteProfile = () => {
 
                                     <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs15} paddingHorizontal={Matrics.hs0}>Add Your Expertise in Fashion & Styling</TextComponent>
                                     <View style={{ marginVertical: Matrics.vs10 }}>
-                                        <Pressable onPress={() => setOpenExpertise(true)} style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "flex-start", marginTop: Matrics.vs10, borderColor: Colors.LIGHTGRAY, borderWidth: 1, padding: Matrics.ms10 }}>
-                                            {
-                                                userData?.expertise?.map(user => {
+                                        {userData?.expertise?.length ?
+                                            <Pressable onPress={() => setOpenExpertise(true)} style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "flex-start", marginTop: Matrics.vs10, borderColor: Colors.LIGHTGRAY, borderWidth: 1, padding: Matrics.ms10 }}>
+                                                {userData?.expertise?.map(user => {
                                                     return (
                                                         <Pressable onPress={() => setOpenExpertise(true)} style={{ paddingHorizontal: Matrics.hs15, paddingVertical: Matrics.vs12, backgroundColor: Colors.MEDIUMREDOPACITY, marginRight: Matrics.vs10, marginVertical: Matrics.vs5, borderRadius: Matrics.ms25, justifyContent: "center" }}>
                                                             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.MEDIUMRED} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs0}>{user}</TextComponent>
 
                                                         </Pressable>
                                                     )
-                                                })
-                                            }
-                                        </Pressable>
+                                                })}
+                                            </Pressable>
+                                            : null
+                                        }
 
                                     </View>
                                     {openExpertise ? <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
@@ -326,10 +328,15 @@ const CompleteProfile = () => {
                                         <View style={{ flexDirection: "row", flexWrap: "wrap", marginVertical: Matrics.vs10 }}>
                                             {days?.map(day => {
                                                 return (
-                                                    <Pressable onPress={() => userData?.availability?.includes(day) ? setUserData({ ...userData, availability: userData?.availability?.filter(item => item !== day) }) : setUserData({ ...userData, availability: [...userData?.availability || [], day] })} style={{ width: Matrics.ms43, marginRight: Matrics.vs5, marginTop: Matrics.vs10, height: Matrics.ms43, borderRadius: Matrics.ms21, backgroundColor: userData?.availability?.includes(day) ? Colors.MEDIUMRED : Colors.BACKGROUNDGRAY, alignItems: "center", justifyContent: "center" }}>
-                                                        <TextComponent textAlign='center' fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={userData?.availability?.includes(day) ? Colors.BACKGROUNDGRAY : Colors.LIGHTGRAY} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs0}>{day[0]?.toUpperCase()} </TextComponent>
+                                                    <>
+                                                        <Pressable onPress={() => userData?.availability?.includes(day) ? setUserData({ ...userData, availability: userData?.availability?.filter(item => item !== day) }) : setUserData({ ...userData, availability: [...userData?.availability || [], day] })} style={{ height: Matrics.ms43, width: Matrics.ms43, marginRight: Matrics.vs5, borderRadius: Matrics.ms21, backgroundColor: userData?.availability?.includes(day) ? Colors.MEDIUMRED : Colors.BACKGROUNDGRAY, justifyContent: "center", alignItems: "center", position: "relative" }}>
+                                                            <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={userData?.availability?.includes(day) ? Colors.BACKGROUNDGRAY : Colors.LIGHTGRAY} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs5}>{day[0]?.toUpperCase()}</TextComponent>
+                                                        </Pressable>
+                                                        {/* <Pressable onPress={() => userData?.availability?.includes(day) ? setUserData({ ...userData, availability: userData?.availability?.filter(item => item !== day) }) : setUserData({ ...userData, availability: [...userData?.availability || [], day] })} style={{ width: Matrics.ms43, marginRight: Matrics.vs5, marginTop: Matrics.vs10, height: Matrics.ms43, borderRadius: Matrics.ms21, backgroundColor: userData?.availability?.includes(day) ? Colors.MEDIUMRED : Colors.BACKGROUNDGRAY, alignItems: "center", justifyContent: "center" }}>
+                                                        <TextComponent  textAlign='center' fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={userData?.availability?.includes(day) ? Colors.BACKGROUNDGRAY : Colors.LIGHTGRAY} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs1}>{day[0]?.toUpperCase()} </TextComponent>
 
-                                                    </Pressable>
+                                                    </Pressable> */}
+                                                    </>
                                                 )
                                             })}
                                         </View>
@@ -337,28 +344,23 @@ const CompleteProfile = () => {
                                     <View>
                                         <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs15} paddingHorizontal={Matrics.hs0}>Timings </TextComponent>
                                         <View style={{ flexDirection: "row", marginTop: Matrics.vs15, alignItems: "center" }}>
-                                            <Pressable onPress={() => setOpen(true)} style={{ width: Matrics.ms50, height: Matrics.ms50, borderColor: Colors.BLUE, borderWidth: 1, justifyContent: "center", alignItems: "center" }}>
-                                                <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs0}>{date ? moment(date).format("HH") : "00"} </TextComponent>
-
-                                                {/* <Button title="Open"  /> */}
+                                            <Pressable onPress={() => setOpen(true)} style={{ borderWidth: 1, borderColor: Colors.BLUE, height: Matrics.ms50, width: Matrics.ms50, marginRight: Matrics.vs5, justifyContent: "center", alignItems: "center", position: "relative" }}>
+                                                <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs5}>{date ? moment(date).format("HH") : "00"}</TextComponent>
                                             </Pressable>
-                                            <Pressable onPress={() => setOpen(true)} style={{ marginLeft: Matrics.vs10, width: Matrics.ms50, height: Matrics.ms50, borderColor: Colors.BLUE, borderWidth: 1, justifyContent: "center", alignItems: "center" }}>
-                                                <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs0}>{date ? moment(date).format("mm") : "00"} </TextComponent>
-
-                                                {/* <Button title="Open"  /> */}
+                                            <Pressable onPress={() => setOpen(true)} style={{ borderWidth: 1, borderColor: Colors.BLUE, height: Matrics.ms50, width: Matrics.ms50, marginRight: Matrics.vs5, justifyContent: "center", alignItems: "center", position: "relative" }}>
+                                                <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs5}>{date ? moment(date).format("mm") : "00"}</TextComponent>
                                             </Pressable>
                                             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs15}>-</TextComponent>
-
-                                            <Pressable onPress={() => setOpenDate(true)} style={{ width: Matrics.ms50, height: Matrics.ms50, borderColor: Colors.BLUE, borderWidth: 1, justifyContent: "center", alignItems: "center" }}>
-                                                <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs0}>{secondDate ? moment(secondDate).format("HH") : "00"} </TextComponent>
-
-                                                {/* <Button title="Open"  /> */}
+                                            <Pressable onPress={() => setOpenDate(true)} style={{ borderWidth: 1, borderColor: Colors.BLUE, height: Matrics.ms50, width: Matrics.ms50, marginRight: Matrics.vs5, justifyContent: "center", alignItems: "center", position: "relative" }}>
+                                                <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs5}>{secondDate ? moment(secondDate).format("HH") : "00"}</TextComponent>
                                             </Pressable>
-                                            <Pressable onPress={() => setOpenDate(true)} style={{ marginLeft: Matrics.vs10, width: Matrics.ms50, height: Matrics.ms50, borderColor: Colors.BLUE, borderWidth: 1, justifyContent: "center", alignItems: "center" }}>
-                                                <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs0}>{secondDate ? moment(secondDate).format("mm") : "00"} </TextComponent>
-
-                                                {/* <Button title="Open"  /> */}
+                                            <Pressable onPress={() => setOpenDate(true)} style={{ borderWidth: 1, borderColor: Colors.BLUE, height: Matrics.ms50, width: Matrics.ms50, marginRight: Matrics.vs5, justifyContent: "center", alignItems: "center", position: "relative" }}>
+                                                <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs5}>{secondDate ? moment(secondDate).format("mm") : "00"}</TextComponent>
                                             </Pressable>
+
+
+
+
                                             <DatePicker
                                                 modal
                                                 open={open}
