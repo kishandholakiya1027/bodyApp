@@ -14,6 +14,7 @@ const ProfileList = () => {
   const navigation = useNavigation()
   const [loader, setLoader] = useState(false)
   const [likedUser, setLikedUsers] = useState([])
+  console.log("🚀 ~ file: ProfileList.jsx:17 ~ ProfileList ~ likedUser:", likedUser)
   const { user } = useContext(UserParamContext)
 
   const getLikedUsers = async () => {
