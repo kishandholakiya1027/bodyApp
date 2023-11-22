@@ -22,6 +22,7 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
     const [loginUser, setLoginUser] = useState()
     const [likedUser, setLikedUsers] = useState([])
     const [users, setUsers] = useState([])
+    console.log("🚀 ~ file: UsedataComponent.jsx:25 ~ UsedataComponent ~ users:", users)
     const [allUsers, setAllUsers] = useState([])
     const [loader, setLoader] = useState(false)
     const navigation = useNavigation()
