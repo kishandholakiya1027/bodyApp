@@ -19,11 +19,12 @@ import moment from "moment"
 const CompleteProfile = () => {
     const [index, setIndex] = useState(0)
     const [userData, setUserData] = useState({})
-    console.log("🚀 ~ file: completeProfile.jsx:22 ~ CompleteProfile ~ userData:", userData)
     const [open, setOpen] = useState(false)
     const [date, setDate] = useState()
+    console.log("🚀 ~ file: completeProfile.jsx:25 ~ CompleteProfile ~ date:", date)
     const [openDate, setOpenDate] = useState(false)
     const [secondDate, setSecondDate] = useState()
+    console.log("🚀 ~ file: completeProfile.jsx:28 ~ CompleteProfile ~ secondDate:", secondDate)
     const [openExpertise, setOpenExpertise] = useState(false)
 
     const [showlink, setShowLink] = useState(false)
@@ -38,16 +39,17 @@ const CompleteProfile = () => {
     const getUserData = async () => {
         if (user) {
             await axios.get(`${API_URL}designer/get_designer/${user?.id || user?._id}`).then(async ({ data }) => {
+                console.log("🚀 ~ file: completeProfile.jsx:43 ~ awaitaxios.get ~ data:", data)
                 if (data?.status === 200) {
-
                     setUserData({ ...data?.data, availability: data?.data?.availability || [] })
-                    setDate(data?.data?.time ? moment(data?.data?.time[0]?.split("-")[0], "HH:mm")._d : "")
-                    setSecondDate(data?.data?.time ? moment(data?.data?.time[0]?.split("-")[1], "HH:mm")._d : "")
+
+                    setDate(data?.data?.time?.length ? !data?.data?.time[0]?.split("-")[0]?.includes("Invalid date") ? moment(data?.data?.time[0]?.split("-")[0], "HH:mm")._d : "" : "")
+                    setSecondDate(data?.data?.time?.length ? !data?.data?.time[0]?.split("-")[1]?.includes("Invalid date") ? moment(data?.data?.time[0]?.split("-")[1], "HH:mm")._d : "" : "")
                     // setDate(data?.data?.time[0]?.split("-")[1])
                     setIndex(0)
-                    setUser({ ...data?.data, role: user?.role, complete: true })
+                    setUser({ ...data?.data, role: user?.role })
 
-                    await AsyncStorage.setItem("user", JSON.stringify({ ...data?.data, role: user?.role, complete: true }))
+                    await AsyncStorage.setItem("user", JSON.stringify({ ...data?.data, role: user?.role, }))
                 } else {
                     Alert.alert(data?.msg)
                 }
@@ -64,8 +66,7 @@ const CompleteProfile = () => {
     ]
     const profession = [
         { label: "Fashion Stylist", value: "fashion stylist" },
-        { label: "Developer", value: "developer" },
-        { label: "Blogger", value: "blogger" },
+        { label: "Fashion Designer", value: "fashion designer" },
     ]
     const experiences = [
         { label: "0", value: "0" },
@@ -81,26 +82,27 @@ const CompleteProfile = () => {
     ]
 
     const onSubmit = async () => {
-        let user = { ...userData, }
-        user = { ...user, expertise: Array.isArray(user?.expertise) ? user?.expertise : user?.expertise?.split(",") }
-        if (date) {
-            user = { ...user, time: [`${moment(date).format("HH:mm")} - ${moment(secondDate).format("HH:mm")} `] }
+        let updateUser = { ...userData, }
+        updateUser = { ...updateUser, expertise: Array.isArray(updateUser?.expertise) ? updateUser?.expertise : updateUser?.expertise?.split(",") }
+        if (date && secondDate) {
+            updateUser = { ...updateUser, time: [`${moment(date).format("HH:mm")} - ${moment(secondDate).format("HH:mm")} `] }
         }
-        if (user?.socialChanels) {
-            user.socialChanels = user?.socialChanels?.map(channel => channel ? channel : 0)
+        if (updateUser?.socialChanels) {
+            updateUser.socialChanels = updateUser?.socialChanels?.map(channel => channel ? channel : 0)
         }
-        delete user["id"]
-        delete user["_id"]
-        user.complete = true
-        let body = convertToformData(user)
+        delete updateUser["id"]
+        delete updateUser["_id"]
+        updateUser.complete = true
+        let body = convertToformData(updateUser)
         await axios.put(`${API_URL}designer/edit_designer/${userData?.id || userData?._id}`, body, {
             headers: {
                 "Content-Type": "multipart/form-data"
             }
         }).then(async ({ data }) => {
             if (data?.status === 200) {
+                setUser({ ...user, id: userData?.id || userData?._id, role: user?.role, complete: true })
 
-                await AsyncStorage.setItem("user", JSON.stringify({ ...user, id: userData?.id, role: user?.role }))
+                await AsyncStorage.setItem("user", JSON.stringify({ ...user, id: userData?.id, role: user?.role, complete: true }))
                 setTimeout(() => {
                     navigation.navigate("MyProfile")
 
@@ -167,16 +169,19 @@ const CompleteProfile = () => {
                                 <ImagePlaceHolderComponent size={Matrics.ms180} borderRadius={Matrics.ms90} padding={Matrics.hs10} marginVertical={Matrics.vs25} setImage={(image) => setUserData({ ...userData, profile_img: image })} image={userData?.profile_img ? `${IMAGE_URL}${userData?.profile_img?.uri || userData?.profile_img}` : ""} />
                                 <View>
                                     <TextInputComponent placeholder={"Username"} onChangeText={(text) => setUserData({ ...userData, username: text })} value={userData?.username?.toString()} />
-                                    <View style={{ marginBottom: Matrics.vs15 }}>
-                                        <DropdownComponent items={qualifications} setValue={(value) => setUserData({ ...userData, qualification: value })} value={userData?.qualification} backgroundColor={Colors.WHITE} borderWidth={1} placeholder={"Qualification"} />
+                                    <View style={{}}>
+                                        <TextInputComponent placeholder={"Qualification"} onChangeText={(text) => setUserData({ ...userData, qualification: text })} value={userData?.qualification} />
+
 
                                     </View>
                                     <View style={{ marginBottom: Matrics.vs15 }}>
                                         <DropdownComponent items={profession} setValue={(value) => setUserData({ ...userData, profession: value })} value={userData?.profession} backgroundColor={Colors.WHITE} borderWidth={1} placeholder={"Profession"} />
 
                                     </View>
-                                    <View style={{ marginBottom: Matrics.vs15 }}>
-                                        <DropdownComponent items={experiences} setValue={(value) => setUserData({ ...userData, yearExperience: value })} value={userData?.yearExperience} backgroundColor={Colors.WHITE} borderWidth={1} placeholder={"Years of experience"} />
+                                    <View style={{}}>
+                                        <TextInputComponent placeholder={"Years of experience"} onChangeText={(text) => setUserData({ ...userData, yearExperience: text })} value={userData?.yearExperience} />
+
+                                        {/* <DropdownComponent items={experiences} setValue={(value) => setUserData({ ...userData, yearExperience: value })} value={userData?.yearExperience} backgroundColor={Colors.WHITE} borderWidth={1} placeholder={"Years of experience"} /> */}
 
                                     </View>
 
@@ -262,7 +267,7 @@ const CompleteProfile = () => {
                                         }
 
                                     </View>
-                                    {openExpertise ? <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
+                                    {openExpertise || userData?.expertise?.length === 0 ? <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
 
                                         <TextInputComponent placeholder={"Add tags for Fashion&style"} onChangeText={(text) => setExpertise(text)} height={Matrics.vs50} value={expertise} />
                                         <Pressable style={{ backgroundColor: Colors.BLUE, paddingVertical: Matrics.vs7, alignItems: "center", paddingHorizontal: Matrics.hs15, borderRadius: Matrics.ms10, marginTop: Matrics.vs7, marginLeft: Matrics.hs10 }} onPress={() => {

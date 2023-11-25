@@ -31,6 +31,7 @@ import CheckoutScreen from '../core-component/organism/CheckoutComponent'
 import ProfileDetails from '../modules/Home/ProfileDetails'
 import ProfileList from '../modules/saved-profiles/ProfileList'
 import ListNotification from '../modules/Notifications/ListNotification'
+import PrivacyPolicy from '../modules/PrivacyPolicy'
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator()
 
@@ -107,9 +108,9 @@ const drawerLogoutConstant = [
         component: ReportIssue
     },
     {
-        route: "VideoCall",
+        route: "PrivacyPolicy",
         name: "Privacy Policy",
-        component: IncominCall
+        component: PrivacyPolicy
 
     },
     // {
@@ -204,7 +205,7 @@ function CustomDrawerContent(props) {
           {!user?  <View style={{ flex: 1, justifyContent: "flex-end", paddingVertical: Matrics.vs35, borderTopWidth: 1.2, borderColor: Colors.LIGHTERGRAY, marginHorizontal: Matrics.vs20 }}>
                 <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} paddingHorizontal={0} marginTop={Matrics.vs0}>{`For StyleCrew members:`}</TextComponent>
                 <View style={{ flexDirection: "row" }}>
-                    <Pressable onPress={() => onNavigation("LoginPage")}>
+                    <Pressable onPress={() => onNavigation("LoginPage",true)}>
                         {!user ? <TextComponent fontFamily={getRubikFont()} size={Matrics.ms18} textDecorationLine='underline' color={Colors.BLUE} paddingHorizontal={0} marginTop={Matrics.vs15} >{`Sign-in`}</TextComponent>:null}
 
                     </Pressable>
@@ -257,7 +258,7 @@ function DrawerComponent() {
         header: ({ navigation, route, options }) => {
             // const title = getHeaderTitle(options, route.name);
             return (
-                (user?.complete||!user) ?  <AppHeader />:null
+                null
             );
         },
     }}>
@@ -280,7 +281,7 @@ const Index = () => {
             <NavigationContainer>
                 <UserParamContext.Provider value={{ user, setUser }}>
                     <BookingContext.Provider value={{ booking, setBooking }}>
-                        <Stack.Navigator headerMode="none" initialRouteName='OnBoarding' screenOptions={{ headerShown: false, cardStyle: { backgroundColor: 'transparent' } }}>
+                        <Stack.Navigator headerMode="none" initialRouteName='Home' screenOptions={{ headerShown: false, cardStyle: { backgroundColor: 'transparent' } }}>
                             <Stack.Screen name='RegisterPage' component={RegisterPage} />
                             <Stack.Screen name='UserProfile' component={UserProfile} />
                             <Stack.Screen name='OnBoarding' component={CompleteProfile} />
@@ -302,6 +303,7 @@ const Index = () => {
                             <Stack.Screen name='ProfileList' component={ProfileList} />
                             <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
                             <Stack.Screen name='ListNotification' component={ListNotification} />
+                            <Stack.Screen name='PrivacyPolicy' component={PrivacyPolicy} />
                         </Stack.Navigator>
                     </BookingContext.Provider>
                 </UserParamContext.Provider>

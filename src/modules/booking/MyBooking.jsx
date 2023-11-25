@@ -259,7 +259,7 @@ const MyBooking = () => {
                                             </View>
                                             <View>
                                                 <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTGRAY} marginTop={Matrics.vs20} paddingHorizontal={Matrics.vs0}>{"Appointment with:"}</TextComponent>
-                                                <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs3} paddingHorizontal={Matrics.vs0}>{item?.user_name || item?.designer_name || "user"}</TextComponent>
+                                                <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs3} paddingHorizontal={Matrics.vs0}>{user?.role ? item?.user_name||"user" : item?.designer_name || "designer"}</TextComponent>
                                                 <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTGRAY} marginTop={Matrics.vs20} paddingHorizontal={Matrics.vs0}>{"Slot:"}</TextComponent>
                                                 <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs3} paddingHorizontal={Matrics.vs0}>{item?.date ? moment(item?.date).format("dddd , Do MMMM") : ""}</TextComponent>
                                                 <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs3} paddingHorizontal={Matrics.vs0}>{item?.time || "0:00"}</TextComponent>
@@ -316,7 +316,7 @@ const MyBooking = () => {
                                                         return (
                                                             <View style={{ marginRight: Matrics.hs15 }}>
 
-                                                                <ImagePlaceHolderComponent disabled={true} size={Matrics.ms60} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs15} setImage={(image) => setImage(image)} image={`${IMAGE_URL}${img}`} disabled={true} borderColor={Colors.WHITE} />
+                                                                <ImagePlaceHolderComponent disabled={true} size={Matrics.ms60} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs15} setImage={(image) => setImage(image)} image={`${IMAGE_URL}${img}`}  borderColor={Colors.WHITE} />
                                                             </View>
                                                         )
                                                     }) : null}

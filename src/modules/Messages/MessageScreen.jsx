@@ -50,30 +50,36 @@ const MessageScreen = (props) => {
     }
 
     const onSubmit = async () => {
-        let body = {
-            senderId: user?.id||user?._id,
-            receiverId: receiverId,
-            description: message
-        }
-        if (image) {
-            body.images = image
-        }
-        let data = convertToformData(body)
-        await axios.post(`${API_URL}message/add_message`, data, {
-            headers: {
-                "Content-Type": "multipart/form-data"
-            }
-        }).then(({ data }) => {
-            if (data?.status === 200) {
-                setImage()
-                setMessage()
-                getMessages()
-             
-            }
-        }).catch(err => {
-            console.log("🚀 ~ file: MessageScreen.jsx:66 ~ onSubmit ~ err:", err)
+        if(message){
 
-        })
+            let body = {
+                senderId: user?.id||user?._id,
+                receiverId: receiverId,
+                description: message
+            }
+            if (image) {
+                body.images = image
+            }
+            let data = convertToformData(body)
+            await axios.post(`${API_URL}message/add_message`, data, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            }).then(({ data }) => {
+                if (data?.status === 200) {
+                    setImage()
+                    setMessage()
+                    getMessages()
+                 
+                }
+            }).catch(err => {
+                console.log("🚀 ~ file: MessageScreen.jsx:66 ~ onSubmit ~ err:", err)
+    
+            })
+        }
+        else{
+            showToast("Please enter message")
+        }
     }
 
     return (
@@ -114,7 +120,7 @@ const MessageScreen = (props) => {
                                                         return (
                                                             <View style={{ marginRight: Matrics.hs15 }}>
 
-                                                                <ImagePlaceHolderComponent  disabled={true} size={Matrics.ms80} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs15} setImage={(image) => setImage(image)} image={img?.uri || `${IMAGE_URL}${img}`} disabled={true} borderColor={Colors.WHITE} />
+                                                                <ImagePlaceHolderComponent   size={Matrics.ms80} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs15} setImage={(image) => setImage(image)} image={img?.uri || `${IMAGE_URL}${img}`} disabled={true} borderColor={Colors.WHITE} />
                                                             </View>
                                                         )
                                                     })}

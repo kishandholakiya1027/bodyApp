@@ -17,12 +17,14 @@ import CommonButton from '../../core-component/molecules/CommonButton'
 // import auth from '@react-native-firebase/auth';
 
 
-const LoginPage = () => {
+const LoginPage = (props) => {
     const [email, setEmail] = useState()
     const [password, setPassword] = useState()
     const [deviceToken, setDeviceToken] = useState()
     const [error, setError] = useState()
     const { user, setUser } = useContext(UserParamContext)
+    const role = props?.route?.params
+    console.log("🚀 ~ file: LoginPage.jsx:27 ~ LoginPage ~ role:", role)
 
     const navigation = useNavigation()
 
@@ -72,12 +74,21 @@ const LoginPage = () => {
                     setUser(data?.data)
                     await AsyncStorage.setItem("user", JSON.stringify(data?.data))
                     if (data?.data?.complete)
-                        navigation.navigate("Home")
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'Home' }]
+                    })
                     else {
                         if (data?.data?.role)
-                            navigation.navigate("OnBoarding")
+                        navigation.reset({
+                            index: 0,
+                            routes: [{ name: 'OnBoarding' }]
+                        })
                         else {
-                            navigation.navigate("UserProfile")
+                            navigation.reset({
+                                index: 0,
+                                routes: [{ name: 'UserProfile' }]
+                            })
 
                         }
 
@@ -121,7 +132,7 @@ const LoginPage = () => {
                                     <CommonButton text="Login" onPress={onSubmit} enabled={email && password} />
 
                                 </View>
-                                <SocialMediaComponent role={null} checkRole={false} />
+                                <SocialMediaComponent role={role} checkRole={false} />
                                 {/* <View>
                                     <Pressable style={styles.buttonView} onPress={signInWithGoogle}>
                                         <Image source={Images.google} style={{ width: Matrics.ms30, height: Matrics.ms30, marginRight: Matrics.hs10 }} />

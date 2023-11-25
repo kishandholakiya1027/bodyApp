@@ -23,8 +23,10 @@ const { width, height } = Dimensions.get('window');
 const UserProfile = () => {
     const [index, setIndex] = useState(0)
     const [userData, setUserData] = useState({})
+    console.log("🚀 ~ file: UserProfile.jsx:26 ~ UserProfile ~ userData:", userData)
     const navigation = useNavigation()
     const { user,setUser } = useContext(UserParamContext)
+    console.log("🚀 ~ file: UserProfile.jsx:28 ~ UserProfile ~ user:", user)
 
     useFocusEffect(
         useCallback(() => {
@@ -161,6 +163,7 @@ const UserProfile = () => {
         }
         usr.complete = true
         let body = convertToformData(usr)
+        console.log("🚀 ~ file: UserProfile.jsx:168 ~ onProfileUpdate ~ `${API_URL}user/edit_user/${userData?.id || userData?._id}`:", `${API_URL}user/edit_user/${userData?.id || userData?._id}`)
         await axios.put(`${API_URL}user/edit_user/${userData?.id || userData?._id}`, body, {
             headers: {
                 "Content-Type": "multipart/form-data"

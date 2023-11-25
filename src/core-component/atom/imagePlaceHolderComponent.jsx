@@ -7,14 +7,13 @@ import ImageSelectorComponent from './ImageSelectorComponent'
 const ImagePlaceHolderComponent = ({ onPress, plus = false, size = Matrics.ms160, borderRadius = Matrics.ms120, padding = Matrics.hs50, marginVertical = Matrics.vs40, setImage, image, borderColor = Colors.LIGHTGRAY, multiple, backgroundColor = "none", disabled }) => {
     const [visible, setVisible] = useState(false)
     const [imageUrl, setImageUrl] = useState()
-    console.log("🚀 ~ file: imagePlaceHolderComponent.jsx:8 ~ ImagePlaceHolderComponent ~ image:", image,imageUrl)
     return (
         <View style={[styles.mainViw, { marginVertical }]}>
-            <Pressable hitSlop={30} onPress={() => onPress ? onPress() : setVisible(true)} disabled>
-                <Pressable onPress={() => onPress ? onPress() : setVisible(true)} style={[styles.imageView, { width: size, height: size, borderRadius: borderRadius, borderColor, backgroundColor }]} >
+            <Pressable hitSlop={30} onPress={() => onPress ? onPress() : setVisible(true)} disabled={disabled} >
+                <Pressable onPress={() => onPress ? onPress() : setVisible(true)} disabled={disabled} style={[styles.imageView, { width: size, height: size, borderRadius: borderRadius, borderColor, backgroundColor,position:"relative"}]} >
                     {imageUrl || image ? <Image style={[styles.imageView, { width: size, height:size, borderRadius:borderRadius, borderColor }]} source={{ uri: (imageUrl || image) }} />
                         : disabled ? null : <Text style={[styles.textStyle, { paddingHorizontal: padding }]}>Upload your profile picture</Text>}
-                    {plus ? <Pressable hitSlop={30} onPress={() => onPress ? onPress() : setVisible(true)} style={{ position: "absolute", width: size, height: size, alignItems: "center", justifyContent: "center" }}>
+                    {plus ? <Pressable hitSlop={60} onPress={() => onPress ? onPress() : setVisible(true)}   style={{ position: "absolute",  alignItems: "center", justifyContent: "center" ,}}>
                         <Image source={Images.close} style={{ width: size/3, height: size/3, tintColor: Colors.LIGHTBLACK, transform: [{ rotate: "45deg" }], tintColor: Colors.BLUE, resizeMode: "contain" }} />
 
                     </Pressable> : null}

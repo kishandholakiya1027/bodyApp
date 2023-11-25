@@ -19,22 +19,29 @@ const ReportIssue = () => {
 
 
     const onSubmit = async () => {
-        let body = {
-            "userId": user?._id || user?.id,
-            "msg": issue
-        }
-        await axios.post(`${API_URL}issue/add_issue`,body).then(({data}) => {
-            if(data?.status === 200){
-                setIssue()
-                showToast("Your query is submitted successfully.We'll be in touch with you soon")
-            }else {
-                showToast(data?.msg)
+        if(issue){
+
+            let body = {
+                "userId": user?._id || user?.id,
+                "msg": issue
             }
-        	}).catch(err => {
-        	    console.log("🚀 ~ file: ReportIssue.jsx:29 ~ awaitaxios.post ~ err:", err)
+            await axios.post(`${API_URL}issue/add_issue`,body).then(({data}) => {
+                console.log("🚀 ~ file: ReportIssue.jsx:30 ~ awaitaxios.post ~ data:", data)
+                if(data?.status === 200){
+                    setIssue()
+                    showToast("Your query is submitted successfully.We'll be in touch with you soon")
+                }else {
+                    showToast(data?.msg||data?.error)
+                }
+                }).catch(err => {
+                    console.log("🚀 ~ file: ReportIssue.jsx:29 ~ awaitaxios.post ~ err:", err)
         
-            	
-        })
+                    
+            })
+        }
+        else{
+            showToast("Please enter issue")
+        }
     }
 
     return (

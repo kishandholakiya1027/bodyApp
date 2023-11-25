@@ -3,7 +3,7 @@ import React, { useContext, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Header from '../../core-component/atom/header'
 import { Colors, Images, Matrics, width } from '../../theme'
-import { IS_ANDROID, getRubikFont } from '../../core-utils/utils'
+import { IS_ANDROID, getRubikFont, showToast } from '../../core-utils/utils'
 import TextInputComponent from '../../core-component/atom/TextInputComponent'
 import TextComponent from '../../core-component/atom/TextComponent'
 import ImagePlaceHolderComponent from '../../core-component/atom/imagePlaceHolderComponent'
@@ -22,47 +22,55 @@ const LeaveMessage = (props) => {
     const {user} = useContext(UserParamContext)
 
     const onSubmit = async () => {
-        let body = {
-            senderId: user?.id||user?._id,
-            receiverId: item?._id,
-            description: message
-        }
-        if (image) {
-            body.image = image
-        }
-        let data = convertToformData(body)
-        await axios.post(`${API_URL}message/add_message`, data, {
-            headers: {
-                "Content-Type": "multipart/form-data"
+        if(message){
+            let body = {
+                senderId: user?.id||user?._id,
+                receiverId: item?._id,
+                description: message
             }
-        }).then(({ data }) => {
-            if (data?.status === 200) {
-                setMessage()
-              Toast.show('Message Sent', Toast.SHORT, {
-            backgroundColor: Colors.LIMEGREEN,
-            fontFamily:getRubikFont("Regular"),
-            fontSize:Matrics.ms18,
-            width:width
-          });
-                navigation.navigate("ProfileDetails",{designerId:item?._id})
-               
+            if (image) {
+                body.images = image
             }
-        }).catch(err => {
-            console.log("🚀 ~ file: MessageScreen.jsx:66 ~ onSubmit ~ err:", err)
+            let data = convertToformData(body)
+            await axios.post(`${API_URL}message/add_message`, data, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            }).then(({ data }) => {
+                if (data?.status === 200) {
+                    setMessage()
+                    setImage()
+                  Toast.show('Message Sent', Toast.SHORT, {
+                backgroundColor: Colors.LIMEGREEN,
+                fontFamily:getRubikFont("Regular"),
+                fontSize:Matrics.ms18,
+                width:width
+              });
+                    navigation.navigate("ProfileDetails",{designerId:item?._id})
+                   
+                }
+            }).catch(err => {
+                console.log("🚀 ~ file: MessageScreen.jsx:66 ~ onSubmit ~ err:", err)
+    
+            })
 
-        })
+        }else{
+            showToast("Please enter message")
+        }
     }
 
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.WHITE, }} behavior={IS_ANDROID ? '' : 'padding'} enabled>
             <StatusBar barStyle="dark-content" backgroundColor="white" />
             <SafeAreaView style={{ flex: 1 }}>
-                <View style={{ flex: 1 }}>
+                <View style={{  }}>
+
                     <View style={{ borderBottomWidth: 0.5, borderColor: Colors.LIGHTGRAY }}>
                         <Header text={"Leave a Message"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => navigation.goBack()} />
 
                     </View>
-                    <View style={{ margin: Matrics.ms20, paddinBottom: Matrics.vs50 }}>
+                {/* <ImagePlaceHolderComponent plus={true} multiple={true} size={Matrics.ms60} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs15} setImage={(image) => setImage(image)} image={`ss`} borderColor={Colors.BLUE} /> */}
+                    <View style={{ margin: Matrics.ms20, paddinBottom: Matrics.vs50 ,}}>
                         <View style={{ marginBottom: Matrics.vs25, marginTop: Matrics.vs15 }}>
 
                             <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} paddingHorizontal={0}>{"You can connect with our associate via messages. Our associate with respond to your message within 5-8 working hours."}</TextComponent>
@@ -82,18 +90,21 @@ const LeaveMessage = (props) => {
                             })}
 
                         </View>
-                        <View style={{ position: "relative", alignItems: "flex-start", justifyContent: "center" }}>
-                            <ImagePlaceHolderComponent plus={true} multiple={true} size={Matrics.ms60} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs15} setImage={(image) => setImage(image)} image={`ss`} borderColor={Colors.BLUE} />
 
+                <View style={{position:"relative",justifyContent:"center",alignItems:"flex-start"}}>
 
-
-                        </View>
-
+                <ImagePlaceHolderComponent plus={true} multiple={true} size={Matrics.ms60} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs15} setImage={(image) => setImage(image)} image={`ss`} borderColor={Colors.BLUE} />
+                </View>
                     </View>
 
+
+
+
+
                 </View>
+
                     <View style={{flex:1,justifyContent:"flex-end",marginHorizontal:Matrics.hs20}}>
-                        <CommonButton text={"Send Message"} onPress={()=>onSubmit()} viewStyle={message ? {backgroundColor:Colors.BLUE}:{}} textStyle={message? {color:Colors.WHITE}:{}}/>
+                        <CommonButton text={"Send Message"} onPress={()=>onSubmit()} enabled={message}/>
                     </View>
             </SafeAreaView>
         </KeyboardAvoidingView>

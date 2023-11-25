@@ -1,4 +1,4 @@
-import { Alert, FlatList, Image, KeyboardAvoidingView, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
+import { Alert, FlatList, Image, KeyboardAvoidingView, Linking, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Header from '../../core-component/atom/header'
 import { Colors, Images, Matrics } from '../../theme'
@@ -19,6 +19,7 @@ const MyProfile = () => {
     const [image, setImage] = useState()
     const navigation = useNavigation()
     const { user } = useContext(UserParamContext)
+    console.log("🚀 ~ file: MyProfile.jsx:22 ~ MyProfile ~ user:", user)
     const insets = useSafeAreaInsets();
 
     // useEffect(() => {
@@ -75,7 +76,7 @@ const MyProfile = () => {
         { key: "height", label: "Height", value: "Pear" },
         { key: "waist_size", label: "Waist", value: "Pear" },
         { key: "bust_size", label: "Bust", value: "Pear" },
-        { key: "hip_bust", label: "Hip", value: "Pear" },
+        { key: "hip_size", label: "Hip", value: "Pear" },
     ]
 
     return (
@@ -107,10 +108,10 @@ const MyProfile = () => {
                                 <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0}>{userData?.profession}</TextComponent>
                                 <View style={{ flexDirection: "row", justifyContent: "flex-start", alignItems: "center", marginTop: Matrics.vs15, flexWrap: "wrap", marginLeft: Matrics.vs15 }}>
                                     {userData?.socialChanels?.map((channel, i) => {
-                                        return channel && channel != 0 ? <View style={{ borderWidth: 1, borderColor: Colors.BLUE, height: Matrics.ms50, width: Matrics.ms50, marginLeft: Matrics.hs5, backgroundColor: Colors.BLUE, justifyContent: "center", alignItems: "center", marginTop: Matrics.vs10 }}>
+                                        return channel && channel != 0 ? <Pressable onPress={()=>Linking.openURL(channel)} style={{ borderWidth: 1, borderColor: Colors.BLUE, height: Matrics.ms50, width: Matrics.ms50, marginLeft: Matrics.hs5, backgroundColor: Colors.BLUE, justifyContent: "center", alignItems: "center", marginTop: Matrics.vs10 }}>
 
                                             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.WHITE} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs5}>{socialMedia[i]}</TextComponent>
-                                        </View> : null
+                                        </Pressable> : null
                                     })}
                                     {/* <View style={{ borderWidth: 1, borderColor: Colors.BLUE, height: Matrics.ms50, width: Matrics.ms50, marginLeft: Matrics.hs10, backgroundColor: Colors.BLUE, justifyContent: "center", alignItems: "center" }}>
                                         <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.WHITE} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs5}>{"FB"}</TextComponent>

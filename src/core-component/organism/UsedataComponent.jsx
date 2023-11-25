@@ -119,7 +119,8 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
     }
 
 
-let data = users.filter(user => user?._id !== userId)?.slice(0, slice)
+let data = users.filter(usr => (usr?._id !== (user?._id||user?._id)))?.slice(0, slice)
+console.log("🚀 ~ file: UsedataComponent.jsx:123 ~ UsedataComponent ~ data:", data)
 
     return (
         <>
@@ -200,7 +201,7 @@ let data = users.filter(user => user?._id !== userId)?.slice(0, slice)
                                                     !(user?.id ||user?._id) ? Alert.alert("Please sign in to explore!",
                                                         '', [
 
-                                                        { text: 'OK', onPress: () => navigation.navigate("LoginPage") },
+                                                        { text: 'OK', onPress: () => {} },
                                                     ]) : null
                                                 }
                                                 (user?.id ||user?._id) ? navigation.navigate("LeaveMessage", { item }) : ""
@@ -218,7 +219,7 @@ let data = users.filter(user => user?._id !== userId)?.slice(0, slice)
                                                     !(user?.id ||user?._id) ? Alert.alert("Please sign in to explore!",
                                                         '', [
 
-                                                        { text: 'OK', onPress: () => navigation.navigate("LoginPage") },
+                                                        { text: 'OK', onPress: () => {} },
                                                     ]) : null
                                                 }
                                                 (user?.id ||user?._id) ? navigation.navigate("SlotScreen") : ""

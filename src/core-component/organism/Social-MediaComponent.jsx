@@ -29,7 +29,7 @@ GoogleSignin.configure({
     // iosClientId: '106151688664-ndprsrur540i58p72p0s16k06uroukmu.apps.googleusercontent.com', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
 });
 
-const SocialMediaComponent = ({role,checkRole,width}) => {
+const SocialMediaComponent = ({ role, checkRole, width }) => {
     const navigation = useNavigation()
     const { user, setUser } = useContext(UserParamContext)
     const insRef = useRef();
@@ -38,38 +38,39 @@ const SocialMediaComponent = ({role,checkRole,width}) => {
         try {
             let userRole = role ?? "s"
 
-    const isSignedIn = await GoogleSignin.isSignedIn();
-    if (isSignedIn) {
-        await GoogleSignin.signOut()
-    }
-    await GoogleSignin.hasPlayServices();
+            const isSignedIn = await GoogleSignin.isSignedIn();
+            if (isSignedIn) {
+                await GoogleSignin.signOut()
+            }
+            await GoogleSignin.hasPlayServices();
 
-    let userInfo = await GoogleSignin.signIn();
+            let userInfo = await GoogleSignin.signIn();
 
-    const data = await axios.post(`${API_URL}auth/verify`, { token: userInfo?.idToken,role:role||false })
-    if (data?.data?.status === 200) {
-        await AsyncStorage.setItem("token", data?.data?.data?.token)
-        setUser(data?.data?.data)
-        await AsyncStorage.setItem("user", JSON.stringify(data?.data?.data))
-        navigation.navigate("Home")
-        
-    } else {
-        Alert.alert(data?.msg||data?.error)
-    }
-    // navigation.navigate("UserProfile")
-    // Handle user info or navigate to the next screen.
-} catch (error) {
-    console.error('Google Sign-In Error:', error);
-}
-            // await axios.get("http://localhost:5203/auth/google").then(data => {
-            //     console.log("🚀 ~ file: Social-MediaComponent.jsx:24 ~ awaitaxios.get ~ data:", data)
-            // }).catch(err => {
-            //     console.log("🚀 ~ file: Social-MediaComponent.jsx:27 ~ awaitaxios.get ~ err:", err)
-            //     return {
-            //     }
+            const data = await axios.post(`${API_URL}auth/verify`, { token: userInfo?.idToken, role: role || false })
+            console.log("🚀 ~ file: Social-MediaComponent.jsx:51 ~ signInWithGoogle ~ data:", data)
+            if (data?.data?.status === 200) {
+                await AsyncStorage.setItem("token", data?.data?.data?.token)
+                setUser(data?.data?.data)
+                await AsyncStorage.setItem("user", JSON.stringify(data?.data?.data))
+                navigation.navigate("Home")
 
-            // })
-           
+            } else {
+                Alert.alert(data?.msg || data?.error)
+            }
+            // navigation.navigate("UserProfile")
+            // Handle user info or navigate to the next screen.
+        } catch (error) {
+            console.error('Google Sign-In Error:', error);
+        }
+        // await axios.get("http://localhost:5203/auth/google").then(data => {
+        //     console.log("🚀 ~ file: Social-MediaComponent.jsx:24 ~ awaitaxios.get ~ data:", data)
+        // }).catch(err => {
+        //     console.log("🚀 ~ file: Social-MediaComponent.jsx:27 ~ awaitaxios.get ~ err:", err)
+        //     return {
+        //     }
+
+        // })
+
     };
 
 
@@ -84,17 +85,17 @@ const SocialMediaComponent = ({role,checkRole,width}) => {
                     // }, 1000);
                 } else {
                     AccessToken.getCurrentAccessToken().then(async data => {
-                  await axios.post(`${API_URL}auth/verify-facebook`, { token: data?.accessToken,role:role||false  }).then(async({data})=>{
-                      if (data?.status === 200) {
-                          await AsyncStorage.setItem("token", data?.data?.token)
-                          await AsyncStorage.setItem("user", JSON.stringify(data?.data))
-                        navigation.navigate("Home")
-                
+                        await axios.post(`${API_URL}auth/verify-facebook`, { token: data?.accessToken, role: role || false }).then(async ({ data }) => {
+                            if (data?.status === 200) {
+                                await AsyncStorage.setItem("token", data?.data?.token)
+                                await AsyncStorage.setItem("user", JSON.stringify(data?.data))
+                                navigation.navigate("Home")
+                                setUser(data?.data)
                             } else {
                                 Alert.alert(data?.msg)
                             }
 
-                        }).catch( (error)=> {
+                        }).catch((error) => {
                             console.error(' Error:', error);
                         })
                         // let input = {
@@ -125,36 +126,36 @@ const SocialMediaComponent = ({role,checkRole,width}) => {
     };
     const handleInstagramLogin = async (token) => {
         // setLoader(true);
-       
-              
-                  await axios.post(`${API_URL}auth/verify-instagram`, { token,role:role||false }).then(async({data})=>{
-                      if (data?.status === 200) {
-                          await AsyncStorage.setItem("token", data?.data?.token)
-                          await AsyncStorage.setItem("user", JSON.stringify(data?.data))
-                        navigation.navigate("Home")
-                
-                            } else {
-                                Alert.alert(data?.msg)
-                            }
 
-                        }).catch( (error)=> {
-                            console.error(' Error:', error);
-                        })
-                        // let input = {
-                        //     accessToken: data?.accessToken,
-                        //     provider: 'facebook',
-                        // };
-                        // socialLoginMutation({
-                        //     variables: { ...input },
-                        // }).then(async ({ data }) => {
-                        //     setLoader(false);
-                        //     const user = data?.socialLogin?.user;
-                        //     SaveUserOnLoginCommon(user, data?.socialLogin?.token);
-                        // }).catch(err => {
-                        //     setLoader(false);
-                        //     showToastMessage(err.message, 'error')
-                        // });
-            
+
+        await axios.post(`${API_URL}auth/verify-instagram`, { token, role: role || false }).then(async ({ data }) => {
+            if (data?.status === 200) {
+                await AsyncStorage.setItem("token", data?.data?.token)
+                await AsyncStorage.setItem("user", JSON.stringify(data?.data))
+                navigation.navigate("Home")
+                setUser(data?.data)
+            } else {
+                Alert.alert(data?.msg)
+            }
+
+        }).catch((error) => {
+            console.error(' Error:', error);
+        })
+        // let input = {
+        //     accessToken: data?.accessToken,
+        //     provider: 'facebook',
+        // };
+        // socialLoginMutation({
+        //     variables: { ...input },
+        // }).then(async ({ data }) => {
+        //     setLoader(false);
+        //     const user = data?.socialLogin?.user;
+        //     SaveUserOnLoginCommon(user, data?.socialLogin?.token);
+        // }).catch(err => {
+        //     setLoader(false);
+        //     showToastMessage(err.message, 'error')
+        // });
+
     };
 
 
@@ -165,14 +166,14 @@ const SocialMediaComponent = ({role,checkRole,width}) => {
             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK}  >Or</TextComponent>
             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs15}>Sign in using</TextComponent>
             <View style={{ marginTop: Matrics.vs20 }}>
-            <View style={{ width:width||"43%" }}>
-                                    {/* <Pressable style={styles.buttonView} onPress={onSubmit}>
+                <View style={{ width: width || "43%" }}>
+                    {/* <Pressable style={styles.buttonView} onPress={onSubmit}>
                                         <Text style={styles.textStyle}>{"Login"}</Text>
                                     </Pressable> */}
-                                    <CommonButton text=" Google" onPress={signInWithGoogle} />
+                    <CommonButton text=" Google" onPress={signInWithGoogle} />
 
-                                </View>
-               
+                </View>
+
 
             </View>
             {/* <LoginButton
@@ -193,14 +194,14 @@ const SocialMediaComponent = ({role,checkRole,width}) => {
                 }
                 onLogoutFinished={() => console.log("logout.")} /> */}
             <View style={{ marginTop: Matrics.vs10 }}>
-            <View style={{ width:width||"43%" }}>
-                                    {/* <Pressable style={styles.buttonView} onPress={onSubmit}>
+                <View style={{ width: width || "43%" }}>
+                    {/* <Pressable style={styles.buttonView} onPress={onSubmit}>
                                         <Text style={styles.textStyle}>{"Login"}</Text>
                                     </Pressable> */}
-                                    <CommonButton text="Facebook" onPress={handleFBLogin} />
+                    <CommonButton text="Facebook" onPress={handleFBLogin} />
 
-                                </View>
-             
+                </View>
+
 
             </View>
             <InstagramLogin
@@ -213,14 +214,14 @@ const SocialMediaComponent = ({role,checkRole,width}) => {
                 onLoginFailure={(data) => console.log(data)}
             />
             <View style={{ marginTop: Matrics.vs10 }}>
-            <View style={{ width:width||"43%" }}>
-                                    {/* <Pressable style={styles.buttonView} onPress={onSubmit}>
+                <View style={{ width: width || "43%" }}>
+                    {/* <Pressable style={styles.buttonView} onPress={onSubmit}>
                                         <Text style={styles.textStyle}>{"Login"}</Text>
                                     </Pressable> */}
-                                    <CommonButton text="Instagram"  onPress={() => insRef.current.show()} />
+                    <CommonButton text="Instagram" onPress={() => insRef.current.show()} />
 
-                                </View>
-                
+                </View>
+
 
             </View>
 

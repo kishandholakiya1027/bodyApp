@@ -1,4 +1,4 @@
-import { Alert, FlatList, Image, KeyboardAvoidingView, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
+import { Alert, FlatList, Image, KeyboardAvoidingView, Linking, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Header from '../../core-component/atom/header'
 import { Colors, Images, Matrics } from '../../theme'
@@ -18,6 +18,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 const ProfileDetails = (props) => {
     const { designerId, likedUser } = props.route?.params
     const [userData, setUserData] = useState()
+    console.log("🚀 ~ file: ProfileDetails.jsx:21 ~ ProfileDetails ~ userData:", userData)
     const [like, setLike] = useState(likedUser?.includes(userData?._id))
     const [image, setImage] = useState()
     const navigation = useNavigation()
@@ -74,8 +75,9 @@ const ProfileDetails = (props) => {
     const addLike = async (id, userId) => {
         let body = {
             "designerId": userData?._id,
-            "loginUserId": user?.id
+            "loginUserId": user?.id||user?._id
         }
+        console.log("🚀 ~ file: ProfileDetails.jsx:76 ~ addLike ~ body:", body)
         await axios.post(`${API_URL}like/add_like`, body, {
             headers: {
                 'Content-Type': 'application/json'
@@ -83,7 +85,7 @@ const ProfileDetails = (props) => {
         }).then(({ data }) => {
             if (data?.status === 200) {
                 setLike(true)
-                Alert.alert("User liked ")
+                Alert.alert("Profile saved ")
 
 
             }
@@ -97,7 +99,7 @@ const ProfileDetails = (props) => {
 
         let body = {
             "designerId": userData?._id,
-            "loginUserId": user?.id
+            "loginUserId": user?.id||user?._id
         }
         await axios.post(`${API_URL}like/remove_like`, body, {
             headers: {
@@ -105,7 +107,7 @@ const ProfileDetails = (props) => {
             },
         }).then(({ data }) => {
             if (data?.status === 200) {
-                Alert.alert("Removed liked ")
+                Alert.alert("Profile unsaved ")
                 setLike(false)
 
             }
@@ -134,7 +136,7 @@ const ProfileDetails = (props) => {
 
                             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Matrics.vs15 }}>
                                 <View style={{}}>
-                                    <ImagePlaceHolderComponent size={Matrics.ms160} borderRadius={Matrics.ms80} padding={Matrics.hs10} marginVertical={Matrics.vs25} setImage={(image) => setUserData({ ...userData, profile_img: image })} image={userData?.profile_img ? `${IMAGE_URL}${userData?.profile_img?.uri || userData?.profile_img}` : ""} />
+                                    <ImagePlaceHolderComponent size={Matrics.ms160} borderRadius={Matrics.ms80} padding={Matrics.hs10} marginVertical={Matrics.vs25} setImage={(image) => setUserData({ ...userData, profile_img: image })} image={userData?.profile_img ? `${IMAGE_URL}${userData?.profile_img?.uri || userData?.profile_img}` : ""}  disabled={true}/>
 
                                 </View>
                                 <View style={{}}>
@@ -151,15 +153,16 @@ const ProfileDetails = (props) => {
                                             starContainerStyle={{ paddingTop: Matrics.vs0, marginHorizontal: Matrics.hs2 }}
                                         />
 
-                                        <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms15} color={Colors.MEDIUMRED} marginTop={Matrics.vs10} textDecorationLine='underline'>{"(20) Reviews"}</TextComponent>
+                                        <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Regular")} size={Matrics.ms15} color={Colors.MEDIUMRED} marginTop={Matrics.vs10} textDecorationLine='underline'>{`(${userData?.reviewCount}) Reviews`}</TextComponent>
 
                                     </View>
                                     <View style={{ flexDirection: "row", justifyContent: "flex-start", alignItems: "center", marginTop: Matrics.vs15, flexWrap: "wrap", marginLeft: Matrics.vs15 }}>
                                         {userData?.socialChanels?.map((channel, i) => {
-                                            return channel && channel != 0 ? <View style={{ borderWidth: 1, borderColor: Colors.BLUE, height: Matrics.ms50, width: Matrics.ms50, marginLeft: Matrics.hs5, backgroundColor: Colors.BLUE, justifyContent: "center", alignItems: "center", marginTop: Matrics.vs10 }}>
+                                            console.log("🚀 ~ file: ProfileDetails.jsx:161 ~ {userData?.socialChanels?.map ~ channel:", channel)
+                                            return channel && channel != 0 ? <Pressable onPress={()=>Linking.openURL(channel)} style={{ borderWidth: 1, borderColor: Colors.BLUE, height: Matrics.ms50, width: Matrics.ms50, marginLeft: Matrics.hs5, backgroundColor: Colors.BLUE, justifyContent: "center", alignItems: "center", marginTop: Matrics.vs10 }}>
 
                                                 <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.WHITE} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs5}>{socialMedia[i]}</TextComponent>
-                                            </View> : null
+                                            </Pressable> : null
                                         })}
                                         {/* <View style={{ borderWidth: 1, borderColor: Colors.BLUE, height: Matrics.ms50, width: Matrics.ms50, marginLeft: Matrics.hs10, backgroundColor: Colors.BLUE, justifyContent: "center", alignItems: "center" }}>
                                         <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.WHITE} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs5}>{"FB"}</TextComponent>
@@ -196,7 +199,7 @@ const ProfileDetails = (props) => {
                                         userData?.portfolio?.map(item =>
                                             <View style={{ marginRight: Matrics.vs15 }}>
 
-                                                <ImagePlaceHolderComponent size={Matrics.ms80} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => setUserData({ ...userData, portfolio: image })} image={`${IMAGE_URL}${item}`} borderColor={Colors.BLUE} />
+                                                <ImagePlaceHolderComponent disabled={true} size={Matrics.ms80} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => setUserData({ ...userData, portfolio: image })} image={`${IMAGE_URL}${item}`} borderColor={Colors.BLUE} />
                                             </View>
 
                                         ) : null}
@@ -251,10 +254,10 @@ const ProfileDetails = (props) => {
                                     !user?.id ? Alert.alert("Please sign in to explore!",
                                         '', [
 
-                                        { text: 'OK', onPress: () => navigation.navigate("LoginPage") },
+                                        { text: 'OK', onPress: () => {} },
                                     ]) : null
                                 }
-                                user?.id ? navigation.navigate("LeaveMessage") : ""
+                                user?.id ? navigation.navigate("LeaveMessage",{item:userData}) : ""
                             }} />
 
 
@@ -263,12 +266,12 @@ const ProfileDetails = (props) => {
                     <View style={{ flex: 0.52, }}>
                         <View style={{ marginTop: Matrics.vs10 }}>
                             <CommonButton text={"Book Consultation"} onPress={() => {
-                                setBooking(item)
+                                setBooking(userData)
                                 {
                                     !user?.id ? Alert.alert("Please sign in to explore!",
                                         '', [
 
-                                        { text: 'OK', onPress: () => navigation.navigate("LoginPage") },
+                                        { text: 'OK', onPress: () => {} },
                                     ]) : null
                                 }
                                 user?.id ? navigation.navigate("SlotScreen") : ""
