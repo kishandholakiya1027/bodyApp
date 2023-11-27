@@ -235,7 +235,7 @@ const MyProfile = () => {
                 </ScrollView>
                 <View style={{alignItems:"center",paddingBottom:insets?.bottom ? 0:Matrics.ms20}}>
                     <View style={{width:"50%"}}>
-                    <CommonButton text={"Edit Profile"} onPress={()=> navigation.navigate(user?.role ?"OnBoarding":"UserProfile")} viewStyle={{backgroundColor:Colors.BLUE}} textStyle={{color:Colors.WHITE}}/>
+                    <CommonButton text={"Edit Profile"} onPress={()=> navigation.navigate(!user?.role ?"OnBoarding":"UserProfile")} viewStyle={{backgroundColor:Colors.BLUE}} textStyle={{color:Colors.WHITE}}/>
 
                     </View>
                 </View>

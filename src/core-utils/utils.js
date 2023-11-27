@@ -20,8 +20,8 @@ export const removeDotExceptOne = (str) => {
   })?.replace(/[,-\s]/g, "")
 }
 
- export const showToast = (msg)=>{
-
+ export const showToast = (msg) => {
+   console.log("🚀 ~ file: utils.js:24 ~ showToast ~ msg:", msg)
    Toast.show(msg, Toast.SHORT, {
      backgroundColor: Colors.LIGHTBLACK,
      fontFamily:getRubikFont("Regular"),

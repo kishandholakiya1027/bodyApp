@@ -1,6 +1,6 @@
 import { Alert, Dimensions, FlatList, Image, KeyboardAvoidingView, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import React, { useCallback, useContext, useState } from 'react'
-import { IS_ANDROID, getRobotoFont, getRubikFont } from '../../core-utils/utils'
+import { IS_ANDROID, getRobotoFont, getRubikFont, showToast } from '../../core-utils/utils'
 import HeaderTextComponent from '../../core-component/molecules/HeaderTextComponent'
 import ImagePlaceHolderComponent from '../../core-component/atom/imagePlaceHolderComponent'
 import TextInputComponent from '../../core-component/atom/TextInputComponent'
@@ -59,17 +59,20 @@ const UserProfile = () => {
     const socialMedia = [
         "IN", "FB", "YT", "LI"
     ]
+
     const usersData = [
-        { key: "age", label: "Age", value: 32 },
-        { key: "gender", label: "Gender", value: "Female" },
-        { key: "body_type", label: "Body type", value: "Pear" },
-        { key: "face_type", label: "Face type", value: "Pear" },
-        { key: "complexion", label: "Complexion", value: "Pear" },
-        { key: "hair_length", label: "Hair", value: "Pear" },
-        { key: "height", label: "Height", value: "Pear" },
-        { key: "waist_size", label: "Waist", value: "Pear" },
-        { key: "bust_size", label: "Bust", value: "Pear" },
-        { key: "hip_bust", label: "Hip", value: "Pear" },
+         "profile_img", 
+         "username", 
+         "age", 
+         "gender", 
+         "body_type", 
+         "face_type", 
+         "complexion", 
+         "hair_length", 
+         "height", 
+         "bust_size", 
+         "waist_size", 
+         "hip_size", 
     ]
 
     const hightFeet = [
@@ -155,35 +158,52 @@ const UserProfile = () => {
 
     const onProfileUpdate= async()=>{
         let usr = {...userData}
+        console.log("🚀 ~ file: UserProfile.jsx:161 ~ onProfileUpdate ~ usr:", usr)
         delete usr["_id"]
         delete usr["__v"]
-        // if(usr)
-        if(!usr?.new){
-            delete usr["profile_img"]
+
+            // if(usr)
+            if(!usr?.new){
+                delete usr["profile_img"]
+            }
+            usr.complete = true
+            let body = convertToformData(usr)
+            console.log("🚀 ~ file: UserProfile.jsx:168 ~ onProfileUpdate ~ `${API_URL}user/edit_user/${userData?.id || userData?._id}`:", `${API_URL}user/edit_user/${userData?.id || userData?._id}`)
+            await axios.put(`${API_URL}user/edit_user/${userData?.id || userData?._id}`, body, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            }).then(async ({ data }) => {
+                if (data?.status === 200) {
+                    setUser({ ...user, id: userData?.id||userData?._id, role: user?.role ,complete:true})
+                    await AsyncStorage.setItem("user", JSON.stringify({ ...user, id: userData?.id, role: user?.role ,complete:true}))
+                    setTimeout(() => {
+                        navigation.navigate("MyProfile")
+    
+                    }, 1000);
+                }
+                Alert.alert(data?.msg || data?.error)
+    
+            }).catch(error => {
+                console.log("🚀 ~ file: completeProfile.jsx:38 ~ onSubmit ~ error:", error)
+    
+    
+            })
+
+    }
+    const checkError = (data)=>{
+        function validateData() {
+        for (let i = 0; i < data.length; i++) {
+            const item = data[i];
+            if (!userData?.[item] || userData?.[item]?.length === 0) {
+                showToast(`Please enter ${item}`);
+                return true; // Break out of the loop and return false
+            }
         }
-        usr.complete = true
-        let body = convertToformData(usr)
-        console.log("🚀 ~ file: UserProfile.jsx:168 ~ onProfileUpdate ~ `${API_URL}user/edit_user/${userData?.id || userData?._id}`:", `${API_URL}user/edit_user/${userData?.id || userData?._id}`)
-        await axios.put(`${API_URL}user/edit_user/${userData?.id || userData?._id}`, body, {
-            headers: {
-                "Content-Type": "multipart/form-data"
-            }
-        }).then(async ({ data }) => {
-            if (data?.status === 200) {
-                setUser({ ...user, id: userData?.id||userData?._id, role: user?.role ,complete:true})
-                await AsyncStorage.setItem("user", JSON.stringify({ ...user, id: userData?.id, role: user?.role ,complete:true}))
-                setTimeout(() => {
-                    navigation.navigate("MyProfile")
-
-                }, 1000);
-            }
-            Alert.alert(data?.msg || data?.error)
-
-        }).catch(error => {
-            console.log("🚀 ~ file: completeProfile.jsx:38 ~ onSubmit ~ error:", error)
-
-
-        })
+        return false;
+    }
+      
+        return validateData();
     }
 
     return (
@@ -498,14 +518,21 @@ const UserProfile = () => {
                 </ScrollView>
                 <View style={{ marginHorizontal: Matrics.hs20, paddingVertical: Matrics.vs15 }}>
                     {index === 0 ? <View style={{ alignItems: "center", justifyContent: "center" }}>
-                        <CommonButton viewStyle={{ width: "50%" }} text="Next" onPress={() => setIndex(1)} />
+                        <CommonButton viewStyle={{ width: "50%" }} text="Next" onPress={() => {
+                           return checkError([
+                               "profile_img", 
+                               "username", 
+                               "age", 
+                               "gender",
+                            ]) ?{}:  setIndex(1)}} />
                     </View> : index === 1 ?
                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                             <View style={{flex:0.47}}>
                             <CommonButton text="Back" onPress={() => setIndex(0)} />
                                 </View>
                                 <View style={{flex:0.47}}>
-                            <CommonButton text="Next" viewStyle={{backgroundColor:Colors.BLUE}} textStyle={{color:Colors.WHITE}} onPress={() => setIndex(2)} />
+                            <CommonButton text="Next" viewStyle={{backgroundColor:Colors.BLUE}} textStyle={{color:Colors.WHITE}} onPress={() => checkError([
+                            "body_type"]) ?{}:  setIndex(2)} />
                                     </View>
                         </View> : index === 2 ?
                             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
@@ -514,7 +541,8 @@ const UserProfile = () => {
                                 <CommonButton text="Back" onPress={() => setIndex(1)} />
                                 </View>
                                 <View style={{flex:0.47}}>
-                                <CommonButton text="Next"  viewStyle={{backgroundColor:Colors.BLUE}} textStyle={{color:Colors.WHITE}} onPress={() => setIndex(3)} />
+                                <CommonButton text="Next"  viewStyle={{backgroundColor:Colors.BLUE}} textStyle={{color:Colors.WHITE}} onPress={() =>checkError([
+                            "face_type"]) ?{}:   setIndex(3)} />
                                 </View>
 
                             </View> : index === 3 ? <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
@@ -522,7 +550,8 @@ const UserProfile = () => {
                                 <CommonButton text="Back" onPress={() => setIndex(2)} />
                                 </View>
                                 <View style={{flex:0.47}}>
-                                <CommonButton text="Next" viewStyle={{backgroundColor:Colors.BLUE}} textStyle={{color:Colors.WHITE}} onPress={() => setIndex(4)} />
+                                <CommonButton text="Next" viewStyle={{backgroundColor:Colors.BLUE}} textStyle={{color:Colors.WHITE}} onPress={() => checkError([
+                            "complexion"]) ?{}:setIndex(4)} />
                                 </View>
 
                             </View> : index === 4 ? <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
@@ -530,7 +559,15 @@ const UserProfile = () => {
                                 <CommonButton text="Back" onPress={() => setIndex(3)} />
                                 </View>
                                 <View style={{flex:0.47}}>
-                                <CommonButton text="Next" viewStyle={{backgroundColor:Colors.BLUE}} textStyle={{color:Colors.WHITE}} onPress={() =>onProfileUpdate()} />
+                                <CommonButton text="Next" viewStyle={{backgroundColor:Colors.BLUE}} textStyle={{color:Colors.WHITE}} onPress={() => checkError([
+                                    "hair_length",
+                                    "height", 
+                                    "bust_size", 
+                                    "waist_size", 
+                                   "hip_size",
+             ]) ?{}:
+                     
+         onProfileUpdate()} />
                                 </View>
 
                             </View> : index === 5 ?

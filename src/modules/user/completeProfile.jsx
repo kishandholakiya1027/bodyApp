@@ -1,6 +1,6 @@
 import { Alert, Button, KeyboardAvoidingView, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
-import { IS_ANDROID, getRobotoFont, getRubikFont } from '../../core-utils/utils'
+import { IS_ANDROID, getRobotoFont, getRubikFont, showToast } from '../../core-utils/utils'
 import Header from '../../core-component/atom/header'
 import { Colors, Matrics } from '../../theme'
 import ImagePlaceHolderComponent from '../../core-component/atom/imagePlaceHolderComponent'
@@ -21,10 +21,9 @@ const CompleteProfile = () => {
     const [userData, setUserData] = useState({})
     const [open, setOpen] = useState(false)
     const [date, setDate] = useState()
-    console.log("🚀 ~ file: completeProfile.jsx:25 ~ CompleteProfile ~ date:", date)
+    console.log("🚀 ~ file: completeProfile.jsx:24 ~ CompleteProfile ~ date:", date)
     const [openDate, setOpenDate] = useState(false)
     const [secondDate, setSecondDate] = useState()
-    console.log("🚀 ~ file: completeProfile.jsx:28 ~ CompleteProfile ~ secondDate:", secondDate)
     const [openExpertise, setOpenExpertise] = useState(false)
 
     const [showlink, setShowLink] = useState(false)
@@ -36,17 +35,17 @@ const CompleteProfile = () => {
         getUserData()
     }, [])
 
+  
     const getUserData = async () => {
         if (user) {
             await axios.get(`${API_URL}designer/get_designer/${user?.id || user?._id}`).then(async ({ data }) => {
-                console.log("🚀 ~ file: completeProfile.jsx:43 ~ awaitaxios.get ~ data:", data)
                 if (data?.status === 200) {
                     setUserData({ ...data?.data, availability: data?.data?.availability || [] })
 
-                    setDate(data?.data?.time?.length ? !data?.data?.time[0]?.split("-")[0]?.includes("Invalid date") ? moment(data?.data?.time[0]?.split("-")[0], "HH:mm")._d : "" : "")
-                    setSecondDate(data?.data?.time?.length ? !data?.data?.time[0]?.split("-")[1]?.includes("Invalid date") ? moment(data?.data?.time[0]?.split("-")[1], "HH:mm")._d : "" : "")
+                    setDate(data?.data?.time?.length ? !(data?.data?.time[0]?.split("-")[0]?.includes("Invalid date") || data?.data?.time[0]?.split("-")[0]?.includes("Invalid Date")) ? moment(data?.data?.time[0]?.split("-")[0], "HH:mm")._d : "" : "")
+                    setSecondDate(data?.data?.time?.length ? !(data?.data?.time[0]?.split("-")[1]?.includes("Invalid date") || data?.data?.time[0]?.split("-")[1]?.includes("Invalid Date")) ? moment(data?.data?.time[0]?.split("-")[1], "HH:mm")._d : "" : "")
                     // setDate(data?.data?.time[0]?.split("-")[1])
-                    setIndex(0)
+                    // setIndex(0)
                     setUser({ ...data?.data, role: user?.role })
 
                     await AsyncStorage.setItem("user", JSON.stringify({ ...data?.data, role: user?.role, }))
@@ -82,39 +81,42 @@ const CompleteProfile = () => {
     ]
 
     const onSubmit = async () => {
-        let updateUser = { ...userData, }
-        updateUser = { ...updateUser, expertise: Array.isArray(updateUser?.expertise) ? updateUser?.expertise : updateUser?.expertise?.split(",") }
-        if (date && secondDate) {
-            updateUser = { ...updateUser, time: [`${moment(date).format("HH:mm")} - ${moment(secondDate).format("HH:mm")} `] }
-        }
-        if (updateUser?.socialChanels) {
-            updateUser.socialChanels = updateUser?.socialChanels?.map(channel => channel ? channel : 0)
-        }
-        delete updateUser["id"]
-        delete updateUser["_id"]
-        updateUser.complete = true
-        let body = convertToformData(updateUser)
-        await axios.put(`${API_URL}designer/edit_designer/${userData?.id || userData?._id}`, body, {
-            headers: {
-                "Content-Type": "multipart/form-data"
+        if (!secondDate) {
+            showToast("Please enter max time")
+        } else {
+
+            let updateUser = { ...userData, }
+            updateUser = { ...updateUser, expertise: Array.isArray(updateUser?.expertise) ? updateUser?.expertise : updateUser?.expertise?.split(",") }
+            if (date && secondDate) {
+                updateUser = { ...updateUser, time: [`${moment(date).format("HH:mm")} - ${moment(secondDate).format("HH:mm")} `] }
             }
-        }).then(async ({ data }) => {
-            if (data?.status === 200) {
-                setUser({ ...user, id: userData?.id || userData?._id, role: user?.role, complete: true })
-
-                await AsyncStorage.setItem("user", JSON.stringify({ ...user, id: userData?.id, role: user?.role, complete: true }))
-                setTimeout(() => {
-                    navigation.navigate("MyProfile")
-
-                }, 1000);
+            if (updateUser?.socialChanels) {
+                updateUser.socialChanels = updateUser?.socialChanels?.map(channel => channel ? channel : 0)
             }
-            Alert.alert(data?.msg || data?.error)
+            delete updateUser["id"]
+            delete updateUser["_id"]
+            updateUser.complete = true
+            let body = convertToformData(updateUser)
+            await axios.put(`${API_URL}designer/edit_designer/${userData?.id || userData?._id}`, body, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            }).then(async ({ data }) => {
+                if (data?.status === 200) {
+                    setUser({ ...user, id: userData?.id || userData?._id, role: user?.role, complete: true })
 
-        }).catch(error => {
-            console.log("🚀 ~ file: completeProfile.jsx:38 ~ onSubmit ~ error:", error)
+                    await AsyncStorage.setItem("user", JSON.stringify({ ...user, id: userData?.id, role: user?.role, complete: true }))
+                    setTimeout(() => {
+                        navigation.navigate("MyProfile")
 
+                    }, 1000);
+                }
+                Alert.alert(data?.msg || data?.error)
 
-        })
+            }).catch(error => {
+
+            })
+        }
     }
 
     const logOut = () => {
@@ -149,6 +151,26 @@ const CompleteProfile = () => {
         "saturday",
         "sunday"
     ]
+
+    const checkError = (data) => {
+        function validateData() {
+            for (let i = 0; i < data.length; i++) {
+                const item = data[i];
+                if (item === "consultationCharge" && userData?.[item] <= 300) {
+                    showToast(`consultation charge should be grater than 300`);
+                    return true // Break out of the loop and return false
+
+                }
+                if (!userData?.[item] || userData?.[item]?.length === 0) {
+                    showToast(`Please enter ${item}`);
+                    return true // Break out of the loop and return false
+                }
+            }
+            return false; // All items passed the validation
+        }
+     
+        return validateData();
+    }
 
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.WHITE, }} behavior={IS_ANDROID ? '' : 'padding'} enabled>
@@ -404,7 +426,16 @@ const CompleteProfile = () => {
                 {
                     index === 0 ?
                         <View style={{ alignItems: "center", marginBottom: Matrics.vs20 }}>
-                            <Pressable style={styles.buttonView} onPress={() => setIndex(1)}>
+                            <Pressable style={styles.buttonView} onPress={() => checkError([
+                                "profile_img",
+                                "username",
+                                "qualification",
+                                "profession",
+                                "yearExperience",
+                                "workExperience",
+                                "websiteUrl",
+                                "portfolio",
+                            ]) ? {} : setIndex(1)}>
                                 <Text style={styles.textStyle}>{"Next"}</Text>
                             </Pressable>
 
@@ -414,7 +445,14 @@ const CompleteProfile = () => {
                                 <Pressable style={styles.buttonView} onPress={() => setIndex(0)}>
                                     <Text style={styles.textStyle}>{"Back"}</Text>
                                 </Pressable>
-                                <Pressable style={[styles.buttonView, { backgroundColor: Colors.BLUE }]} onPress={() => onSubmit(1)}>
+                                <Pressable style={[styles.buttonView, { backgroundColor: Colors.BLUE }]} onPress={() => checkError([
+                                    "assist",
+                                    "expertise",
+                                    "socialChanels",
+                                    "consultationCharge",
+                                    "availability",
+                                    "time"
+                                ]) ? {} : onSubmit(1)}>
                                     <Text style={[styles.textStyle, { color: Colors.WHITE }]}>{"Submit"}</Text>
                                 </Pressable>
 
