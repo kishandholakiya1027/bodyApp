@@ -1,7 +1,7 @@
 import { KeyboardAvoidingView, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { Colors, Matrics } from '../../theme'
-import { IS_ANDROID, getRubikFont } from '../../core-utils/utils'
+import { IS_ANDROID, getRubikFont, showToast } from '../../core-utils/utils'
 import { initialWindowMetrics, useSafeAreaInsets } from 'react-native-safe-area-context'
 import Header from '../../core-component/atom/header'
 import TextComponent from '../../core-component/atom/TextComponent'
@@ -9,6 +9,7 @@ import moment from 'moment'
 import { useNavigation } from '@react-navigation/native'
 import BookingContext from '../../context/BookingContext'
 import CommonButton from '../../core-component/molecules/CommonButton'
+import UserParamContext from '../../context/setUserContext'
 
 const SlotScreen = () => {
     const [day, setDay] = useState(moment())
@@ -18,7 +19,7 @@ const SlotScreen = () => {
     const navigation = useNavigation()
     const { setBooking, booking } = useContext(BookingContext)
     const insets = useSafeAreaInsets();
-
+    const { user } = useContext(UserParamContext)
     useEffect(() => {
         setNoSlot(moment().format('a') === "pm" ? parseInt(moment().format("hmm")) + 300 > 600 ? true : false : false)
     }, [])
@@ -44,12 +45,17 @@ const SlotScreen = () => {
     ]
 
     const onSubmit = () => {
-        if (!day || !time) {
-            setError(true)
+        if (user?.role) {
+            showToast("Designer can not book consulation")
         } else {
-            setError(false)
-            setBooking({ ...booking, day, time })
-            navigation.navigate("CompleteBooking")
+
+            if (!day || !time) {
+                setError(true)
+            } else {
+                setError(false)
+                setBooking({ ...booking, day, time })
+                navigation.navigate("CompleteBooking")
+            }
         }
     }
     return (
@@ -123,7 +129,7 @@ const SlotScreen = () => {
                         </View>
                     </View>
                 </ScrollView>
-                <View style={{ marginHorizontal: Matrics.hs20,paddingBottom:insets?.bottom ? 0: Matrics.vs20 }}>
+                <View style={{ marginHorizontal: Matrics.hs20, paddingBottom: insets?.bottom ? 0 : Matrics.vs20 }}>
                     <CommonButton text="Book Consultation" onPress={() => onSubmit()} viewStyle={time && day ? { backgroundColor: Colors.BLUE } : {}} textStyle={time && day ? { color: Colors.WHITE } : {}} />
 
 

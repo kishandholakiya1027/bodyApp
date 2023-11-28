@@ -300,7 +300,7 @@ const Home = () => {
                                         data?.map(item =>
                                             <Pressable onPress={() => {
                                                 setFilter({ ...filter, assist: item?.title })
-                                                navigation.navigate("AllUsers", { homeFilter: { assist: filter?.assist } })
+                                                navigation.navigate("AllUsers", { homeFilter: { assist: item?.title } })
                                             }} style={{ marginRight: Matrics.vs15, width: insets?.bottom ? Matrics.vs85 : Matrics.vs100, justifyContent: "flex-start", marginTop: Matrics.vs10, }}>
                                                 <Image source={item?.image} style={{ width: Matrics.ms80, height: Matrics.ms80, borderRadius: Matrics.ms2, borderWidth: filter?.assist === item?.title ? 2 : 1, borderColor: Colors.MEDIUMRED, resizeMode: "contain", marginLeft: Matrics.vs10 }} />
                                                 {/* <ImagePlaceHolderComponent size={Matrics.ms90} borderRadius={Matrics.ms45} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => { }} image={item?.image} borderColor={filter === item?.title ? Colors.MEDIUMRED : Colors.MEDIUMREDOPACITY}  /> */}

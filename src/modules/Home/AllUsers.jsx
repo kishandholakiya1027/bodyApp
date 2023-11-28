@@ -79,6 +79,7 @@ function CheckBoxComponent({ open, setOpen, filter, setFilter, data, title, comp
 const AllUsers = (props) => {
     // const navigation = useNavigation()
 const homeFilter = props?.route?.params?.homeFilter
+    console.log("🚀 ~ file: AllUsers.jsx:82 ~ AllUsers ~ homeFilter:", homeFilter)
     const [search, setSearch] = useState()
     const [filterModal, setFilterModal] = useState(false)
     const [sortModal, setSortModal] = useState(false)
@@ -100,8 +101,8 @@ const homeFilter = props?.route?.params?.homeFilter
   
     useEffect(() => {
         if(homeFilter){
-            setSubmitFilter(true)
             setFilter(homeFilter)
+            setSubmitFilter(true)
 
         }
     }, [homeFilter])
@@ -210,7 +211,7 @@ const homeFilter = props?.route?.params?.homeFilter
                                 </View>
                             </View>
                             <View style={{ }}>
-                                <UsedataComponent userId={user?.id} search={search} userFilter={Object.keys(filter)?.length && submitFilter ? filter : ""} setSubmitFilter={setSubmitFilter} sort={sort} setCount={setCount}/>
+                                <UsedataComponent userId={user?.id} homeFilter={homeFilter} search={search} userFilter={Object.keys(filter)?.length && submitFilter ? filter : ""} setSubmitFilter={setSubmitFilter} sort={sort} setCount={setCount}/>
 
                             </View>
                         </View>

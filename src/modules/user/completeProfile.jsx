@@ -21,10 +21,11 @@ const CompleteProfile = () => {
     const [userData, setUserData] = useState({})
     const [open, setOpen] = useState(false)
     const [date, setDate] = useState()
-    console.log("🚀 ~ file: completeProfile.jsx:24 ~ CompleteProfile ~ date:", date)
+    const [loader, setLoader] = useState()
     const [openDate, setOpenDate] = useState(false)
     const [secondDate, setSecondDate] = useState()
     const [openExpertise, setOpenExpertise] = useState(false)
+    const [oldPortfolio, setOldPortfolio] = useState([])
 
     const [showlink, setShowLink] = useState(false)
     const [expertise, setExpertise] = useState()
@@ -35,13 +36,13 @@ const CompleteProfile = () => {
         getUserData()
     }, [])
 
-  
+
     const getUserData = async () => {
         if (user) {
             await axios.get(`${API_URL}designer/get_designer/${user?.id || user?._id}`).then(async ({ data }) => {
                 if (data?.status === 200) {
-                    setUserData({ ...data?.data, availability: data?.data?.availability || [] })
-
+                    setUserData({ ...data?.data, availability: data?.data?.availability || [], portfolio: [] })
+                    setOldPortfolio(data?.data?.portfolio)
                     setDate(data?.data?.time?.length ? !(data?.data?.time[0]?.split("-")[0]?.includes("Invalid date") || data?.data?.time[0]?.split("-")[0]?.includes("Invalid Date")) ? moment(data?.data?.time[0]?.split("-")[0], "HH:mm")._d : "" : "")
                     setSecondDate(data?.data?.time?.length ? !(data?.data?.time[0]?.split("-")[1]?.includes("Invalid date") || data?.data?.time[0]?.split("-")[1]?.includes("Invalid Date")) ? moment(data?.data?.time[0]?.split("-")[1], "HH:mm")._d : "" : "")
                     // setDate(data?.data?.time[0]?.split("-")[1])
@@ -81,11 +82,14 @@ const CompleteProfile = () => {
     ]
 
     const onSubmit = async () => {
-        if (!secondDate) {
-            showToast("Please enter max time")
+        if (!secondDate || !date) {
+            showToast("Please enter  time")
         } else {
-
+            setLoader(true)
             let updateUser = { ...userData, }
+            if (oldPortfolio?.length) {
+                updateUser.old_portfolio = oldPortfolio
+            }
             updateUser = { ...updateUser, expertise: Array.isArray(updateUser?.expertise) ? updateUser?.expertise : updateUser?.expertise?.split(",") }
             if (date && secondDate) {
                 updateUser = { ...updateUser, time: [`${moment(date).format("HH:mm")} - ${moment(secondDate).format("HH:mm")} `] }
@@ -97,23 +101,30 @@ const CompleteProfile = () => {
             delete updateUser["_id"]
             updateUser.complete = true
             let body = convertToformData(updateUser)
+            console.log("🚀 ~ file: completeProfile.jsx:105 ~ onSubmit ~ body:", body)
             await axios.put(`${API_URL}designer/edit_designer/${userData?.id || userData?._id}`, body, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
             }).then(async ({ data }) => {
+                console.log("🚀 ~ file: completeProfile.jsx:112 ~ onSubmit ~ data:", data)
                 if (data?.status === 200) {
                     setUser({ ...user, id: userData?.id || userData?._id, role: user?.role, complete: true })
 
                     await AsyncStorage.setItem("user", JSON.stringify({ ...user, id: userData?.id, role: user?.role, complete: true }))
-                    setTimeout(() => {
-                        navigation.navigate("MyProfile")
+                    setLoader(false)
 
-                    }, 1000);
+                    navigation.navigate("MyProfile")
+
+                } else {
+                    setLoader(false)
+
+                    Alert.alert(data?.msg || data?.error)
                 }
-                Alert.alert(data?.msg || data?.error)
 
             }).catch(error => {
+                setLoader(false)
+                console.log("🚀 ~ file: completeProfile.jsx:123 ~ onSubmit ~ error:", error)
 
             })
         }
@@ -168,7 +179,7 @@ const CompleteProfile = () => {
             }
             return false; // All items passed the validation
         }
-     
+
         return validateData();
     }
 
@@ -212,7 +223,7 @@ const CompleteProfile = () => {
 
                                 </View>
                                 <View style={{}}>
-                                    {userData?.portfolio?.length ?
+                                    {oldPortfolio?.length || userData?.portfolio?.length ?
                                         <View style={{}}>
                                             <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
                                                 {/* <ImagePlaceHolderComponent size={Matrics.ms80} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => setUserData({ ...userData, portfolio: image })} image={`${IMAGE_URL}${""}`} borderColor={Colors.BLUE} />
@@ -220,8 +231,8 @@ const CompleteProfile = () => {
                                                 <ImagePlaceHolderComponent size={Matrics.ms80} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => setUserData({ ...userData, portfolio: image })} image={`${IMAGE_URL}${""}`} borderColor={Colors.BLUE} />
                                                 <ImagePlaceHolderComponent size={Matrics.ms80} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => setUserData({ ...userData, portfolio: image })} image={`${IMAGE_URL}${""}`} borderColor={Colors.BLUE} /> */}
 
-                                                {userData?.portfolio?.length ?
-                                                    userData?.portfolio?.map(item =>
+                                                {oldPortfolio?.length || userData?.portfolio?.length ?
+                                                    [...oldPortfolio||[], ...userData?.portfolio||[]]?.map(item =>
                                                         <View style={{ marginRight: Matrics.vs15 }}>
                                                             <ImagePlaceHolderComponent disabled={true} size={Matrics.ms80} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs10} setImage={(image) => setUserData({ ...userData, portfolio: image })} image={item?.uri || `${IMAGE_URL}${item?.uri || item}`} borderColor={Colors.BLUE} />
                                                         </View>
@@ -229,6 +240,10 @@ const CompleteProfile = () => {
 
                                                     ) : null}
 
+                                            </View>
+                                            <View style={{ position: "relative", justifyContent: "center", alignItems: "flex-start" }}>
+
+                                                <ImagePlaceHolderComponent plus={true} multiple={true} size={Matrics.ms60} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs15} setImage={(image) => setUserData({ ...userData, portfolio: [...userData?.portfolio||[], ...image] })} image={`ss`} borderColor={Colors.BLUE} />
                                             </View>
                                             <Pressable onPress={() => setUserData({ ...userData, portfolio: "" })}>
 
@@ -250,6 +265,7 @@ const CompleteProfile = () => {
                                             </View>
 
                                         </View>}
+
                                 </View>
 
 
@@ -445,13 +461,12 @@ const CompleteProfile = () => {
                                 <Pressable style={styles.buttonView} onPress={() => setIndex(0)}>
                                     <Text style={styles.textStyle}>{"Back"}</Text>
                                 </Pressable>
-                                <Pressable style={[styles.buttonView, { backgroundColor: Colors.BLUE }]} onPress={() => checkError([
+                                <Pressable style={[styles.buttonView, { backgroundColor: Colors.BLUE ,opacity:loader? 0.7:1}]} disabled={loader} onPress={() => checkError([
                                     "assist",
                                     "expertise",
                                     "socialChanels",
                                     "consultationCharge",
                                     "availability",
-                                    "time"
                                 ]) ? {} : onSubmit(1)}>
                                     <Text style={[styles.textStyle, { color: Colors.WHITE }]}>{"Submit"}</Text>
                                 </Pressable>

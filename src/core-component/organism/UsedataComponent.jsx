@@ -18,13 +18,15 @@ import UserProfileComponent from './UserProfileComponent'
 
 
 
-const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmitFilter = () => { }, sort,setCount=()=>{} }) => {
+const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmitFilter = () => { }, sort, setCount = () => { }, homeFilter }) => {
+    console.log("🚀 ~ file: UsedataComponent.jsx:22 ~ UsedataComponent ~ homeFilter:", homeFilter)
     const [loginUser, setLoginUser] = useState()
     const [likedUser, setLikedUsers] = useState([])
     const [users, setUsers] = useState([])
     console.log("🚀 ~ file: UsedataComponent.jsx:25 ~ UsedataComponent ~ users:", users)
     const [allUsers, setAllUsers] = useState([])
     const [loader, setLoader] = useState(false)
+    console.log("🚀 ~ file: UsedataComponent.jsx:29 ~ UsedataComponent ~ loader:", loader)
     const navigation = useNavigation()
     const { user } = useContext(UserParamContext)
     const { setBooking } = useContext(BookingContext)
@@ -32,6 +34,7 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
 
     useFocusEffect(useCallback(
         () => {
+
             getData()
 
         },
@@ -45,8 +48,8 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
 
 
     useEffect(() => {
-       if(users?.length)
-        setCount(users?.length)
+        if (users?.length)
+            setCount(users?.length)
     }, [users])
 
 
@@ -56,6 +59,7 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
         setSubmitFilter(false)
         if (userFilter) {
             let filter = { ...userFilter }
+            console.log("🚀 ~ file: UsedataComponent.jsx:59 ~ onFilter ~ filter:", filter)
             if (filter?.consultationCharge) {
                 filter.consultationCharge = [filter.consultationCharge?.from, filter.consultationCharge?.to]
             }
@@ -65,15 +69,15 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
                 }
             }).then(({ data }) => {
                 if (data?.status === 200) {
-                    setTimeout(() => {
-
-                        setUsers(data?.data)
-                    }, 1000);
+                    setUsers(data?.data)
 
                 } else {
                     Alert.alert("something went wrong")
                 }
-                setLoader(false)
+                setTimeout(() => {
+
+                    setLoader(false)
+                }, 1000);
 
             }).catch(err => {
                 setLoader(false)
@@ -82,8 +86,11 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
             })
         }
         else {
-            setUsers(!userFilter ? allUsers : users)
-            setLoader(false)
+            // setTimeout(() => {
+            //     !homeFilter ? allUsers?.length ? setUsers(allUsers) : null : null
+            //     setLoader(false)
+
+            // }, 1000);
 
         }
     }
@@ -91,7 +98,7 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
 
 
     const getData = async () => {
-        if (!userFilter)
+        if (!homeFilter || !userFilter)
             getUser()
         const user = JSON.parse(await AsyncStorage.getItem("user"))
         if (user)
@@ -108,10 +115,14 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
         setLoader(true)
 
         await axios.get(`${API_URL}designer/get_designer_rating`).then(({ data }) => {
+            !homeFilter ? setUsers(data?.data) : null
             setLoader(false)
-            !userFilter ? setUsers(data?.data) : null
+            setTimeout(() => {
+
+            }, 300);
             setAllUsers(data?.data)
         }).catch(err => {
+            console.log("🚀 ~ file: UsedataComponent.jsx:115 ~ awaitaxios.get ~ err:", err)
             setLoader(false)
 
 
@@ -119,8 +130,8 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
     }
 
 
-let data = users.filter(usr => (usr?._id !== (user?._id||user?._id)))?.slice(0, slice)
-console.log("🚀 ~ file: UsedataComponent.jsx:123 ~ UsedataComponent ~ data:", data)
+    let data = users.filter(usr => (usr?._id !== (user?._id || user?.id)))?.slice(0, slice)
+    console.log("🚀 ~ file: UsedataComponent.jsx:123 ~ UsedataComponent ~ data:", data)
 
     return (
         <>
@@ -188,9 +199,9 @@ console.log("🚀 ~ file: UsedataComponent.jsx:123 ~ UsedataComponent ~ data:", 
                             )
                         }}
                     />} */}
-                    {data?.length ? data?.map(item=>{
-                        return  (
-                            userId !== item?._id ? <View style={{ marginTop: Matrics.vs10, paddingBottom: Matrics.vs20, flex: 1 }}>
+                    {data?.length ? data?.map(item => {
+                        return (
+                            <View style={{ marginTop: Matrics.vs10, paddingBottom: Matrics.vs20, flex: 1 }}>
                                 <UserProfileComponent item={item} userId={userId} />
                                 <View style={{ flexDirection: "row" }}>
                                     <View style={{ flex: 0.48, alignItems: "center", marginRight: Matrics.hs10 }}>
@@ -198,13 +209,13 @@ console.log("🚀 ~ file: UsedataComponent.jsx:123 ~ UsedataComponent ~ data:", 
                                         <View style={{ marginTop: Matrics.vs10 }}>
                                             <Pressable style={[styles.buttonView, { paddingHorizontal: Matrics.hs3, width: "100%" }]} onPress={() => {
                                                 {
-                                                    !(user?.id ||user?._id) ? Alert.alert("Please sign in to explore!",
+                                                    !(user?.id || user?._id) ? Alert.alert("Please sign in to explore!",
                                                         '', [
 
-                                                        { text: 'OK', onPress: () => {} },
+                                                        { text: 'OK', onPress: () => { } },
                                                     ]) : null
                                                 }
-                                                (user?.id ||user?._id) ? navigation.navigate("LeaveMessage", { item }) : ""
+                                                (user?.id || user?._id) ? navigation.navigate("LeaveMessage", { item }) : ""
                                             }}>
                                                 <Text style={styles.textStyle}>{"Leave a Message"}</Text>
                                             </Pressable>
@@ -216,13 +227,13 @@ console.log("🚀 ~ file: UsedataComponent.jsx:123 ~ UsedataComponent ~ data:", 
                                             <Pressable style={[styles.buttonView, { paddingHorizontal: Matrics.hs3 }]} onPress={() => {
                                                 setBooking(item)
                                                 {
-                                                    !(user?.id ||user?._id) ? Alert.alert("Please sign in to explore!",
+                                                    !(user?.id || user?._id) ? Alert.alert("Please sign in to explore!",
                                                         '', [
 
-                                                        { text: 'OK', onPress: () => {} },
+                                                        { text: 'OK', onPress: () => { } },
                                                     ]) : null
                                                 }
-                                                (user?.id ||user?._id) ? navigation.navigate("SlotScreen") : ""
+                                                (user?.id || user?._id) ? navigation.navigate("SlotScreen") : ""
                                             }}>
                                                 <Text style={styles.textStyle}>{"Book Consultation"}</Text>
                                             </Pressable>
@@ -232,12 +243,12 @@ console.log("🚀 ~ file: UsedataComponent.jsx:123 ~ UsedataComponent ~ data:", 
                                     </View>
                                 </View>
 
-                            </View> : null
+                            </View>
 
                         )
-                    }): <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                    <Text style={{ fontFamily: getRubikFont("Regular"), fontSize: Matrics.ms18, color: Colors.DARKGRAY }}>No users.</Text>
-                </View>}
+                    }) : !loader ? <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                        <Text style={{ fontFamily: getRubikFont("Regular"), fontSize: Matrics.ms18, color: Colors.DARKGRAY }}>No users.</Text>
+                    </View> : null}
                 </>}
             </View>
         </>

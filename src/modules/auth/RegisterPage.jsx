@@ -75,11 +75,11 @@ const RegisterPage = (props) => {
                 }
             }).then(({ data }) => {
                 if (data?.status === 200) {
-                    Alert.alert(data?.msg[0])
+                    // Alert.alert(data?.msg[0])
 
 
                 } else {
-                    Alert.alert(data?.msg[0])
+                    Alert.alert(data?.msg[0]||data?.error)
                 }
 
             }).catch(err => {

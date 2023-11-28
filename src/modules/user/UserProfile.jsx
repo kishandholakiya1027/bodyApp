@@ -22,11 +22,11 @@ const { width, height } = Dimensions.get('window');
 
 const UserProfile = () => {
     const [index, setIndex] = useState(0)
+    const [loader, setLoader] = useState()
+
     const [userData, setUserData] = useState({})
-    console.log("🚀 ~ file: UserProfile.jsx:26 ~ UserProfile ~ userData:", userData)
     const navigation = useNavigation()
-    const { user,setUser } = useContext(UserParamContext)
-    console.log("🚀 ~ file: UserProfile.jsx:28 ~ UserProfile ~ user:", user)
+    const { user, setUser } = useContext(UserParamContext)
 
     useFocusEffect(
         useCallback(() => {
@@ -37,14 +37,14 @@ const UserProfile = () => {
 
     const getUserData = async () => {
         if (user) {
-            let url =  "user/get_user/"
+            let url = "user/get_user/"
             await axios.get(`${API_URL}${url}${user?.id || user?._id}`).then(async ({ data }) => {
                 if (data?.status === 200) {
-                 
-                 
+
+
                     setUserData(data?.data)
-                await AsyncStorage.setItem("user", JSON.stringify({ ...data?.data, role: user?.role }))
-                // setDate(data?.data?.time[0]?.split("-")[1])
+                    await AsyncStorage.setItem("user", JSON.stringify({ ...data?.data, role: user?.role }))
+                    // setDate(data?.data?.time[0]?.split("-")[1])
                 } else {
                     Alert.alert(data?.msg)
                 }
@@ -61,18 +61,18 @@ const UserProfile = () => {
     ]
 
     const usersData = [
-         "profile_img", 
-         "username", 
-         "age", 
-         "gender", 
-         "body_type", 
-         "face_type", 
-         "complexion", 
-         "hair_length", 
-         "height", 
-         "bust_size", 
-         "waist_size", 
-         "hip_size", 
+        "profile_img",
+        "username",
+        "age",
+        "gender",
+        "body_type",
+        "face_type",
+        "complexion",
+        "hair_length",
+        "height",
+        "bust_size",
+        "waist_size",
+        "hip_size",
     ]
 
     const hightFeet = [
@@ -156,53 +156,58 @@ const UserProfile = () => {
         { label: "45", value: "45" },
     ]
 
-    const onProfileUpdate= async()=>{
-        let usr = {...userData}
+    const onProfileUpdate = async () => {
+        setLoader(true)
+        let usr = { ...userData }
         console.log("🚀 ~ file: UserProfile.jsx:161 ~ onProfileUpdate ~ usr:", usr)
         delete usr["_id"]
         delete usr["__v"]
 
-            // if(usr)
-            if(!usr?.new){
-                delete usr["profile_img"]
+        // if(usr)
+        if (!usr?.new) {
+            delete usr["profile_img"]
+        }
+        usr.complete = true
+        let body = convertToformData(usr)
+        console.log("🚀 ~ file: UserProfile.jsx:168 ~ onProfileUpdate ~ `${API_URL}user/edit_user/${userData?.id || userData?._id}`:", `${API_URL}user/edit_user/${userData?.id || userData?._id}`)
+        await axios.put(`${API_URL}user/edit_user/${userData?.id || userData?._id}`, body, {
+            headers: {
+                "Content-Type": "multipart/form-data"
             }
-            usr.complete = true
-            let body = convertToformData(usr)
-            console.log("🚀 ~ file: UserProfile.jsx:168 ~ onProfileUpdate ~ `${API_URL}user/edit_user/${userData?.id || userData?._id}`:", `${API_URL}user/edit_user/${userData?.id || userData?._id}`)
-            await axios.put(`${API_URL}user/edit_user/${userData?.id || userData?._id}`, body, {
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                }
-            }).then(async ({ data }) => {
-                if (data?.status === 200) {
-                    setUser({ ...user, id: userData?.id||userData?._id, role: user?.role ,complete:true})
-                    await AsyncStorage.setItem("user", JSON.stringify({ ...user, id: userData?.id, role: user?.role ,complete:true}))
-                    setTimeout(() => {
-                        navigation.navigate("MyProfile")
-    
-                    }, 1000);
-                }
+        }).then(async ({ data }) => {
+            if (data?.status === 200) {
+                setUser({ ...user, id: userData?.id || userData?._id, role: user?.role, complete: true })
+                await AsyncStorage.setItem("user", JSON.stringify({ ...user, id: userData?.id, role: user?.role, complete: true }))
+                setLoader(false)
+                navigation.navigate("MyProfile")
+
+            } else {
+                setLoader(false)
+
                 Alert.alert(data?.msg || data?.error)
-    
-            }).catch(error => {
-                console.log("🚀 ~ file: completeProfile.jsx:38 ~ onSubmit ~ error:", error)
-    
-    
-            })
+
+            }
+
+        }).catch(error => {
+            setLoader(false)
+
+
+
+        })
 
     }
-    const checkError = (data)=>{
+    const checkError = (data) => {
         function validateData() {
-        for (let i = 0; i < data.length; i++) {
-            const item = data[i];
-            if (!userData?.[item] || userData?.[item]?.length === 0) {
-                showToast(`Please enter ${item}`);
-                return true; // Break out of the loop and return false
+            for (let i = 0; i < data.length; i++) {
+                const item = data[i];
+                if (!userData?.[item] || userData?.[item]?.length === 0) {
+                    showToast(`Please enter ${item}`);
+                    return true; // Break out of the loop and return false
+                }
             }
+            return false;
         }
-        return false;
-    }
-      
+
         return validateData();
     }
 
@@ -211,7 +216,7 @@ const UserProfile = () => {
             <SafeAreaView style={{ flex: 1, backgroundColor: Colors.WHITE }}>
                 <StatusBar barStyle="dark-content" backgroundColor="transparent" />
                 {index !== 5 ? <View style={{ borderBottomWidth: 2, borderColor: Colors.BACKGROUNDGRAY }}>
-                    <Header text={"Complete Profile"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => index === 0 ?  navigation.goBack():setIndex(index === 1 ? 0 : index === 2 ? 1 : index === 3 ? 2 : index === 4 ? 3 : 0)} />
+                    <Header text={"Complete Profile"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => index === 0 ? navigation.goBack() : setIndex(index === 1 ? 0 : index === 2 ? 1 : index === 3 ? 2 : index === 4 ? 3 : 0)} />
 
                 </View> : null}
 
@@ -233,7 +238,7 @@ const UserProfile = () => {
                         <View style={{ paddingHorizontal: Matrics.hs20, flex: 1 }}>
                             {index === 0 ? <View>
                                 <View >
-                                    <ImagePlaceHolderComponent padding={Matrics.hs20} marginVertical={Matrics.vs0} setImage={(image) => setUserData({ ...userData, profile_img: image,new:true })} image={userData?.profile_img ? userData?.profile_img?.uri || `${IMAGE_URL}${userData?.profile_img}` : ""} />
+                                    <ImagePlaceHolderComponent padding={Matrics.hs20} marginVertical={Matrics.vs0} setImage={(image) => setUserData({ ...userData, profile_img: image, new: true })} image={userData?.profile_img ? userData?.profile_img?.uri || `${IMAGE_URL}${userData?.profile_img}` : ""} />
                                     <View style={{ marginTop: Matrics.vs30 }}>
                                         <TextInputComponent placeholder={"Username"} onChangeText={(text) => setUserData({ ...userData, username: text })} value={userData?.username} />
                                     </View>
@@ -252,16 +257,16 @@ const UserProfile = () => {
                                         <Text style={styles.bodyTypeTextStyle}>Select your body type</Text>
                                     </View>
                                     <View style={{ flexDirection: "column" }}>
-                                        <View style={{ flexDirection: "row", marginVertical: Matrics.vs15,justifyContent:"space-between" }}>
-                                            <View style={{flex:0.33,   marginHorizontal: Matrics.hs10,justifyContent:"center" }}>
+                                        <View style={{ flexDirection: "row", marginVertical: Matrics.vs15, justifyContent: "space-between" }}>
+                                            <View style={{ flex: 0.33, marginHorizontal: Matrics.hs10, justifyContent: "center" }}>
                                                 <BoxComponent image={Images.hourglass} width={Matrics.hs75} height={Matrics.vs173} type={"hour-glass"} onPress={(type) => setUserData({ ...userData, body_type: type })} value={userData?.body_type} />
 
                                             </View>
-                                            <View style={{flex:0.33,  marginHorizontal: Matrics.hs10 }}>
+                                            <View style={{ flex: 0.33, marginHorizontal: Matrics.hs10 }}>
                                                 <BoxComponent image={Images.triangle} width={Matrics.hs75} height={Matrics.vs173} type={"triangle"} onPress={(type) => setUserData({ ...userData, body_type: type })} value={userData?.body_type} />
 
                                             </View>
-                                            <View style={{flex:0.33,  marginHorizontal: Matrics.hs10 }}>
+                                            <View style={{ flex: 0.33, marginHorizontal: Matrics.hs10 }}>
                                                 <BoxComponent image={Images.rectangle} width={Matrics.hs75} height={Matrics.vs173} type={"rectangle"} onPress={(type) => setUserData({ ...userData, body_type: type })} value={userData?.body_type} />
 
                                             </View>
@@ -388,21 +393,21 @@ const UserProfile = () => {
 
 
                                         </View> : index === 4 ?
-                                            <View style={{  }}>
+                                            <View style={{}}>
                                                 <View>
                                                     <Text style={styles.bodyTypeTextStyle}>Select your hair length</Text>
                                                 </View>
                                                 <View style={{ flexDirection: "column" }}>
-                                                    <View style={{ flexDirection: "row", marginVertical: Matrics.vs15 ,justifyContent:"space-between"}}>
-                                                        <View style={{ flex: 0.33,marginHorizontal:Matrics.hs10 }}>
+                                                    <View style={{ flexDirection: "row", marginVertical: Matrics.vs15, justifyContent: "space-between" }}>
+                                                        <View style={{ flex: 0.33, marginHorizontal: Matrics.hs10 }}>
                                                             <BoxComponent image={Images.longhair} width={(width - 135) / 3} height={Matrics.vs110} type={"long"} onPress={(type) => setUserData({ ...userData, hair_length: type })} value={userData?.hair_length} />
 
                                                         </View>
-                                                        <View style={{ flex: 0.33,marginHorizontal:Matrics.vs10, }}>
+                                                        <View style={{ flex: 0.33, marginHorizontal: Matrics.vs10, }}>
                                                             <BoxComponent image={Images.shorthair} width={(width - 135) / 3} height={Matrics.vs110} type={"short"} onPress={(type) => setUserData({ ...userData, hair_length: type })} value={userData?.hair_length} />
 
                                                         </View>
-                                                        <View style={{ flex: 0.33,marginHorizontal:Matrics.vs10 }}>
+                                                        <View style={{ flex: 0.33, marginHorizontal: Matrics.vs10 }}>
                                                             <BoxComponent image={Images.mediumhair} width={(width - 135) / 3} height={Matrics.vs110} type={"medium"} onPress={(type) => setUserData({ ...userData, hair_length: type })} value={userData?.hair_length} />
 
                                                         </View>
@@ -519,55 +524,56 @@ const UserProfile = () => {
                 <View style={{ marginHorizontal: Matrics.hs20, paddingVertical: Matrics.vs15 }}>
                     {index === 0 ? <View style={{ alignItems: "center", justifyContent: "center" }}>
                         <CommonButton viewStyle={{ width: "50%" }} text="Next" onPress={() => {
-                           return checkError([
-                               "profile_img", 
-                               "username", 
-                               "age", 
-                               "gender",
-                            ]) ?{}:  setIndex(1)}} />
+                            return checkError([
+                                "profile_img",
+                                "username",
+                                "age",
+                                "gender",
+                            ]) ? {} : setIndex(1)
+                        }} />
                     </View> : index === 1 ?
                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                            <View style={{flex:0.47}}>
-                            <CommonButton text="Back" onPress={() => setIndex(0)} />
-                                </View>
-                                <View style={{flex:0.47}}>
-                            <CommonButton text="Next" viewStyle={{backgroundColor:Colors.BLUE}} textStyle={{color:Colors.WHITE}} onPress={() => checkError([
-                            "body_type"]) ?{}:  setIndex(2)} />
-                                    </View>
+                            <View style={{ flex: 0.47 }}>
+                                <CommonButton text="Back" onPress={() => setIndex(0)} />
+                            </View>
+                            <View style={{ flex: 0.47 }}>
+                                <CommonButton text="Next" viewStyle={{ backgroundColor: Colors.BLUE }} textStyle={{ color: Colors.WHITE }} onPress={() => checkError([
+                                    "body_type"]) ? {} : setIndex(2)} />
+                            </View>
                         </View> : index === 2 ?
                             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                            <View style={{flex:0.47}}>
+                                <View style={{ flex: 0.47 }}>
 
-                                <CommonButton text="Back" onPress={() => setIndex(1)} />
+                                    <CommonButton text="Back" onPress={() => setIndex(1)} />
                                 </View>
-                                <View style={{flex:0.47}}>
-                                <CommonButton text="Next"  viewStyle={{backgroundColor:Colors.BLUE}} textStyle={{color:Colors.WHITE}} onPress={() =>checkError([
-                            "face_type"]) ?{}:   setIndex(3)} />
+                                <View style={{ flex: 0.47 }}>
+                                    <CommonButton text="Next" viewStyle={{ backgroundColor: Colors.BLUE }} textStyle={{ color: Colors.WHITE }} onPress={() => checkError([
+                                        "face_type"]) ? {} : setIndex(3)} />
                                 </View>
 
                             </View> : index === 3 ? <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                            <View style={{flex:0.47}}>
-                                <CommonButton text="Back" onPress={() => setIndex(2)} />
+                                <View style={{ flex: 0.47 }}>
+                                    <CommonButton text="Back" onPress={() => setIndex(2)} />
                                 </View>
-                                <View style={{flex:0.47}}>
-                                <CommonButton text="Next" viewStyle={{backgroundColor:Colors.BLUE}} textStyle={{color:Colors.WHITE}} onPress={() => checkError([
-                            "complexion"]) ?{}:setIndex(4)} />
+                                <View style={{ flex: 0.47 }}>
+                                    <CommonButton text="Next" viewStyle={{ backgroundColor: Colors.BLUE }} textStyle={{ color: Colors.WHITE }} onPress={() => checkError([
+                                        "complexion"]) ? {} : setIndex(4)} />
                                 </View>
 
                             </View> : index === 4 ? <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                            <View style={{flex:0.47}}>
-                                <CommonButton text="Back" onPress={() => setIndex(3)} />
+                                <View style={{ flex: 0.47 }}>
+                                    <CommonButton text="Back" onPress={() => setIndex(3)} />
                                 </View>
-                                <View style={{flex:0.47}}>
-                                <CommonButton text="Next" viewStyle={{backgroundColor:Colors.BLUE}} textStyle={{color:Colors.WHITE}} onPress={() => checkError([
-                                    "hair_length",
-                                    "height", 
-                                    "bust_size", 
-                                    "waist_size", 
-                                   "hip_size",
-             ]) ?{}:
-                     
-         onProfileUpdate()} />
+                                <View style={{ flex: 0.47 }}>
+                                    <CommonButton text="Next"  disabled={loader} viewStyle={{ backgroundColor: Colors.BLUE,opacity:loader?0.7:1 }} textStyle={{ color: Colors.WHITE }} onPress={() => checkError([
+                                        "hair_length",
+                                        "height",
+                                        "bust_size",
+                                        "waist_size",
+                                        "hip_size",
+                                    ]) ? {} :
+
+                                        onProfileUpdate()} />
                                 </View>
 
                             </View> : index === 5 ?
