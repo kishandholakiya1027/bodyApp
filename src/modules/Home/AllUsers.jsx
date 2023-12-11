@@ -79,7 +79,6 @@ function CheckBoxComponent({ open, setOpen, filter, setFilter, data, title, comp
 const AllUsers = (props) => {
     // const navigation = useNavigation()
 const homeFilter = props?.route?.params?.homeFilter
-    console.log("🚀 ~ file: AllUsers.jsx:82 ~ AllUsers ~ homeFilter:", homeFilter)
     const [search, setSearch] = useState()
     const [filterModal, setFilterModal] = useState(false)
     const [sortModal, setSortModal] = useState(false)
@@ -88,6 +87,8 @@ const homeFilter = props?.route?.params?.homeFilter
     const [openRating, setOpenRating] = useState(true)
     const [openFees, setOpenFees] = useState(true)
     const [filter, setFilter] = useState({})
+    const [defaultFilter, setDefaultFilter] = useState({})
+    console.log("🚀 ~ file: AllUsers.jsx:90 ~ AllUsers ~ filter:", filter)
     const [sort, setSort] = useState()
     const {user} = useContext(UserParamContext)
     const [submitSort, setSubmitSort] = useState()
@@ -102,18 +103,17 @@ const homeFilter = props?.route?.params?.homeFilter
     useEffect(() => {
         if(homeFilter){
             setFilter(homeFilter)
+            setDefaultFilter(homeFilter)
             setSubmitFilter(true)
 
         }
     }, [homeFilter])
-    // useEffect(() => {
-    //     if (submitFilter) {
-    //         setTimeout(() => {
-    //             setSubmitFilter(false)
 
-    //         }, 1000)
-    //     }
-    // }, [submitFilter])
+    useEffect(() => {
+        setSubmitFilter(true)
+
+            
+    }, [])
 
     const professions = [
         { label: "Fashion Designer", value: "Fashion Designer" },
@@ -186,7 +186,7 @@ const homeFilter = props?.route?.params?.homeFilter
                         <View style={{ margin: Matrics.ms20, paddingBottom:30 }}>
                             <TextInputComponent placeholder={"Search for designers, stylists or trends"} onChangeText={(text) =>{ 
                                 setTimeout(() => {
-                                    
+                                    setDefaultFilter(filter)
                                     setSubmitFilter(true)
                                 }, 3000);
                                 setFilter({...filter,search:text})}} value={search} />
@@ -202,7 +202,9 @@ const homeFilter = props?.route?.params?.homeFilter
                                 </View>
                                 <View style={{ flex: 0.52, }}>
                                     <View style={{}}>
-                                        <Pressable style={[styles.buttonView, { paddingHorizontal: Matrics.hs5 }]} onPress={() => setFilterModal(true)}>
+                                        <Pressable style={[styles.buttonView, { paddingHorizontal: Matrics.hs5 }]} onPress={() => {
+                                            setFilter(defaultFilter)
+                                            setFilterModal(true)}}>
                                             <Text style={styles.textStyle}>{"Filter"}</Text>
                                         </Pressable>
 
@@ -211,7 +213,7 @@ const homeFilter = props?.route?.params?.homeFilter
                                 </View>
                             </View>
                             <View style={{ }}>
-                                <UsedataComponent userId={user?.id} homeFilter={homeFilter} search={search} userFilter={Object.keys(filter)?.length && submitFilter ? filter : ""} setSubmitFilter={setSubmitFilter} sort={sort} setCount={setCount}/>
+                             <UsedataComponent  userId={user?.id||user?._id} homeFilter={homeFilter} search={search} userFilter={Object.keys(defaultFilter)?.length && submitFilter ? defaultFilter :submitFilter ? "null": ""} setSubmitFilter={setSubmitFilter} sort={sort} setCount={setCount}/>
 
                             </View>
                         </View>
@@ -230,7 +232,9 @@ const homeFilter = props?.route?.params?.homeFilter
                                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", height: Matrics.ms50, marginRight: Matrics.vs20 }}>
                                     <TextComponent fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0}>{"Filter Profiles"}</TextComponent>
 
-                                    <Pressable onPress={() => setFilterModal(false)}>
+                                    <Pressable onPress={() => {setFilterModal(false)
+                                    setFilter({})
+                                    }}>
                                         <Image source={Images.close} style={{ width: Matrics.ms18, height: Matrics.ms18, tintColor: Colors.LIGHTBLACK }} />
                                     </Pressable>
                                 </View>
@@ -257,6 +261,8 @@ const homeFilter = props?.route?.params?.homeFilter
                                     <View style={{}}>
                                         <Pressable style={[styles.buttonView, { paddingHorizontal: Matrics.hs10 }]} onPress={() => {
                                             setFilter({})
+                                            setDefaultFilter({})
+                                            setSubmitFilter(true)
                                             setFilterModal(false)
                                         }}>
                                             <Text style={styles.textStyle}>{"Clear"}</Text>
@@ -267,6 +273,7 @@ const homeFilter = props?.route?.params?.homeFilter
                                 <View style={{ flex: 0.52, }}>
                                     <View style={{}}>
                                         <Pressable style={[styles.buttonView, { paddingHorizontal: Matrics.hs5, backgroundColor: Colors.BLUE }]} onPress={() => {
+                                            setDefaultFilter(filter)
                                             setSubmitFilter(true)
                                             setFilterModal(false)
                                         }}>
@@ -304,6 +311,7 @@ const homeFilter = props?.route?.params?.homeFilter
                                     return (
                                         <Pressable onPress={() => {
                                             setFilter({...filter,sort:item?.value})
+                                            setDefaultFilter({...filter,sort:item?.value})
                                             setSubmitFilter(true)
                                             setSortModal(false)
                                         }}>

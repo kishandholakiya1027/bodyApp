@@ -1,6 +1,6 @@
 import { Alert, Button, Image, KeyboardAvoidingView, PermissionsAndroid, Platform, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
-import { IS_ANDROID, getRobotoFont, getRubikFont } from '../../core-utils/utils'
+import { IS_ANDROID, getRobotoFont, getRubikFont, showToast } from '../../core-utils/utils'
 import { Colors, Images, Matrics } from '../../theme'
 import TextInputComponent from '../../core-component/atom/TextInputComponent'
 
@@ -75,17 +75,15 @@ const RegisterPage = (props) => {
                 }
             }).then(({ data }) => {
                 if (data?.status === 200) {
-                    // Alert.alert(data?.msg[0])
 
 
                 } else {
-                    Alert.alert(data?.msg[0]||data?.error)
+                    showToast(data?.msg?.[0]||data?.error)
                 }
 
             }).catch(err => {
                 console.log("🚀 ~ file: RegisterPage.jsx:76 ~ onSubmit ~ err:", err)
-                Alert.alert(err?.message)
-                // Alert.alert(err)
+                showToast(err?.message)
 
 
             })

@@ -1,7 +1,7 @@
 import { Alert, FlatList, KeyboardAvoidingView, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { Colors, Matrics } from '../../theme'
-import { IS_ANDROID, getRubikFont } from '../../core-utils/utils'
+import { IS_ANDROID, getRubikFont, showToast } from '../../core-utils/utils'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import Header from '../../core-component/atom/header'
 import TextComponent from '../../core-component/atom/TextComponent'
@@ -42,7 +42,7 @@ const ListMessages = () => {
               
             setMsgs(data?.data)
             } else {
-                Alert.alert(data?.msg)
+                showToast(data?.msg)
             }
         }).catch(err => {
             console.log("🚀 ~ file: ProfileDetails.jsx:43 ~ awaitaxios.get ~ err:", err)

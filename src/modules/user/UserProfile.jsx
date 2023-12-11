@@ -46,7 +46,7 @@ const UserProfile = () => {
                     await AsyncStorage.setItem("user", JSON.stringify({ ...data?.data, role: user?.role }))
                     // setDate(data?.data?.time[0]?.split("-")[1])
                 } else {
-                    Alert.alert(data?.msg)
+                    showToast(data?.msg)
                 }
             }).catch(err => {
                 console.log("🚀 ~ file: MyProfile.jsx:43 ~ awaitaxios.get ~ err:", err)
@@ -184,7 +184,7 @@ const UserProfile = () => {
             } else {
                 setLoader(false)
 
-                Alert.alert(data?.msg || data?.error)
+                showToast(data?.msg || data?.error)
 
             }
 

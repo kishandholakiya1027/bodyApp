@@ -2,7 +2,7 @@ import { Alert, FlatList, Image, KeyboardAvoidingView, Linking, Pressable, SafeA
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Header from '../../core-component/atom/header'
 import { Colors, Images, Matrics } from '../../theme'
-import { IS_ANDROID, getRubikFont } from '../../core-utils/utils'
+import { IS_ANDROID, getRubikFont, showToast } from '../../core-utils/utils'
 import TextComponent from '../../core-component/atom/TextComponent'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import ImagePlaceHolderComponent from '../../core-component/atom/imagePlaceHolderComponent'
@@ -53,7 +53,7 @@ const MyProfile = () => {
                     await AsyncStorage.setItem("user", JSON.stringify({ ...data?.data, role: user?.role }))
                     // setDate(data?.data?.time[0]?.split("-")[1])
                 } else {
-                    Alert.alert(data?.msg)
+                    showToast(data?.msg)
                 }
             }).catch(err => {
                 console.log("🚀 ~ file: MyProfile.jsx:43 ~ awaitaxios.get ~ err:", err)
@@ -142,7 +142,10 @@ const MyProfile = () => {
                             </View>
                             <View style={{ borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY, paddingBottom: Matrics.vs30, marginTop: Matrics.vs20, justifyContent: "flex-start", alignItems: "flex-start" }}>
                                 <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.CRAYON} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{"Portfolio"}</TextComponent>
+                                <Pressable onPress={()=> Linking.openURL(userData?.websiteUrl)}>
                                 <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{userData?.websiteUrl}</TextComponent>
+
+                                </Pressable>
                                 <View style={{ marginTop: Matrics.vs10, flexDirection: "row", flexWrap: "wrap" }}>
                                     {userData?.portfolio ?
                                         userData?.portfolio?.map(item =>

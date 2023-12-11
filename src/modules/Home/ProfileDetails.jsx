@@ -2,7 +2,7 @@ import { Alert, FlatList, Image, KeyboardAvoidingView, Linking, Pressable, SafeA
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Header from '../../core-component/atom/header'
 import { Colors, Images, Matrics } from '../../theme'
-import { IS_ANDROID, getRubikFont } from '../../core-utils/utils'
+import { IS_ANDROID, getRubikFont, showToast } from '../../core-utils/utils'
 import TextComponent from '../../core-component/atom/TextComponent'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import ImagePlaceHolderComponent from '../../core-component/atom/imagePlaceHolderComponent'
@@ -58,7 +58,7 @@ const ProfileDetails = (props) => {
                 setLike(likedUser?.includes(data?.data?._id))
                 // setDate(data?.data?.time[0]?.split("-")[1])
             } else {
-                Alert.alert(data?.msg)
+                showToast(data?.msg)
             }
         }).catch(err => {
             console.log("🚀 ~ file: ProfileDetails.jsx:43 ~ awaitaxios.get ~ err:", err)
@@ -75,7 +75,7 @@ const ProfileDetails = (props) => {
     const addLike = async (id, userId) => {
         let body = {
             "designerId": userData?._id,
-            "loginUserId": user?.id||user?._id
+            "loginUserId": user?.id || user?._id
         }
         console.log("🚀 ~ file: ProfileDetails.jsx:76 ~ addLike ~ body:", body)
         await axios.post(`${API_URL}like/add_like`, body, {
@@ -85,7 +85,7 @@ const ProfileDetails = (props) => {
         }).then(({ data }) => {
             if (data?.status === 200) {
                 setLike(true)
-                Alert.alert("Profile saved ")
+                showToast("Profile saved ")
 
 
             }
@@ -99,7 +99,7 @@ const ProfileDetails = (props) => {
 
         let body = {
             "designerId": userData?._id,
-            "loginUserId": user?.id||user?._id
+            "loginUserId": user?.id || user?._id
         }
         await axios.post(`${API_URL}like/remove_like`, body, {
             headers: {
@@ -107,7 +107,7 @@ const ProfileDetails = (props) => {
             },
         }).then(({ data }) => {
             if (data?.status === 200) {
-                Alert.alert("Profile unsaved ")
+                showToast("Profile unsaved ")
                 setLike(false)
 
             }
@@ -136,7 +136,7 @@ const ProfileDetails = (props) => {
 
                             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: Matrics.vs15 }}>
                                 <View style={{}}>
-                                    <ImagePlaceHolderComponent size={Matrics.ms160} borderRadius={Matrics.ms80} padding={Matrics.hs10} marginVertical={Matrics.vs25} setImage={(image) => setUserData({ ...userData, profile_img: image })} image={userData?.profile_img ? `${IMAGE_URL}${userData?.profile_img?.uri || userData?.profile_img}` : ""}  disabled={true}/>
+                                    <ImagePlaceHolderComponent size={Matrics.ms160} borderRadius={Matrics.ms80} padding={Matrics.hs10} marginVertical={Matrics.vs25} setImage={(image) => setUserData({ ...userData, profile_img: image })} image={userData?.profile_img ? `${IMAGE_URL}${userData?.profile_img?.uri || userData?.profile_img}` : ""} disabled={true} />
 
                                 </View>
                                 <View style={{}}>
@@ -159,7 +159,7 @@ const ProfileDetails = (props) => {
                                     <View style={{ flexDirection: "row", justifyContent: "flex-start", alignItems: "center", marginTop: Matrics.vs15, flexWrap: "wrap", marginLeft: Matrics.vs15 }}>
                                         {userData?.socialChanels?.map((channel, i) => {
                                             console.log("🚀 ~ file: ProfileDetails.jsx:161 ~ {userData?.socialChanels?.map ~ channel:", channel)
-                                            return channel && channel != 0 ? <Pressable onPress={()=>Linking.openURL(channel)} style={{ borderWidth: 1, borderColor: Colors.BLUE, height: Matrics.ms50, width: Matrics.ms50, marginLeft: Matrics.hs5, backgroundColor: Colors.BLUE, justifyContent: "center", alignItems: "center", marginTop: Matrics.vs10 }}>
+                                            return channel && channel != 0 ? <Pressable onPress={() => Linking.openURL(channel)} style={{ borderWidth: 1, borderColor: Colors.BLUE, height: Matrics.ms50, width: Matrics.ms50, marginLeft: Matrics.hs5, backgroundColor: Colors.BLUE, justifyContent: "center", alignItems: "center", marginTop: Matrics.vs10 }}>
 
                                                 <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.WHITE} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs5}>{socialMedia[i]}</TextComponent>
                                             </Pressable> : null
@@ -193,7 +193,10 @@ const ProfileDetails = (props) => {
                             </View>
                             <View style={{ borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY, paddingBottom: Matrics.vs30, marginTop: Matrics.vs20, justifyContent: "flex-start", alignItems: "flex-start" }}>
                                 <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.CRAYON} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{"Portfolio"}</TextComponent>
+                                <Pressable onPress={()=> Linking.openURL(userData?.websiteUrl)}>
+
                                 <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10} paddingHorizontal={Matrics.hs5}>{userData?.websiteUrl}</TextComponent>
+                                </Pressable>
                                 <View style={{ marginTop: Matrics.vs10, flexDirection: "row", flexWrap: "wrap" }}>
                                     {userData?.portfolio ?
                                         userData?.portfolio?.map(item =>
@@ -245,19 +248,12 @@ const ProfileDetails = (props) => {
 
                     </View>
                 </ScrollView>
-                <View style={{ flexDirection: "row", marginHorizontal: Matrics.vs20,paddingBottom:insets?.bottom ? 0:Matrics.vs20 }}>
+                <View style={{ flexDirection: "row", marginHorizontal: Matrics.vs20, paddingBottom: insets?.bottom ? 0 : Matrics.vs20 }}>
                     <View style={{ flex: 0.48, alignItems: "center", marginRight: Matrics.hs10 }}>
 
                         <View style={{ marginTop: Matrics.vs10 }}>
                             <CommonButton text={"Leave a Message"} onPress={() => {
-                                {
-                                    !user?.id ? Alert.alert("Please sign in to explore!",
-                                        '', [
-
-                                        { text: 'OK', onPress: () => {} },
-                                    ]) : null
-                                }
-                                user?.id ? navigation.navigate("LeaveMessage",{item:userData}) : ""
+                                !(user?.id || user?._id) ? showToast("Please sign in to explore!",) : navigation.navigate("LeaveMessage", { item: userData })
                             }} />
 
 
@@ -267,14 +263,7 @@ const ProfileDetails = (props) => {
                         <View style={{ marginTop: Matrics.vs10 }}>
                             <CommonButton text={"Book Consultation"} onPress={() => {
                                 setBooking(userData)
-                                {
-                                    !user?.id ? Alert.alert("Please sign in to explore!",
-                                        '', [
-
-                                        { text: 'OK', onPress: () => {} },
-                                    ]) : null
-                                }
-                                user?.id ? navigation.navigate("SlotScreen") : ""
+                                !(user?.id || user?._id) ? showToast("Please sign in to explore!",) : navigation.navigate("SlotScreen")
                             }} />
 
 

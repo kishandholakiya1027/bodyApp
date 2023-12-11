@@ -1,6 +1,6 @@
 import { Alert, Button, Image, KeyboardAvoidingView, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
-import { IS_ANDROID, getRobotoFont, getRubikFont } from '../../core-utils/utils'
+import { IS_ANDROID, getRobotoFont, getRubikFont, showToast } from '../../core-utils/utils'
 import { Colors, Images, Matrics } from '../../theme'
 import TextInputComponent from '../../core-component/atom/TextInputComponent'
 
@@ -95,13 +95,11 @@ const LoginPage = (props) => {
                     }
 
                 } else {
-                    Alert.alert(data?.msg)
+                    showToast(data?.msg)
                 }
 
             }).catch(err => {
-                Alert.alert(`${err?.message}`)
-
-
+                showToast(`${err?.message}`)
             })
 
         }

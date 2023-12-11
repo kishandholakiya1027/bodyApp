@@ -1,7 +1,7 @@
 import { Button, KeyboardAvoidingView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { Colors, Matrics } from '../../theme'
-import { IS_ANDROID, getRubikFont } from '../../core-utils/utils'
+import { IS_ANDROID, getRubikFont, showToast } from '../../core-utils/utils'
 import Header from '../../core-component/atom/header'
 import TextComponent from '../../core-component/atom/TextComponent'
 import CommonButton from '../../core-component/molecules/CommonButton'
@@ -32,7 +32,7 @@ const CompleteBooking = () => {
 
     const addBooking = async () => {
         let body = {
-            "userId": user?.id,
+            "userId": user?.id ||user?._id,
             "designerId": booking?.id || booking?._id,
             "time": booking?.time,
             "date": moment(booking?.day).format("yyyy-MM-DD")
@@ -114,9 +114,9 @@ const CompleteBooking = () => {
     const openPaymentSheet = async () => {
         const { error } = await presentPaymentSheet({ clientSecret });
         if (error) {
-            Alert.alert(`Error code: ${error.code}`, error.message);
+            showToast(`Error code: ${error.code} ${error.message}`, );
         } else {
-            Alert.alert('Success', 'Your order is confirmed!');
+            showToast('Your order is confirmed!');
         }
     };
 

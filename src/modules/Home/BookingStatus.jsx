@@ -2,7 +2,7 @@ import { Alert, KeyboardAvoidingView, ScrollView, StatusBar, StyleSheet, Text, V
 import React, { useEffect, useState } from 'react'
 import CommonButton from '../../core-component/molecules/CommonButton'
 import TextComponent from '../../core-component/atom/TextComponent'
-import { IS_ANDROID, getRubikFont } from '../../core-utils/utils'
+import { IS_ANDROID, getRubikFont, showToast } from '../../core-utils/utils'
 import { Colors, Matrics } from '../../theme'
 import Header from '../../core-component/atom/header'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -48,7 +48,7 @@ const addRequirement = async()=>{
         }
     } ).then(({data}) => {
         if(data?.status === 200){
-            Alert.alert("Requirement submitted successfully!")
+            showToast("Requirement submitted successfully!")
             navigation.navigate("Home")
         }else{
 

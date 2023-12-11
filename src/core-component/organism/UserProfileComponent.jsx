@@ -7,7 +7,7 @@ import { Alert, Image, Pressable, View } from "react-native"
 import { Colors, Images, Matrics } from "../../theme"
 import ImagePlaceHolderComponent from "../atom/imagePlaceHolderComponent"
 import TextComponent from "../atom/TextComponent"
-import { getRubikFont } from "../../core-utils/utils"
+import { getRubikFont, showToast } from "../../core-utils/utils"
 import { AirbnbRating } from "react-native-ratings"
 
 export default function UserProfileComponent({ item, refetch }) {
@@ -44,7 +44,7 @@ export default function UserProfileComponent({ item, refetch }) {
         }).then(({ data }) => {
             if (data?.status === 200) {
                 setLikedUsers([...likedUser || [], id])
-                Alert.alert("Profile saved")
+                showToast("Profile saved")
 
 
             }
@@ -66,7 +66,7 @@ export default function UserProfileComponent({ item, refetch }) {
             },
         }).then(({ data }) => {
             if (data?.status === 200) {
-                Alert.alert("Profile unsaved")
+                showToast("Profile unsaved")
                 setLikedUsers([...likedUser?.filter(user => user !== id)])
                 refetch && refetch()
 

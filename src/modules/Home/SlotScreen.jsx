@@ -10,39 +10,68 @@ import { useNavigation } from '@react-navigation/native'
 import BookingContext from '../../context/BookingContext'
 import CommonButton from '../../core-component/molecules/CommonButton'
 import UserParamContext from '../../context/setUserContext'
+import axios from 'axios'
+import { API_URL } from '../../../config'
 
 const SlotScreen = () => {
     const [day, setDay] = useState(moment())
     const [time, setTime] = useState()
     const [error, setError] = useState(false)
     const [noslot, setNoSlot] = useState()
+    const [timeArray, setTimeArray] = useState()
     const navigation = useNavigation()
     const { setBooking, booking } = useContext(BookingContext)
     const insets = useSafeAreaInsets();
     const { user } = useContext(UserParamContext)
     useEffect(() => {
-        setNoSlot(moment().format('a') === "pm" ? parseInt(moment().format("hmm")) + 300 > 600 ? true : false : false)
+        setDay(moment())
     }, [])
+    
+    useEffect(() => {
+        day?.format("yyyymmdd") === moment().format("yyyymmdd") ?  setNoSlot(moment().format('a') === "pm" ? parseInt(moment().format("hmm")) + 300 > 600 ? true : false : false):null
+        getSlots()
 
-    const timeArray = [
-        { label: "10:00 AM", value: "10:00 AM" },
-        { label: "10:30 AM", value: "10:30 AM" },
-        { label: "11:00 AM", value: "11:00 AM" },
-        { label: "11:30 AM", value: "11:30 AM" },
-        { label: "12:00 PM", value: "12:00 PM" },
-        { label: "12:30 PM", value: "12:30 PM" },
-        { label: "01:00 PM", value: "01:00 PM" },
-        { label: "01:30 PM", value: "01:30 PM" },
-        { label: "02:00 PM", value: "02:00 PM" },
-        { label: "02:30 PM", value: "02:30 PM" },
-        { label: "03:00 PM", value: "03:00 PM" },
-        { label: "03:30 PM", value: "03:30 PM" },
-        { label: "04:00 PM", value: "04:00 PM" },
-        { label: "04:30 PM", value: "04:30 PM" },
-        { label: "05:00 PM", value: "05:00 PM" },
-        { label: "05:30 PM", value: "05:30 PM" },
-        { label: "06:00 PM", value: "06:00 PM" },
-    ]
+    }, [day])
+
+    const getSlots = async () => {
+        let body = {
+            "designerId": booking?._id,
+            "date": day.format("YYYY-MM-DD")
+        }
+        await axios.post(`${API_URL}appointment/slots`, body).then(({ data }) => {
+            if (data?.status === 200) {
+                setTimeArray(data?.data || [])
+            }else{
+                showToast(data?.msg||data?.error)
+            }
+            console.log("🚀 ~ file: SlotScreen.jsx:39 ~ awaitaxios.post ~ data:", data)
+
+        }).catch(err => {
+            console.log("🚀 ~ file: SlotScreen.jsx:41 ~ awaitaxios.post ~ err:", err)
+
+
+        })
+    }
+
+    // const timeArray = [
+    //     { label: "10:00 AM", value: "10:00 AM" },
+    //     { label: "10:30 AM", value: "10:30 AM" },
+    //     { label: "11:00 AM", value: "11:00 AM" },
+    //     { label: "11:30 AM", value: "11:30 AM" },
+    //     { label: "12:00 PM", value: "12:00 PM" },
+    //     { label: "12:30 PM", value: "12:30 PM" },
+    //     { label: "01:00 PM", value: "01:00 PM" },
+    //     { label: "01:30 PM", value: "01:30 PM" },
+    //     { label: "02:00 PM", value: "02:00 PM" },
+    //     { label: "02:30 PM", value: "02:30 PM" },
+    //     { label: "03:00 PM", value: "03:00 PM" },
+    //     { label: "03:30 PM", value: "03:30 PM" },
+    //     { label: "04:00 PM", value: "04:00 PM" },
+    //     { label: "04:30 PM", value: "04:30 PM" },
+    //     { label: "05:00 PM", value: "05:00 PM" },
+    //     { label: "05:30 PM", value: "05:30 PM" },
+    //     { label: "06:00 PM", value: "06:00 PM" },
+    // ]
 
     const onSubmit = () => {
         if (user?.role) {
@@ -109,9 +138,9 @@ const SlotScreen = () => {
                                             timeArray?.map((tm, index) => {
                                                 let times = day?.format("DDMMMMYYYY") === moment().format("DDMMMMYYYY") ? moment().add("3", "hours").format("hmm") : "000"
                                                 return (
-                                                    parseInt(tm?.label?.split(" ")[0]?.replace(":", "")?.slice(1)) >= parseInt(times) ? <Pressable onPress={() => setTime(tm?.value)} style={{ minWidth: Matrics.hs105, paddingHorizontal: Matrics.hs16, paddingVertical: Matrics.vs12, backgroundColor: time === tm?.value ? Colors.MEDIUMREDOPACITY : Colors.BACKGROUNDGRAY, marginRight: Matrics.vs10, marginVertical: Matrics.vs7, borderRadius: Matrics.ms25, justifyContent: "center" }}>
-                                                        {/* <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={time === tm?.value ? Colors.MEDIUMRED : Colors.LIGHTGRAY} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs0}>{  moment().add("3","hour").format("LT") tm?.label}</TextComponent> */}
-                                                        <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={time === tm?.value ? Colors.MEDIUMRED : Colors.LIGHTGRAY} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs0}>{tm?.label}</TextComponent>
+                                                    parseInt(tm?.time?.split(" ")[0]?.replace(":", "")?.slice(1)) >= parseInt(times) ? <Pressable onPress={() => setTime(tm?.time)} style={{ opacity : tm?.status === "Booked" ? 0.65:1,minWidth: Matrics.hs105, paddingHorizontal: Matrics.hs16, paddingVertical: Matrics.vs12, backgroundColor: time === tm?.time ? Colors.MEDIUMREDOPACITY : Colors.BACKGROUNDGRAY, marginRight: Matrics.vs10, marginVertical: Matrics.vs7, borderRadius: Matrics.ms25, justifyContent: "center" }} disabled={tm?.status === "Booked"}>
+                                                        {/* <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={time === tm?.value ? Colors.MEDIUMRED : Colors.LIGHTGRAY} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs0}>{  moment().add("3","hour").format("LT") tm?.time}</TextComponent> */}
+                                                        <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={time === tm?.time ? Colors.MEDIUMRED : Colors.LIGHTGRAY} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs0}>{tm?.time}</TextComponent>
 
                                                     </Pressable> : null
                                                 )

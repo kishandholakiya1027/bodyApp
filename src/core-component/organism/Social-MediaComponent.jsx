@@ -1,8 +1,8 @@
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native'
+import {  StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useRef } from 'react'
 import { Colors, Matrics } from '../../theme'
 import TextComponent from '../atom/TextComponent'
-import { getRobotoFont, getRubikFont } from '../../core-utils/utils'
+import { getRobotoFont, getRubikFont, showToast } from '../../core-utils/utils'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import axios from 'axios'
 import { WebView } from 'react-native-webview';
@@ -29,10 +29,34 @@ GoogleSignin.configure({
     // iosClientId: '106151688664-ndprsrur540i58p72p0s16k06uroukmu.apps.googleusercontent.com', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
 });
 
+
 const SocialMediaComponent = ({ role, checkRole, width }) => {
     const navigation = useNavigation()
     const { user, setUser } = useContext(UserParamContext)
     const insRef = useRef();
+    
+    const navigate = (data)=>{
+        if (data?.complete)
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'Home' }]
+        })
+        else {
+            if (data?.role)
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'OnBoarding' }]
+            })
+            else {
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'UserProfile' }]
+                })
+    
+            }
+    
+        }
+    }
 
     let signInWithGoogle = async () => {
         try {
@@ -52,10 +76,10 @@ const SocialMediaComponent = ({ role, checkRole, width }) => {
                 await AsyncStorage.setItem("token", data?.data?.data?.token)
                 setUser(data?.data?.data)
                 await AsyncStorage.setItem("user", JSON.stringify(data?.data?.data))
-                navigation.navigate("Home")
+                navigate(data?.data?.data)
 
             } else {
-                Alert.alert(data?.msg || data?.error)
+                showToast(data?.msg || data?.error)
             }
             // navigation.navigate("UserProfile")
             // Handle user info or navigate to the next screen.
@@ -89,10 +113,10 @@ const SocialMediaComponent = ({ role, checkRole, width }) => {
                             if (data?.status === 200) {
                                 await AsyncStorage.setItem("token", data?.data?.token)
                                 await AsyncStorage.setItem("user", JSON.stringify(data?.data))
-                                navigation.navigate("Home")
+                                navigate(data?.data)
                                 setUser(data?.data)
                             } else {
-                                Alert.alert(data?.msg)
+                                showToast(data?.msg)
                             }
 
                         }).catch((error) => {
@@ -132,10 +156,10 @@ const SocialMediaComponent = ({ role, checkRole, width }) => {
             if (data?.status === 200) {
                 await AsyncStorage.setItem("token", data?.data?.token)
                 await AsyncStorage.setItem("user", JSON.stringify(data?.data))
-                navigation.navigate("Home")
+                navigate(data?.data)
                 setUser(data?.data)
             } else {
-                Alert.alert(data?.msg)
+                showToast(data?.msg)
             }
 
         }).catch((error) => {

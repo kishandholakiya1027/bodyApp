@@ -51,7 +51,7 @@ const CompleteProfile = () => {
 
                     await AsyncStorage.setItem("user", JSON.stringify({ ...data?.data, role: user?.role, }))
                 } else {
-                    Alert.alert(data?.msg)
+                    showToast(data?.msg)
                 }
             }).catch(err => {
 
@@ -119,7 +119,7 @@ const CompleteProfile = () => {
                 } else {
                     setLoader(false)
 
-                    Alert.alert(data?.msg || data?.error)
+                    showToast(data?.msg || data?.error)
                 }
 
             }).catch(error => {

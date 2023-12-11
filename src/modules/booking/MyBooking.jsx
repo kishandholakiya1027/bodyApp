@@ -148,7 +148,7 @@ const MyBooking = () => {
     const startCall = async (item) => {
         // Join Channel using null token and channel name
         await axios.post(`${API_URL}send`, {
-            userId: user?.id === item?.userId || user?._id === item?.userId ? item?.designerId : item?.userId,
+            userId:( user?.id === item?.userId || user?._id === item?.userId) ? item?.designerId : item?.userId,
             title: "Incoming Call",
             body: "Incoming Call",
             channelId: `${item?._id}`

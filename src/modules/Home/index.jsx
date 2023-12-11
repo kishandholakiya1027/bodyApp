@@ -236,13 +236,7 @@ const Home = () => {
                         index: 0,
                         routes: [{ name: 'OnBoarding' }]
                     })
-                else {
-                    navigation.reset({
-                        index: 0,
-                        routes: [{ name: 'UserProfile' }]
-                    })
-
-                }
+               
 
             }
 
@@ -320,7 +314,7 @@ const Home = () => {
                                 <TextComponent paddingHorizontal={0} fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs10}>{"Popular on StyleCrew"}</TextComponent>
                             </View>
                             <View style={{ justifyContent: "center" }}>
-                                <UsedataComponent slice={2} userId={user?.id} userFilter={filter} />
+                                <UsedataComponent slice={2} userId={user?.id||user?._id} userFilter={filter} />
 
                             </View>
 
