@@ -103,7 +103,8 @@ const occasion = [
         <TextInputComponent placeholder={"Budget for the suggested outfits (In INR)"} onChangeText={text => setRequirementData({
             ...requirementData,
             budget: text
-        })} value={requirementData?.budget?.toString()} />
+        })} value={requirementData?.budget?.toString()}
+        keyboardType={"numeric"} />
      <ImageSelectorComponent
                 visible={visible}
                 onDecline={() => setVisible(false)}

@@ -399,7 +399,7 @@ const MyBooking = () => {
                                 <RequirementComponent requirementData={requirementData} setRequirementData={setRequirementData} data={[]} images={[]} />
                                 <View style={{ paddingBottom: Matrics.vs10 }}>
 
-                                    <CommonButton text="Submit Requirement" onPress={() => addRequirement()} enabled={requirementData?._id || Object.keys(requirementData).length === 5} />
+                                    <CommonButton text="Submit Requirement" onPress={() => addRequirement()} disabled={(Object.keys(requirementData).length < 5 || Object.values(requirementData).includes(""))} enabled={requirementData?._id || (Object.keys(requirementData).length >= 5 && !Object.values(requirementData).includes(""))} />
                                 </View>
                             </View>
                         </View>

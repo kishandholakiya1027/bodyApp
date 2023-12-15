@@ -6,7 +6,7 @@ import { getRubikFont } from '../../core-utils/utils'
 const CommonButton = ({ onPress, textStyle = {}, viewStyle = {}, text,enabled,disabled=false }) => {
     return (
         <View style={{}}>
-            <Pressable disabled={disabled} style={[styles.buttonView, { paddingHorizontal: Matrics.hs10,backgroundColor:enabled?Colors.BLUE:Colors.WHITE },viewStyle, ]} onPress={onPress}>
+            <Pressable disabled={disabled} hitSlop={20} style={[styles.buttonView, { paddingHorizontal: Matrics.hs10,backgroundColor:enabled?Colors.BLUE:Colors.WHITE },viewStyle, ]} onPress={onPress}>
                 <Text style={[styles.textStyle, {color:!enabled?Colors.BLUE:Colors.WHITE},textStyle,]}>{text}</Text>
             </Pressable>
 

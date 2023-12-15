@@ -167,13 +167,13 @@ const CompleteProfile = () => {
         function validateData() {
             for (let i = 0; i < data.length; i++) {
                 const item = data[i];
-                if (item === "consultationCharge" && userData?.[item] <= 300) {
+                if (item?.key === "consultationCharge" && userData?.[item?.key] <= 300) {
                     showToast(`consultation charge should be grater than 300`);
                     return true // Break out of the loop and return false
 
                 }
-                if (!userData?.[item] || userData?.[item]?.length === 0) {
-                    showToast(`Please enter ${item}`);
+                if (!userData?.[item?.key] || userData?.[item?.key]?.length === 0) {
+                    showToast(`Please enter ${item?.label}`);
                     return true // Break out of the loop and return false
                 }
             }
@@ -443,14 +443,14 @@ const CompleteProfile = () => {
                     index === 0 ?
                         <View style={{ alignItems: "center", marginBottom: Matrics.vs20 }}>
                             <Pressable style={styles.buttonView} onPress={() => checkError([
-                                "profile_img",
-                                "username",
-                                "qualification",
-                                "profession",
-                                "yearExperience",
-                                "workExperience",
-                                "websiteUrl",
-                                "portfolio",
+                                {label:"profile image",key:"profile_img"},
+                                {label:"username",key:"username"},
+                                {label:"qualification",key:"qualification"},
+                                {label:"profession",key:"profession"},
+                                {label:"year experience",key:"yearExperience"},
+                                {label:"work experience",key:"workExperience"},
+                                {label:"website url",key:"websiteUrl"},
+                                {label:"portfolio",key:"portfolio"},
                             ]) ? {} : setIndex(1)}>
                                 <Text style={styles.textStyle}>{"Next"}</Text>
                             </Pressable>
@@ -462,11 +462,11 @@ const CompleteProfile = () => {
                                     <Text style={styles.textStyle}>{"Back"}</Text>
                                 </Pressable>
                                 <Pressable style={[styles.buttonView, { backgroundColor: Colors.BLUE ,opacity:loader? 0.7:1}]} disabled={loader} onPress={() => checkError([
-                                    "assist",
-                                    "expertise",
-                                    "socialChanels",
-                                    "consultationCharge",
-                                    "availability",
+                                    {label:"assist",key:"assist"},
+                                    {label:"expertise",key:"expertise"},
+                                    {label:"social channel",key:"socialChanels"},
+                                    {label:"consultation charge",key:"consultationCharge"},
+                                    {label:"availability",key:"availability"},
                                 ]) ? {} : onSubmit(1)}>
                                     <Text style={[styles.textStyle, { color: Colors.WHITE }]}>{"Submit"}</Text>
                                 </Pressable>

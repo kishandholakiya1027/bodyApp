@@ -100,7 +100,7 @@ const CheckoutComponent = ({ user, booking }) => {
     if (error) {
       showToast(`Error code: ${error.code}${error.message}`)
     } else {
-      navigation.navigate("BookingStatus", { booking })
+      navigation.navigate("BookingStatus", { booking,error:"" })
       showToast("Payment successfull!")
     }
   };
@@ -125,7 +125,7 @@ const CheckoutComponent = ({ user, booking }) => {
       if (data?.status === 200) {
         openPaymentSheet(data?.data)
       } else {
-        navigation.navigate("BookingStatus", { booking: "" })
+        navigation.navigate("BookingStatus", { booking: "",error:data?.msg || data?.error })
         showToast(data?.msg || data?.error)
       }
     }).catch(err => {

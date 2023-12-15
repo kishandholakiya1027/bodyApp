@@ -156,6 +156,12 @@ const UserProfile = () => {
         { label: "45", value: "45" },
     ]
 
+    const gender = [
+        { label: "Female", value: "Female" },
+        { label: "Male", value: "Male" },
+        { label: "Other", value: "Other" },
+    ]
+
     const onProfileUpdate = async () => {
         setLoader(true)
         let usr = { ...userData }
@@ -199,9 +205,9 @@ const UserProfile = () => {
     const checkError = (data) => {
         function validateData() {
             for (let i = 0; i < data.length; i++) {
-                const item = data[i];
+                const item = data[i]?.key;
                 if (!userData?.[item] || userData?.[item]?.length === 0) {
-                    showToast(`Please enter ${item}`);
+                    showToast(`Please enter ${data[i]?.label}`);
                     return true; // Break out of the loop and return false
                 }
             }
@@ -246,7 +252,9 @@ const UserProfile = () => {
                                         <TextInputComponent placeholder={"Age"} onChangeText={(text) => setUserData({ ...userData, age: text })} value={userData?.age?.toString()} keyboardType={"numeric"} />
                                     </View>
                                     <View>
-                                        <TextInputComponent placeholder={"Gender"} onChangeText={(text) => setUserData({ ...userData, gender: text })} value={userData?.gender} />
+                                    <DropdownComponent placeholder={"Gender"} backgroundColor={Colors.WHITE} borderWidth={1} items={gender} setValue={(value) => setUserData({ ...userData, gender: value })} value={userData?.gender} />
+
+                                        {/* <TextInputComponent placeholder={"Gender"} onChangeText={(text) => setUserData({ ...userData, gender: text })} value={userData?.gender} /> */}
                                     </View>
                                 </View>
 
@@ -525,10 +533,10 @@ const UserProfile = () => {
                     {index === 0 ? <View style={{ alignItems: "center", justifyContent: "center" }}>
                         <CommonButton viewStyle={{ width: "50%" }} text="Next" onPress={() => {
                             return checkError([
-                                "profile_img",
-                                "username",
-                                "age",
-                                "gender",
+                                {"label":"profile image",key:"profile_img"},
+                                {"label":"username",key:"username"},
+                                {"label":"age",key:"age"},
+                                {"label":"gender",key:"gender"},
                             ]) ? {} : setIndex(1)
                         }} />
                     </View> : index === 1 ?
@@ -538,7 +546,7 @@ const UserProfile = () => {
                             </View>
                             <View style={{ flex: 0.47 }}>
                                 <CommonButton text="Next" viewStyle={{ backgroundColor: Colors.BLUE }} textStyle={{ color: Colors.WHITE }} onPress={() => checkError([
-                                    "body_type"]) ? {} : setIndex(2)} />
+                                    {label:"body type",key:"body_type"}]) ? {} : setIndex(2)} />
                             </View>
                         </View> : index === 2 ?
                             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
@@ -548,7 +556,7 @@ const UserProfile = () => {
                                 </View>
                                 <View style={{ flex: 0.47 }}>
                                     <CommonButton text="Next" viewStyle={{ backgroundColor: Colors.BLUE }} textStyle={{ color: Colors.WHITE }} onPress={() => checkError([
-                                        "face_type"]) ? {} : setIndex(3)} />
+                                         {label:"face type",key:"face_type"}]) ? {} : setIndex(3)} />
                                 </View>
 
                             </View> : index === 3 ? <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
@@ -557,7 +565,7 @@ const UserProfile = () => {
                                 </View>
                                 <View style={{ flex: 0.47 }}>
                                     <CommonButton text="Next" viewStyle={{ backgroundColor: Colors.BLUE }} textStyle={{ color: Colors.WHITE }} onPress={() => checkError([
-                                        "complexion"]) ? {} : setIndex(4)} />
+                                        {label:"complexion",key:"complexion"}]) ? {} : setIndex(4)} />
                                 </View>
 
                             </View> : index === 4 ? <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
@@ -566,11 +574,11 @@ const UserProfile = () => {
                                 </View>
                                 <View style={{ flex: 0.47 }}>
                                     <CommonButton text="Next"  disabled={loader} viewStyle={{ backgroundColor: Colors.BLUE,opacity:loader?0.7:1 }} textStyle={{ color: Colors.WHITE }} onPress={() => checkError([
-                                        "hair_length",
-                                        "height",
-                                        "bust_size",
-                                        "waist_size",
-                                        "hip_size",
+                                        {lable:"hair_length",key:"hair_length"},
+                                        {lable:"height",key:"height"},
+                                        {lable:"bust_size",key:"bust_size"},
+                                        {lable:"waist_size",key:"waist_size"},
+                                        {lable:"hip_size",key:"hip_size"},
                                     ]) ? {} :
 
                                         onProfileUpdate()} />

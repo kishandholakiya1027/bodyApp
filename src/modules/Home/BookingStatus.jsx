@@ -16,9 +16,11 @@ import { convertToformData } from '../../core-utils/dataConverter'
 
 const BookingStatus = (props) => {
     const booking = props?.route?.params?.booking
+    const error = props?.route?.params?.error
     const insets = useSafeAreaInsets();
     const [status, setStatus] = useState(false)
     const [requirementData, setRequirementData] = useState({})
+    console.log("🚀 ~ file: BookingStatus.jsx:23 ~ BookingStatus ~ requirementData:", requirementData)
     const navigation = useNavigation()
     const qualifications = [
         { label: "Bachelor of Designing", value: "bachelor of design" },
@@ -33,7 +35,7 @@ const BookingStatus = (props) => {
     
 
 const addRequirement = async()=>{
-    data= {
+   let data= {
         ...requirementData,
         "userId":booking?.userId,
         "appointmentId":booking?._id,
@@ -72,7 +74,7 @@ const addRequirement = async()=>{
                         <View style={{ marginHorizontal: Matrics.hs20, marginTop: Matrics.vs40 }}>
                             <View style={{ paddingHorizontal: Matrics.vs20, paddingVertical: Matrics.vs25, backgroundColor: status ? Colors.LIMEGREENOPACITY : Colors.ORANGEOPACITY }}>
                                 <TextComponent numberOfLines={5} fontFamily={getRubikFont("SemiBold")} size={Matrics.ms18} color={status ? Colors.LIMEGREEN : Colors.ORANGE} marginTop={Matrics.vs0} paddingHorizontal={Matrics.vs0}>{status ? "Your booking has been confirmed" : "Your booking could not be confirmed"}</TextComponent>
-                                <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs15} paddingHorizontal={Matrics.vs0}>{status ? "You can review your booking status and schedule under Upcoming Bookings in your My Account section." : "This must have happened due to technical issues or any other issue with the payment. The amount will be refunded incase the transaction has been done. Please report your issue if you need our assistance further."}</TextComponent>
+                                <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs15} paddingHorizontal={Matrics.vs0}>{status ? "You can review your booking status and schedule under Upcoming Bookings in your My Account section." : error||"This must have happened due to technical issues or any other issue with the payment. The amount will be refunded incase the transaction has been done. Please report your issue if you need our assistance further."}</TextComponent>
 
                             </View>
 
@@ -87,7 +89,7 @@ const addRequirement = async()=>{
                     </ScrollView>
                     {status? <View style={{ justifyContent: "flex-end", alignItems: "flex-end", marginHorizontal: Matrics.hs20 }}>
 
-                        <CommonButton text="Submit Requirement" onPress={() => addRequirement()} viewStyle={Object.keys(requirementData)?.length === 5 ? {backgroundColor:Colors.BLUE}:{}} textStyle={Object.keys(requirementData)?.length === 5 ? {color:Colors.WHITE}:{}}/>
+                        <CommonButton text="Submit Requirement" onPress={() => addRequirement()} viewStyle={Object.keys(requirementData)?.length === 5 ? {backgroundColor:Colors.BLUE}:{}} textStyle={Object.keys(requirementData)?.length === 5 ? {color:Colors.WHITE}:{}} enabled={Object.keys(requirementData)?.length >= 5 && !Object.values(requirementData)?.includes("")} disabled={Object.keys(requirementData)?.length < 5}/>
                     </View>:null}
                 </View>
             </SafeAreaView>
