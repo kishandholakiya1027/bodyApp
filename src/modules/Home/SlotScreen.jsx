@@ -20,7 +20,6 @@ const SlotScreen = () => {
     const [noslot, setNoSlot] = useState()
     const [timeArray, setTimeArray] = useState()
     const [dayArray, setDayArray] = useState([])
-    console.log("🚀 ~ file: SlotScreen.jsx:23 ~ SlotScreen ~ dayArray:", dayArray)
     const navigation = useNavigation()
     const { setBooking, booking } = useContext(BookingContext)
     console.log("🚀 ~ file: SlotScreen.jsx:25 ~ SlotScreen ~ booking:", booking)
@@ -38,7 +37,7 @@ const SlotScreen = () => {
                    return moment().add(index, 'days')._d
                }
               })
-              setDayArray(date?.filter(data=>data))
+              setDayArray(dayArray?.length ? dayArray: date?.filter(data=>data))
 
         }
     }, [booking])
@@ -55,7 +54,7 @@ const SlotScreen = () => {
         }
         await axios.post(`${API_URL}appointment/slots`, body).then(({ data }) => {
             if (data?.status === 200) {
-                day?.format("yyyymmdd") === moment().format("yyyymmdd") ?  setNoSlot(moment().format('a') === "pm" ? parseInt(moment().format("hmm")) + 300 >= parseInt(data?.data[data?.data?.length-1]?.time?.split(" ")[0]?.replace(":", "")?.slice(1)) ? true : false : false):setNoSlot()
+                // day?.format("yyyymmdd") === moment().format("yyyymmdd") ?  setNoSlot(moment().format('a') === "pm" ? parseInt(moment().format("hmm")) + 300 >= parseInt(data?.data[data?.data?.length-1]?.time?.split(" ")[0]?.replace(":", "")?.slice(1)) ? true : false : false):setNoSlot()
                 setTimeArray(data?.data || [])
             }else{
                 showToast(data?.msg||data?.error)
@@ -151,9 +150,11 @@ const SlotScreen = () => {
                                     <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", paddingBottom: Matrics.vs20, justifyContent: "flex-start", marginTop: Matrics.vs10, marginLeft: Matrics.hs20 }}>
                                         {
                                             timeArray?.map((tm, index) => {
-                                                let times = day?.format("DDMMMMYYYY") === moment().format("DDMMMMYYYY") ? moment().add("3", "hours").format("hmm") : "000"
+                                                let slice = day?.format("DDMMMMYYYY") === moment().format("DDMMMMYYYY") ?tm?.time?.includes("AM")  ? 3 :(tm?.time?.includes("12:00") ||tm?.time?.includes("12:30")) ?3: 4:4
+                                                let currenttime = day?.format("DDMMMMYYYY") === moment().format("DDMMMMYYYY") ? moment().add("3", "hours").format("hmm") : "000"
+                                                let times = moment().format('a') === "am" ? currenttime.slice(0,3): currenttime
                                                 return (
-                                                    (parseInt(tm?.time?.split(" ")[0]?.replace(":", "")?.slice(1)) >= parseInt(times) && (day?.format("DDMMMMYYYY") === moment().format("DDMMMMYYYY") ? tm?.time?.includes(day.format('a')?.toUpperCase()):true) )? <Pressable onPress={() => setTime(tm?.time)} style={{ opacity : tm?.status === "Booked" ? 0.65:1,minWidth: Matrics.hs105, paddingHorizontal: Matrics.hs16, paddingVertical: Matrics.vs12, backgroundColor: time === tm?.time ? Colors.MEDIUMREDOPACITY : Colors.BACKGROUNDGRAY, marginRight: Matrics.vs10, marginVertical: Matrics.vs7, borderRadius: Matrics.ms25, justifyContent: "center" }} disabled={tm?.status === "Booked"}>
+                                                    ( (day?.format("DDMMMMYYYY") === moment().format("DDMMMMYYYY") ? tm?.time?.includes(day.format('a')?.toUpperCase()) ? parseInt(tm?.time?.split(" ")[0].replace(":", "")?.slice(0,slice)) >= parseInt(times):parseInt(tm?.time?.split(" ")[0].replace(":", "")?.slice(0,slice)) >= parseInt(times):true) )? <Pressable onPress={() => setTime(tm?.time)} style={{ opacity : tm?.status === "Booked" ? 0.65:1,minWidth: Matrics.hs105, paddingHorizontal: Matrics.hs16, paddingVertical: Matrics.vs12, backgroundColor: time === tm?.time ? Colors.MEDIUMREDOPACITY : Colors.BACKGROUNDGRAY, marginRight: Matrics.vs10, marginVertical: Matrics.vs7, borderRadius: Matrics.ms25, justifyContent: "center" }} disabled={tm?.status === "Booked"}>
                                                         <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={time === tm?.time ? Colors.MEDIUMRED : Colors.LIGHTGRAY} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs0}>{tm?.time}</TextComponent>
 
                                                     </Pressable> : null

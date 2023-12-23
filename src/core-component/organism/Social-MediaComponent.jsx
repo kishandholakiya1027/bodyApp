@@ -1,5 +1,5 @@
 import {  StyleSheet, Text, View } from 'react-native'
-import React, { useContext, useRef } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Colors, Matrics } from '../../theme'
 import TextComponent from '../atom/TextComponent'
 import { getRobotoFont, getRubikFont, showToast } from '../../core-utils/utils'
@@ -11,7 +11,7 @@ import { API_URL } from '../../../config'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import UserParamContext from '../../context/setUserContext'
 import InstagramLogin from 'react-native-instagram-login';
-
+import messaging from '@react-native-firebase/messaging';
 
 import { AccessToken, LoginButton, LoginManager, Settings } from 'react-native-fbsdk-next';
 import CommonButton from '../molecules/CommonButton'
@@ -34,7 +34,29 @@ const SocialMediaComponent = ({ role, checkRole, width }) => {
     const navigation = useNavigation()
     const { user, setUser } = useContext(UserParamContext)
     const insRef = useRef();
-    
+    const [deviceToken, setDeviceToken] = useState()
+    console.log("🚀 ~ file: Social-MediaComponent.jsx:38 ~ SocialMediaComponent ~ deviceToken:", deviceToken)
+
+    const messageSetup = async () => {
+        messaging()
+            .registerDeviceForRemoteMessages()
+            .then(res => console.log('-*-res*-', res))
+            .catch(err => console.log('*-* registrer error ', err));
+
+        await messaging().getAPNSToken().then(data => {
+            messaging().setAPNSToken(data || "385757dhnfudhf8487398890", "unknown")
+
+        })
+        messaging().getToken().then(async device_id => {
+            setDeviceToken(device_id)
+        }).catch(err => console.log("🚀 ~ file: signinScreen.js ~ line 58 ~ useEffect ~ err", err))
+
+
+    }
+
+    useEffect(() => {
+        messageSetup()
+    }, [])
     const navigate = (data)=>{
         if (data?.complete)
         navigation.reset({
@@ -70,7 +92,7 @@ const SocialMediaComponent = ({ role, checkRole, width }) => {
 
             let userInfo = await GoogleSignin.signIn();
 
-            const data = await axios.post(`${API_URL}auth/verify`, { token: userInfo?.idToken, role: role || false })
+            const data = await axios.post(`${API_URL}auth/verify`, { token: userInfo?.idToken, role: role || false,fcm_token:deviceToken })
             console.log("🚀 ~ file: Social-MediaComponent.jsx:51 ~ signInWithGoogle ~ data:", data)
             if (data?.data?.status === 200) {
                 await AsyncStorage.setItem("token", data?.data?.data?.token)
@@ -109,7 +131,7 @@ const SocialMediaComponent = ({ role, checkRole, width }) => {
                     // }, 1000);
                 } else {
                     AccessToken.getCurrentAccessToken().then(async data => {
-                        await axios.post(`${API_URL}auth/verify-facebook`, { token: data?.accessToken, role: role || false }).then(async ({ data }) => {
+                        await axios.post(`${API_URL}auth/verify-facebook`, { token: data?.accessToken, role: role || false ,fcm_token:deviceToken}).then(async ({ data }) => {
                             if (data?.status === 200) {
                                 await AsyncStorage.setItem("token", data?.data?.token)
                                 await AsyncStorage.setItem("user", JSON.stringify(data?.data))
@@ -152,7 +174,7 @@ const SocialMediaComponent = ({ role, checkRole, width }) => {
         // setLoader(true);
 
 
-        await axios.post(`${API_URL}auth/verify-instagram`, { token, role: role || false }).then(async ({ data }) => {
+        await axios.post(`${API_URL}auth/verify-instagram`, { token, role: role || false ,fcm_token:deviceToken}).then(async ({ data }) => {
             if (data?.status === 200) {
                 await AsyncStorage.setItem("token", data?.data?.token)
                 await AsyncStorage.setItem("user", JSON.stringify(data?.data))

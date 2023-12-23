@@ -147,6 +147,7 @@ const VideoCall = (props) => {
         channel:`test-${item?._id}`,
         rtcUid: 0
     };
+    console.log("🚀 ~ file: VideoCall.jsx:150 ~ VideoCall ~ connectionData:", connectionData)
     const events = [
         'tokenExpired',
         'remoteInvitationRefused',

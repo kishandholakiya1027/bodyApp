@@ -20,6 +20,7 @@ const CompleteBooking = () => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation()
     const { booking } = useContext(BookingContext)
+    console.log("🚀 ~ file: CompleteBooking.jsx:23 ~ CompleteBooking ~ booking:", booking)
     const { user } = useContext(UserParamContext)
     const [card, setCard] = useState();
     const { createPaymentMethod } = useStripe();

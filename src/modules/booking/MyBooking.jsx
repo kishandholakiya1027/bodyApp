@@ -28,8 +28,12 @@ const MyBooking = () => {
     const [reason, setReason] = useState()
     const [image, setImage] = useState([])
     const [booking, setBooking] = useState([])
+    console.log("🚀 ~ file: MyBooking.jsx:31 ~ MyBooking ~ booking:", booking)
     const navigation = useNavigation()
     const { user } = useContext(UserParamContext)
+    const { setBooking:setReBooking, booking:reBooking } = useContext(BookingContext)
+
+    console.log("🚀 ~ file: MyBooking.jsx:34 ~ MyBooking ~ user:", user)
     const [requirementData, setRequirementData] = useState({})
     const [currentBooking, setCurrentBooking] = useState({})
 
@@ -146,6 +150,7 @@ const MyBooking = () => {
     }
 
     const startCall = async (item) => {
+        console.log("🚀 ~ file: MyBooking.jsx:150 ~ startCall ~ item:", item,user)
         // Join Channel using null token and channel name
         await axios.post(`${API_URL}send`, {
             userId:( user?.id === item?.userId || user?._id === item?.userId) ? item?.designerId : item?.userId,
@@ -153,9 +158,11 @@ const MyBooking = () => {
             body: "Incoming Call",
             channelId: `${item?._id}`
         }).then(data => {
+        console.log("🚀 ~ file: MyBooking.jsx:157 ~ startCall ~ data:", data)
 
             navigation.navigate("VideoCall", { item, user })
         }).catch(err => {
+        console.log("🚀 ~ file: MyBooking.jsx:161 ~ startCall ~ err:", err)
 
         })
     };
@@ -175,7 +182,7 @@ const MyBooking = () => {
 
     }
 
-    const editRequirement = async (status) => {
+    const editRequirement = async (status,item) => {
         let data
         if (status === "cancle") {
             data = { appointmentId: currentBooking?.id || currentBooking?._id, desc: reason }
@@ -189,7 +196,7 @@ const MyBooking = () => {
             })
         } else {
             data = { status }
-            await axios.put(`${API_URL}appointment/edit_appointment/${currentBooking?.id || currentBooking?._id}`, data).then(({ data }) => {
+            await axios.put(`${API_URL}appointment/edit_appointment/${item?.id || item?._id}`, data).then(({ data }) => {
                 if (data?.status === 200) {
                     getBooking()
                     setCancelModal(false)
@@ -259,7 +266,7 @@ const MyBooking = () => {
                                             </View>
                                             <View>
                                                 <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTGRAY} marginTop={Matrics.vs20} paddingHorizontal={Matrics.vs0}>{"Appointment with:"}</TextComponent>
-                                                <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs3} paddingHorizontal={Matrics.vs0}>{user?.role ? item?.user_name||"user" : item?.designer_name || "designer"}</TextComponent>
+                                                <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs3} paddingHorizontal={Matrics.vs0}>{user?.role ? item?.user_name||"" : item?.designer_name || ""}</TextComponent>
                                                 <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTGRAY} marginTop={Matrics.vs20} paddingHorizontal={Matrics.vs0}>{"Slot:"}</TextComponent>
                                                 <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs3} paddingHorizontal={Matrics.vs0}>{item?.date ? moment(item?.date).format("dddd , Do MMMM") : ""}</TextComponent>
                                                 <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs3} paddingHorizontal={Matrics.vs0}>{item?.time || "0:00"}</TextComponent>
@@ -334,14 +341,16 @@ const MyBooking = () => {
 
                                                         </View>
                                                         <View style={{ flex: 0.48, justifyContent: "center" }}>
-                                                            <CommonButton text={"Accept"} onPress={() => editRequirement("confirm")} viewStyle={{ backgroundColor: Colors.BLUE }} textStyle={{ color: Colors.WHITE }} />
+                                                            <CommonButton text={"Accept"} onPress={() => {
+                                                                setCurrentBooking(item)
+                                                                editRequirement("confirm",item)}} viewStyle={{ backgroundColor: Colors.BLUE }} textStyle={{ color: Colors.WHITE }} />
 
                                                         </View>
 
                                                     </View>
                                                     :
                                                     <View style={{ width: "55%", marginVertical: Matrics.vs20 }}>
-                                                        <CommonButton text={"Join Video Call"} onPress={() => startCall(item)} viewStyle={{ backgroundColor: Colors.BLUE }} textStyle={{ color: Colors.WHITE }} />
+                                                        <CommonButton text={"Join Video Call"} onPress={() => startCall(item)} enabled={true} />
 
                                                         {/* <VideoCall item={item} user={user}/> */}
                                                     </View>
@@ -351,8 +360,10 @@ const MyBooking = () => {
                                                                 <CommonButton text={"Share Feedback"} onPress={() => { }} viewStyle={{ backgroundColor: Colors.BLUE }} textStyle={{ color: Colors.WHITE }} />
 
                                                             </View>
-                                                            {user?.role ? <View style={{ flex: 0.48, justifyContent: "center" }}>
-                                                                <CommonButton text={"Re-book"} onPress={() => { }} viewStyle={{ backgroundColor: Colors.BLUE }} textStyle={{ color: Colors.WHITE }} />
+                                                            {!user?.role ? <View style={{ flex: 0.48, justifyContent: "center" }}>
+                                                                <CommonButton text={"Re-book"} onPress={() => {
+                                                                    setReBooking({...item,_id:item?.designerId})
+                                                                    navigation.navigate("SlotScreen")}} viewStyle={{ backgroundColor: Colors.BLUE }} textStyle={{ color: Colors.WHITE }} />
 
                                                             </View> : null}
 

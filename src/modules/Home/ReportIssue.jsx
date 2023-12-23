@@ -19,58 +19,67 @@ const ReportIssue = () => {
 
 
     const onSubmit = async () => {
-        if(issue){
+        if (issue) {
+            let body;
+            if (user?.role) {
+                body = {
+                    "designerId": user?._id || user?.id,
+                    "msg": issue
+                }
 
-            let body = {
-                "userId": user?._id || user?.id,
-                "msg": issue
+            } else {
+                body = {
+                    "userId": user?._id || user?.id,
+                    "msg": issue
+                }
+
             }
-            await axios.post(`${API_URL}issue/add_issue`,body).then(({data}) => {
+            await axios.post(`${API_URL}issue/add_issue`, body).then(({ data }) => {
                 console.log("🚀 ~ file: ReportIssue.jsx:30 ~ awaitaxios.post ~ data:", data)
-                if(data?.status === 200){
+                if (data?.status === 200) {
                     setIssue()
                     showToast("Your query is submitted successfully.We'll be in touch with you soon")
-                }else {
-                    showToast(data?.msg||data?.error)
+                } else {
+                    showToast(data?.msg || data?.error)
                 }
-                }).catch(err => {
-                    console.log("🚀 ~ file: ReportIssue.jsx:29 ~ awaitaxios.post ~ err:", err)
-        
-                    
+            }).catch(err => {
+                console.log("🚀 ~ file: ReportIssue.jsx:29 ~ awaitaxios.post ~ err:", err)
+
+
             })
         }
-        else{
+        else {
             showToast("Please enter issue")
         }
     }
 
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.WHITE, }} behavior={IS_ANDROID ? '' : 'padding'} enabled>
-                <StatusBar barStyle="dark-content" backgroundColor="transparent" />
+            <StatusBar barStyle="dark-content" backgroundColor="transparent" />
             <SafeAreaView style={{ flex: 1, paddingBottom: insets?.bottom ? 0 : 20 }}>
-                <View style={{flex:1}}>
-                <View style={{ borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY, }}>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", height: Matrics.ms55, marginRight: Matrics.vs20 }}>
-                        <TextComponent fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} >{"Report an Issue"}</TextComponent>
+                <View style={{ flex: 1 }}>
+                    <View style={{ borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY, }}>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", height: Matrics.ms55, marginRight: Matrics.vs20 }}>
+                            <TextComponent fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} >{"Report an Issue"}</TextComponent>
 
-                        <Pressable onPress={() => navigation.navigate("Home")}>
-                            <Image source={Images.close} style={{ width: Matrics.ms18, height: Matrics.ms18, tintColor: Colors.LIGHTBLACK }} />
-                        </Pressable>
+                            <Pressable onPress={() => navigation.navigate("Home")}>
+                                <Image source={Images.close} style={{ width: Matrics.ms18, height: Matrics.ms18, tintColor: Colors.LIGHTBLACK }} />
+                            </Pressable>
+                        </View>
+                        {/* <Header text={"Complete Profile"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => index == 1 ? setIndex(0) : logOut()} /> */}
+
                     </View>
-                    {/* <Header text={"Complete Profile"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => index == 1 ? setIndex(0) : logOut()} /> */}
+                    <View style={{ flex: 1, marginHorizontal: Matrics.hs20 }}>
+                        <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs15} paddingHorizontal={Matrics.vs0}>{"Please submit your query or issue below."}</TextComponent>
+                        <View style={{ marginVertical: Matrics.vs25 }}>
+                            <TextInputComponent placeholder={"Type your issue here"} multiline height={Matrics.vs150} onChangeText={(text) => setIssue(text)} value={issue} />
+                        </View>
 
-                </View>
-                <View style={{ flex: 1, marginHorizontal: Matrics.hs20 }}>
-                    <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs15} paddingHorizontal={Matrics.vs0}>{"Please submit your query or issue below."}</TextComponent>
-                    <View style={{ marginVertical: Matrics.vs25 }}>
-                        <TextInputComponent placeholder={"Type your issue here"} multiline height={Matrics.vs150} onChangeText={(text) => setIssue(text)} value={issue} />
                     </View>
-
-                </View>
 
                 </View>
                 <View>
-                    <View style={{  justifyContent: "flex-end", marginHorizontal: Matrics.hs20 }}>
+                    <View style={{ justifyContent: "flex-end", marginHorizontal: Matrics.hs20 }}>
                         <CommonButton text={"Report an issue"} onPress={() => onSubmit()} enabled={issue} />
                     </View>
                 </View>

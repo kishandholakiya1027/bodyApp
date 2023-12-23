@@ -126,7 +126,6 @@ const CheckoutComponent = ({ user, booking }) => {
         openPaymentSheet(data?.data)
       } else {
         navigation.navigate("BookingStatus", { booking: "",error:data?.msg || data?.error })
-        showToast(data?.msg || data?.error)
       }
     }).catch(err => {
       console.log("🚀 ~ file: CompleteBooking.jsx:50 ~ addBooking ~ err:", err)

@@ -89,7 +89,7 @@ const addRequirement = async()=>{
                     </ScrollView>
                     {status? <View style={{ justifyContent: "flex-end", alignItems: "flex-end", marginHorizontal: Matrics.hs20 }}>
 
-                        <CommonButton text="Submit Requirement" onPress={() => addRequirement()} viewStyle={Object.keys(requirementData)?.length === 5 ? {backgroundColor:Colors.BLUE}:{}} textStyle={Object.keys(requirementData)?.length === 5 ? {color:Colors.WHITE}:{}} enabled={Object.keys(requirementData)?.length >= 5 && !Object.values(requirementData)?.includes("")} disabled={Object.keys(requirementData)?.length < 5}/>
+                        <CommonButton text="Submit Requirement" onPress={() => addRequirement()} enabled={Object.keys(requirementData)?.length >= 5 && !Object.values(requirementData)?.includes("")} disabled={Object.keys(requirementData)?.length < 5}/>
                     </View>:null}
                 </View>
             </SafeAreaView>

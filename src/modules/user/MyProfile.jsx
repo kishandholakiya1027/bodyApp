@@ -209,7 +209,7 @@ const MyProfile = () => {
                                             renderItem={({ item }) => {
                                                 console.log("🚀 ~ file: MyProfile.jsx:207 ~ MyProfile ~ item:", item)
                                                 return (
-                                                    <View style={{ marginHorizontal: Matrics.hs0, marginVertical: Matrics.vs5, justifyContent: "flex-start", alignItems: "flex-start", minWidth: "52%", }}>
+                                                    <View style={{ marginHorizontal: Matrics.hs0, marginVertical: Matrics.vs5, justifyContent: "flex-start", alignItems: "flex-start",minWidth: "52%", maxWidth: "55%",flexWrap:"wrap" }}>
 
                                                         <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTGRAY} marginTop={Matrics.vs5}>{`${item?.label}:`}</TextComponent>
                                                         {item?.label === "Height" ?
