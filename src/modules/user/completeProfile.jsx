@@ -167,6 +167,15 @@ const CompleteProfile = () => {
         function validateData() {
             for (let i = 0; i < data.length; i++) {
                 const item = data[i];
+                console.log("🚀 ~ file: completeProfile.jsx:171 ~ validateData ~ userData?.[item?.key]:", userData?.[item?.key])
+                if(item?.key === "portfolio"  ){
+                    if(oldPortfolio?.length === 0){
+                        showToast(`Please enter ${item?.label}`);
+                        return true 
+
+                    }
+                    return false 
+                }
                 if (item?.key === "consultationCharge" && userData?.[item?.key] <= 300) {
                     showToast(`consultation charge should be grater than 300`);
                     return true // Break out of the loop and return false
@@ -278,7 +287,15 @@ const CompleteProfile = () => {
                                             {
                                                 assistUser?.map(user => {
                                                     return (
-                                                        <Pressable onPress={() => setUserData({ ...userData, assist: [...userData?.assist || [], user] })} style={{ paddingHorizontal: Matrics.hs15, paddingVertical: Matrics.vs12, backgroundColor: userData?.assist?.includes(user) ? Colors.MEDIUMREDOPACITY : Colors.BACKGROUNDGRAY, marginRight: Matrics.vs10, marginVertical: Matrics.vs5, borderRadius: Matrics.ms25, justifyContent: "center" }}>
+                                                        <Pressable onPress={() => {
+                                                        if(!userData?.assist?.includes(user)){
+                                                        setUserData({ ...userData, assist: [...userData?.assist || [], user] })
+                                                        
+                                                        }else{
+                                                            setUserData({ ...userData, assist: userData?.assist?.filter(item => item !== user) })
+                                                        }
+                                                        
+                                                        }} style={{ paddingHorizontal: Matrics.hs15, paddingVertical: Matrics.vs12, backgroundColor: userData?.assist?.includes(user) ? Colors.MEDIUMREDOPACITY : Colors.BACKGROUNDGRAY, marginRight: Matrics.vs10, marginVertical: Matrics.vs5, borderRadius: Matrics.ms25, justifyContent: "center" }}>
                                                             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms16} color={userData?.assist?.includes(user) ? Colors.MEDIUMRED : Colors.LIGHTGRAY} marginTop={Matrics.vs0} paddingHorizontal={Matrics.hs0}>{user}</TextComponent>
 
                                                         </Pressable>

@@ -32,6 +32,7 @@ import ProfileDetails from '../modules/Home/ProfileDetails'
 import ProfileList from '../modules/saved-profiles/ProfileList'
 import ListNotification from '../modules/Notifications/ListNotification'
 import PrivacyPolicy from '../modules/PrivacyPolicy'
+import ShareFeedback from '../modules/booking/shareFeedback'
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator()
 
@@ -70,11 +71,11 @@ const drawerLoginConstant = [
         component: ProfileList,
         designer: true
     },
-    {
-        route: "ListNotification",
-        name: "Notifications",
-        component: ListNotification
-    },
+    // {
+    //     route: "ListNotification",
+    //     name: "Notifications",
+    //     component: ListNotification
+    // },
 
     {
         route: "ReportIssue",
@@ -316,6 +317,7 @@ const Index = () => {
                             <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
                             <Stack.Screen name='ListNotification' component={ListNotification} />
                             <Stack.Screen name='PrivacyPolicy' component={PrivacyPolicy} />
+                            <Stack.Screen name='ShareFeedback' component={ShareFeedback} />
                         </Stack.Navigator>
                     </BookingContext.Provider>
                 </UserParamContext.Provider>

@@ -31,10 +31,15 @@ const MessageScreen = (props) => {
     }, [])
 
     const getMessages = async () => {
+        console.log({
+            "senderId": user?.id||user?._id,
+            "receiverId": receiverId
+        });
         await axios.post(`${API_URL}message/get_message_user`,{
             "senderId": user?.id||user?._id,
             "receiverId": receiverId
         }).then(({ data }) => {
+           console.log("🚀 ~ file: MessageScreen.jsx:38 ~ getMessages ~ data:", data)
            if (data?.status === 200) {
                 setMessages(data?.data)
                 setTimeout(() => {
@@ -60,6 +65,7 @@ const MessageScreen = (props) => {
             if (image) {
                 body.images = image
             }
+            console.log("🚀 ~ file: MessageScreen.jsx:67 ~ onSubmit ~ body:", body)
             let data = convertToformData(body)
             await axios.post(`${API_URL}message/add_message`, data, {
                 headers: {

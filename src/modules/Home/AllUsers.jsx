@@ -185,11 +185,12 @@ const homeFilter = props?.route?.params?.homeFilter
                         <ScrollView showsVerticalScrollIndicator={false}>
                         <View style={{ margin: Matrics.ms20, paddingBottom:30 }}>
                             <TextInputComponent placeholder={"Search for designers, stylists or trends"} onChangeText={(text) =>{ 
+                                setFilter({...filter,search:text})
+                                setDefaultFilter({...filter,search:text})
                                 setTimeout(() => {
-                                    setDefaultFilter(filter)
                                     setSubmitFilter(true)
-                                }, 3000);
-                                setFilter({...filter,search:text})}} value={search} />
+                                }, 1000);
+                                }} value={search} />
                             <View style={{ flexDirection: "row", marginBottom: Matrics.vs15 }}>
                                 <View style={{ flex: 0.48, alignItems: "center", marginRight: Matrics.hs10 }}>
 

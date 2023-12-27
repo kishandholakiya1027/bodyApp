@@ -18,6 +18,7 @@ import UserParamContext from '../../context/setUserContext';
 import TextInputComponent from '../../core-component/atom/TextInputComponent';
 import { convertToformData } from '../../core-utils/dataConverter';
 import VideoCall from '../user/VideoCall';
+import { AirbnbRating } from 'react-native-ratings';
 
 const MyBooking = () => {
     const insets = useSafeAreaInsets();
@@ -25,17 +26,20 @@ const MyBooking = () => {
     const [status, setStatus] = useState("Upcoming")
     const [visible, setVisible] = useState(false)
     const [cancelModal, setCancelModal] = useState(false)
+    const [feedbackModal, setFeedbackModal] = useState(false)
+    const [rating, setRating] = useState(0)
     const [reason, setReason] = useState()
     const [image, setImage] = useState([])
     const [booking, setBooking] = useState([])
     console.log("🚀 ~ file: MyBooking.jsx:31 ~ MyBooking ~ booking:", booking)
     const navigation = useNavigation()
     const { user } = useContext(UserParamContext)
-    const { setBooking:setReBooking, booking:reBooking } = useContext(BookingContext)
+    const { setBooking: setReBooking, booking: reBooking } = useContext(BookingContext)
 
     console.log("🚀 ~ file: MyBooking.jsx:34 ~ MyBooking ~ user:", user)
     const [requirementData, setRequirementData] = useState({})
     const [currentBooking, setCurrentBooking] = useState({})
+    console.log("🚀 ~ file: MyBooking.jsx:42 ~ MyBooking ~ currentBooking:", currentBooking)
 
     useEffect(() => {
         getBooking()
@@ -87,6 +91,32 @@ const MyBooking = () => {
         }
     }
 
+    const addRating = async (rating) => {
+        console.log("🚀 ~ file: MyBooking.jsx:94 ~ addRating ~ rating:", rating)
+        setRating(rating)
+    }
+
+    const submitRating = async () => {
+        await axios.post(`${API_URL}review/add_review`, {
+            "loginUserId": currentBooking?.userId,
+            "designerId": currentBooking?.designerId,
+            "rating": rating,
+            "desc": reason
+        }).then(({ data }) => {
+            console.log("🚀 ~ file: MyBooking.jsx:106 ~ submitRating ~ data:", data)
+            if (data?.status === 200) {
+                getBooking()
+                setFeedbackModal(false)
+                setReason("")
+                setRating(0)
+            } else {
+                showToast(data?.message || data?.err)
+            }
+        }).catch(err => {
+
+        })
+    }
+
     const addRequirement = async () => {
         let data;
         if (requirementData?._id) {
@@ -135,6 +165,7 @@ const MyBooking = () => {
                     "Content-Type": "multipart/form-data"
                 }
             }).then(({ data }) => {
+                console.log("🚀 ~ file: MyBooking.jsx:139 ~ addRequirement ~ data:", data)
                 if (data?.status === 200) {
                     getBooking()
                     setVisible(false)
@@ -143,6 +174,7 @@ const MyBooking = () => {
                 }
 
             }).catch(err => {
+                console.log("🚀 ~ file: MyBooking.jsx:148 ~ addRequirement ~ err:", err)
 
             })
         }
@@ -150,19 +182,19 @@ const MyBooking = () => {
     }
 
     const startCall = async (item) => {
-        console.log("🚀 ~ file: MyBooking.jsx:150 ~ startCall ~ item:", item,user)
+        console.log("🚀 ~ file: MyBooking.jsx:150 ~ startCall ~ item:", item, user)
         // Join Channel using null token and channel name
         await axios.post(`${API_URL}send`, {
-            userId:( user?.id === item?.userId || user?._id === item?.userId) ? item?.designerId : item?.userId,
+            userId: (user?.id === item?.userId || user?._id === item?.userId) ? item?.designerId : item?.userId,
             title: "Incoming Call",
             body: "Incoming Call",
             channelId: `${item?._id}`
         }).then(data => {
-        console.log("🚀 ~ file: MyBooking.jsx:157 ~ startCall ~ data:", data)
+            console.log("🚀 ~ file: MyBooking.jsx:157 ~ startCall ~ data:", data)
 
             navigation.navigate("VideoCall", { item, user })
         }).catch(err => {
-        console.log("🚀 ~ file: MyBooking.jsx:161 ~ startCall ~ err:", err)
+            console.log("🚀 ~ file: MyBooking.jsx:161 ~ startCall ~ err:", err)
 
         })
     };
@@ -182,7 +214,7 @@ const MyBooking = () => {
 
     }
 
-    const editRequirement = async (status,item) => {
+    const editRequirement = async (status, item) => {
         let data
         if (status === "cancle") {
             data = { appointmentId: currentBooking?.id || currentBooking?._id, desc: reason }
@@ -266,7 +298,7 @@ const MyBooking = () => {
                                             </View>
                                             <View>
                                                 <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTGRAY} marginTop={Matrics.vs20} paddingHorizontal={Matrics.vs0}>{"Appointment with:"}</TextComponent>
-                                                <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs3} paddingHorizontal={Matrics.vs0}>{user?.role ? item?.user_name||"" : item?.designer_name || ""}</TextComponent>
+                                                <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs3} paddingHorizontal={Matrics.vs0}>{user?.role ? item?.user_name || "" : item?.designer_name || ""}</TextComponent>
                                                 <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTGRAY} marginTop={Matrics.vs20} paddingHorizontal={Matrics.vs0}>{"Slot:"}</TextComponent>
                                                 <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs3} paddingHorizontal={Matrics.vs0}>{item?.date ? moment(item?.date).format("dddd , Do MMMM") : ""}</TextComponent>
                                                 <TextComponent numberOfLines={5} fontFamily={getRubikFont("Regular")} size={Matrics.ms18} color={Colors.LIGHTBLACK} marginTop={Matrics.vs3} paddingHorizontal={Matrics.vs0}>{item?.time || "0:00"}</TextComponent>
@@ -323,7 +355,7 @@ const MyBooking = () => {
                                                         return (
                                                             <View style={{ marginRight: Matrics.hs15 }}>
 
-                                                                <ImagePlaceHolderComponent disabled={true} size={Matrics.ms60} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs15} setImage={(image) => setImage(image)} image={`${IMAGE_URL}${img}`}  borderColor={Colors.WHITE} />
+                                                                <ImagePlaceHolderComponent disabled={true} size={Matrics.ms60} borderRadius={Matrics.ms0} padding={Matrics.hs10} marginVertical={Matrics.vs15} setImage={(image) => setImage(image)} image={`${IMAGE_URL}${img}`} borderColor={Colors.WHITE} />
                                                             </View>
                                                         )
                                                     }) : null}
@@ -343,7 +375,8 @@ const MyBooking = () => {
                                                         <View style={{ flex: 0.48, justifyContent: "center" }}>
                                                             <CommonButton text={"Accept"} onPress={() => {
                                                                 setCurrentBooking(item)
-                                                                editRequirement("confirm",item)}} viewStyle={{ backgroundColor: Colors.BLUE }} textStyle={{ color: Colors.WHITE }} />
+                                                                editRequirement("confirm", item)
+                                                            }} viewStyle={{ backgroundColor: Colors.BLUE }} textStyle={{ color: Colors.WHITE }} />
 
                                                         </View>
 
@@ -357,16 +390,21 @@ const MyBooking = () => {
                                                     : status === "Previous" ?
                                                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginVertical: Matrics.vs15 }}>
                                                             <View style={{ flex: 0.49, justifyContent: "center" }}>
-                                                                <CommonButton text={"Share Feedback"} onPress={() => { }} viewStyle={{ backgroundColor: Colors.BLUE }} textStyle={{ color: Colors.WHITE }} />
+                                                                <CommonButton text={"Share Feedback"} onPress={() => {
+                                                                    setReBooking(item)
+                                                                    navigation.navigate("ShareFeedback")
+                                                                    // setFeedbackModal(true)
+                                                                }} viewStyle={{ backgroundColor: Colors.BLUE }} textStyle={{ color: Colors.WHITE }} />
 
                                                             </View>
                                                             {!user?.role ? <View style={{ flex: 0.48, justifyContent: "center" }}>
                                                                 <CommonButton text={"Re-book"} onPress={() => {
-                                                                    setReBooking({...item,_id:item?.designerId})
-                                                                    navigation.navigate("SlotScreen")}} viewStyle={{ backgroundColor: Colors.BLUE }} textStyle={{ color: Colors.WHITE }} />
+                                                                    setReBooking({ ...item, _id: item?.designerId })
+                                                                    navigation.navigate("SlotScreen")
+                                                                }} viewStyle={{ backgroundColor: Colors.BLUE }} textStyle={{ color: Colors.WHITE }} />
 
-                                                            </View> : null}
-
+                                                            </View> : null
+                                                            }
                                                         </View>
                                                         : null}
 
@@ -443,6 +481,44 @@ const MyBooking = () => {
                                     <View style={{ width: "70%" }}>
 
                                         <CommonButton text={"Cancel Booking"} onPress={() => editRequirement("cancle")} enabled={reason} />
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+
+                    </View>
+                </CustomModalComponent> : null
+            }
+            {
+                feedbackModal ? <CustomModalComponent
+                    visible={feedbackModal}
+                    setVisible={() => setFeedbackModal(false)}
+                >
+                    <View style={{ flex: 1, justifyContent: "center" }}>
+                        <View style={{ backgroundColor: Colors.WHITE, height: "auto", paddingBottom: Matrics.vs10, }}>
+                            <View style={{}}>
+                                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", height: Matrics.ms65, marginRight: Matrics.vs20, marginBottom: Matrics.vs10 }}>
+                                    <TextComponent fontFamily={getRubikFont("Medium")} size={Matrics.ms22} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} >{"Share Feedback"}</TextComponent>
+
+                                    <Pressable onPress={() => setFeedbackModal(false)}>
+                                        <Image source={Images.close} style={{ width: Matrics.ms18, height: Matrics.ms18, tintColor: Colors.LIGHTBLACK }} />
+                                    </Pressable>
+                                </View>
+                                {/* <Header text={"Complete Profile"} backgroundColor={"white"} backArrow={Colors.LIGHTBLACK} onBackArrow={() => index == 1 ? setIndex(0) : logOut()} /> */}
+
+                            </View>
+                            <View style={{ padding: Matrics.hs20, paddingTop: 0 }}>
+                                <AirbnbRating count={5} defaultRating={rating} size={25} selectedColor={Colors.MEDIUMRED} showRating={false} // isDisabled={true}
+                                    onFinishRating={rate => addRating(rate)} starContainerStyle={{
+                                        paddingTop: Matrics.vs0,
+                                        marginHorizontal: Matrics.hs2,
+                                        marginBottom: Matrics.vs20
+                                    }} />
+                                <TextInputComponent placeholder={"Add a feedback"} onChangeText={text => setReason(text)} value={reason} height={Matrics.ms100} multiline />
+                                <View style={{ alignItems: "center", marginBottom: Matrics.vs10 }}>
+                                    <View style={{ width: "70%" }}>
+
+                                        <CommonButton text={"Submit"} onPress={() => submitRating("cancle")} enabled={reason} />
                                     </View>
                                 </View>
                             </View>

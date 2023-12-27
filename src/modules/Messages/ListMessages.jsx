@@ -37,7 +37,9 @@ const ListMessages = () => {
 
     const getMessages = async () => {
         let url = "message/get_message_login_user/" 
+        console.log("🚀 `${API_URL}${url}${user?.id||user?._id}`:", `${API_URL}${url}${user?.id||user?._id}`)
         await axios.get(`${API_URL}${url}${user?.id||user?._id}`).then(async ({ data }) => {
+            console.log("🚀 ~ file: ListMessages.jsx:42 ~ awaitaxios.get ~ data:", data)
             if (data?.status === 200) {
               
             setMsgs(data?.data)
@@ -66,10 +68,10 @@ const ListMessages = () => {
                             data={msg}
                             renderItem={({ item }) => {
                                 return (
-                                    <Pressable style={{ paddingVertical: Matrics.vs30, borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY }} onPress={()=>navigation.navigate("MessageScreen",{receiverId:item?.receiverId})}>
+                                    <Pressable style={{ paddingVertical: Matrics.vs30, borderBottomWidth: 2, borderColor: Colors.LIGHTERGRAY }} onPress={()=>navigation.navigate("MessageScreen",{receiverId:item?.receiverId||item?.senderId})}>
                                         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                                             <View>
-                                                <TextComponent fontFamily={getRubikFont("Medium")} size={Matrics.ms20} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} paddingHorizontal={0}>{item?.receiver_name}</TextComponent>
+                                                <TextComponent fontFamily={getRubikFont("Medium")} size={Matrics.ms20} color={Colors.LIGHTBLACK} marginTop={Matrics.vs0} paddingHorizontal={0}>{item?.receiver_name||item?.sender_name}</TextComponent>
 
                                             </View>
                                             <TextComponent fontFamily={getRubikFont("Regular")} size={Matrics.ms14} color={Colors.LIGHTGRAY} marginTop={Matrics.vs0} paddingHorizontal={0} >{moment(item?.createdAt).format("DD MMM")}</TextComponent>

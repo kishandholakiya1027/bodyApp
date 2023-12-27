@@ -43,37 +43,36 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
 
     useEffect(() => {
         console.log("🚀 ~ file: UsedataComponent.jsx:46 ~ useEffect ~ userFilter:", userFilter,userFilter != "null")
-        if (userFilter != "null" && userFilter)
+        if ((userFilter != "null" && userFilter))
             onFilter()
         else {
             console.log("🚀 ~ file: UsedataComponent.jsx:28 ~ UsedataComponent ~ allUsers:", allUsers)
             !homeFilter ? allUsers?.length ? setUsers(allUsers) : null : null
         }
-    }, [userFilter?.length])
+    }, [userFilter,userFilter?.search])
 
 
 
     
-    useEffect(() => {
-        if (users?.length)
-            setCount(users?.length)
-    }, [users])
+    
 
 
 
     const onFilter = async () => {
         setLoader(true)
         setSubmitFilter(false)
-        let filter = { ...userFilter }
+        let filter = { ...userFilter,search:userFilter?.search||""}
         if (filter?.consultationCharge) {
             filter.consultationCharge = [filter.consultationCharge?.from, filter.consultationCharge?.to]
         }
+        console.log("filter",filter);
         await axios.post(`${API_URL}designer/get_designer_filter`, filter, {
             headers: {
                 "Content-Type": "application/json"
             }
         }).then(({ data }) => {
-            if (data?.status === 200) {
+            console.log("datas",data,userFilter);
+                if (data?.status === 200) {
                 setUsers(data?.data)
 
             } else {
@@ -131,7 +130,10 @@ const UsedataComponent = ({ userId, slice, search, filter, userFilter, setSubmit
 
     let data = users.filter(usr => (usr?._id !== (user?._id || user?.id)))?.slice(0, slice)
     console.log("🚀 ~ file: UsedataComponent.jsx:123 ~ UsedataComponent ~ data:", data)
-
+    useEffect(() => {
+        if (data?.length)
+            setCount(data?.length)
+    }, [data?.length])
     return (
         <>
             <View style={{ flex: 1, }}>
